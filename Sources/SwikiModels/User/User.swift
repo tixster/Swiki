@@ -1,5 +1,4 @@
 import Foundation
-import GraphQLGeneratorMacros
 
 public struct SwikiUser: Decodable, Sendable {
     public let id: String

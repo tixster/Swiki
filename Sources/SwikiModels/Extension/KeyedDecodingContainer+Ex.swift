@@ -18,4 +18,16 @@ extension KeyedDecodingContainer {
             )
         }
     }
+
+    /// Декодирует опциональный ключ как String.
+    /// Если в JSON пришёл Int — конвертирует в String.
+    func decodeStringOrIntIfPresent(forKey key: Key) throws -> String? {
+        if let stringValue = try? decodeIfPresent(String.self, forKey: key) {
+            return stringValue
+        }
+        if let intValue = try? decodeIfPresent(Int.self, forKey: key) {
+            return String(intValue)
+        }
+        return nil
+    }
 }
