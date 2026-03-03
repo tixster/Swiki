@@ -1,4 +1,7 @@
 import Foundation
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
 
 public enum SwikiConfig {
     public static let baseDomen: URL = URL(string: "https://shikimori.io")!
@@ -10,10 +13,12 @@ public enum SwikiConfig {
  Использование:
  - `swiki.v1.<resource>` для методов API v1
  - `swiki.v2.<resource>` для методов API v2
+ - `swiki.graphQL` для GraphQL API
  */
 public final class Swiki: Sendable {
     public let v1: SwikiV1Client
     public let v2: SwikiV2Client
+    public let graphQL: SwikiGraphQLClient
     public let oauth: SwikiOAuthClient?
 
     public init(
@@ -48,6 +53,7 @@ public final class Swiki: Sendable {
         )
         self.v1 = SwikiV1Client(transport: transport)
         self.v2 = SwikiV2Client(transport: transport)
+        self.graphQL = SwikiGraphQLClient(transport: transport)
         self.oauth = oauthClient
     }
 }

@@ -1,4 +1,7 @@
 import Foundation
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
 
 public actor SwikiOAuthClient {
     public let credentials: SwikiOAuthCredentials

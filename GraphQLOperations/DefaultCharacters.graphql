@@ -1,0 +1,26 @@
+query DefaultCharacters(
+  $page: PositiveInt = 1
+  $limit: PositiveInt = 1
+  $search: String
+) {
+  characters(page: $page, limit: $limit, search: $search) {
+    id
+    malId
+    name
+    russian
+    japanese
+    synonyms
+    url
+    createdAt
+    updatedAt
+    isAnime
+    isManga
+    isRanobe
+
+    poster { id originalUrl mainUrl }
+
+    description
+    descriptionHtml
+    descriptionSource
+  }
+}

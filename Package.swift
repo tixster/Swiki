@@ -21,13 +21,17 @@ let package = Package(
         ),
     ],
     dependencies: [
-        .package(
-            url: "https://github.com/GraphQLSwift/graphql-generator",
-            .upToNextMajor(from: "1.1.0")
-        ),
-        .package(url: "https://github.com/GraphQLSwift/GraphQL", .upToNextMajor(from: "4.1.0"))
+        .package(url: "https://github.com/GraphQLSwift/GraphQL", .upToNextMajor(from: "4.1.0")),
+        .package(url: "https://github.com/apple/swift-argument-parser", .upToNextMajor(from: "1.7.0"))
     ],
     targets: [
+        .executableTarget(
+            name: "SwikiGraphQLOperationGenerator",
+            dependencies: [
+                .product(name: "GraphQL", package: "GraphQL"),
+                .product(name: "ArgumentParser", package: "swift-argument-parser")
+            ]
+        ),
         .target(
             name: "Swiki",
             dependencies: [
@@ -38,12 +42,10 @@ let package = Package(
         .target(
             name: "SwikiModels",
             dependencies: [
-                .product(name: "GraphQL", package: "GraphQL"),
-                .product(name: "GraphQLGeneratorRuntime", package: "graphql-generator"),
-                .product(name: "GraphQLGeneratorMacros", package: "graphql-generator")
+                .product(name: "GraphQL", package: "GraphQL")
             ],
-            plugins: [
-                .plugin(name: "GraphQLGeneratorPlugin", package: "graphql-generator"),
+            exclude: [
+                "schema.graphql"
             ]
         ),
         .testTarget(

@@ -1,0 +1,35 @@
+query DefaultPeople(
+  $page: PositiveInt = 1
+  $limit: PositiveInt = 1
+  $search: String
+  $isSeyu: Boolean
+  $isProducer: Boolean
+  $isMangaka: Boolean
+) {
+  people(
+    page: $page
+    limit: $limit
+    search: $search
+    isSeyu: $isSeyu
+    isProducer: $isProducer
+    isMangaka: $isMangaka
+  ) {
+    id
+    malId
+    name
+    russian
+    japanese
+    synonyms
+    url
+    isSeyu
+    isMangaka
+    isProducer
+    website
+    createdAt
+    updatedAt
+    birthOn { year month day date }
+    deceasedOn { year month day date }
+
+    poster { id originalUrl mainUrl }
+  }
+}

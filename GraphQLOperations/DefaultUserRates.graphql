@@ -1,0 +1,22 @@
+query DefaultUserRates(
+  $page: PositiveInt = 1
+  $limit: PositiveInt = 5
+  $userId: ID
+  $targetType: UserRateTargetTypeEnum = Anime
+  $status: UserRateStatusEnum
+  $orderField: UserRateOrderFieldEnum = updated_at
+  $sortOrder: SortOrderEnum = desc
+) {
+  userRates(
+    page: $page
+    limit: $limit
+    userId: $userId
+    targetType: $targetType
+    status: $status
+    order: { field: $orderField, order: $sortOrder }
+  ) {
+    id
+    anime { id name }
+    createdAt
+  }
+}

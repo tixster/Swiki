@@ -9,7 +9,9 @@ public struct SwikiConfiguration: Sendable {
     public let oauthCredentials: SwikiOAuthCredentials?
     public let oauthTokenStore: (any SwikiOAuthTokenStore)?
     public let oauthBaseURL: URL
+    public let graphQLURL: URL
     public let userAgent: String
+    public let isRpsRpmRestrictionsEnabled: Bool
     public let baseURL: URL
     public let additionalHeaders: [String: String]
 
@@ -19,7 +21,9 @@ public struct SwikiConfiguration: Sendable {
         oauthCredentials: SwikiOAuthCredentials? = nil,
         oauthTokenStore: (any SwikiOAuthTokenStore)? = nil,
         oauthBaseURL: URL = SwikiConfig.baseDomen,
+        graphQLURL: URL = SwikiConfig.baseDomen.appendingPathComponent("api").appendingPathComponent("graphql"),
         userAgent: String,
+        isRpsRpmRestrictionsEnabled: Bool = true,
         baseURL: URL = SwikiConfig.baseDomen.appendingPathComponent("api"),
         additionalHeaders: [String: String] = [:]
     ) {
@@ -28,7 +32,9 @@ public struct SwikiConfiguration: Sendable {
         self.oauthCredentials = oauthCredentials
         self.oauthTokenStore = oauthTokenStore
         self.oauthBaseURL = oauthBaseURL
+        self.graphQLURL = graphQLURL
         self.userAgent = userAgent
+        self.isRpsRpmRestrictionsEnabled = isRpsRpmRestrictionsEnabled
         self.baseURL = baseURL
         self.additionalHeaders = additionalHeaders
     }

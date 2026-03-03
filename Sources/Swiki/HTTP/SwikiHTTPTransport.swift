@@ -1,4 +1,7 @@
 import Foundation
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
 import SwikiModels
 
 public typealias SwikiQuery = [String: String?]
@@ -16,6 +19,8 @@ public enum SwikiClientError: Error, LocalizedError, Sendable {
     case invalidResponse
     case badStatusCode(Int, String?)
     case emptyResponse
+    case graphQLErrors([String])
+    case graphQLDataMissing
 
     public var errorDescription: String? {
         switch self {
@@ -31,6 +36,10 @@ public enum SwikiClientError: Error, LocalizedError, Sendable {
             }
         case .emptyResponse:
             "Response body is empty"
+        case let .graphQLErrors(messages):
+            "GraphQL returned errors: \(messages.joined(separator: "; "))"
+        case .graphQLDataMissing:
+            "GraphQL response does not contain data"
         }
     }
 }
@@ -147,6 +156,35 @@ final class SwikiHTTPTransport: Sendable {
         )
     }
 
+    func graphQL(request: GraphQLRequest) async throws -> GraphQLResult {
+        let requestBody = try GraphQLJSONEncoder().encode(request)
+        let (data, _) = try await executeGraphQL(bodyData: requestBody)
+
+        if data.isEmpty {
+            return GraphQLResult()
+        }
+
+        return try JSONDecoder().decode(GraphQLResult.self, from: data)
+    }
+
+    func graphQL<Response: Decodable>(
+        request: GraphQLRequest,
+        responseType: Response.Type = Response.self,
+        requireNoErrors: Bool = true
+    ) async throws -> Response {
+        let result = try await graphQL(request: request)
+        if requireNoErrors, !result.errors.isEmpty {
+            throw SwikiClientError.graphQLErrors(result.errors.map(\.message))
+        }
+
+        guard let dataMap = result.data else {
+            throw SwikiClientError.graphQLDataMissing
+        }
+
+        let payload = try GraphQLJSONEncoder().encode(dataMap)
+        return try makeGraphQLDecoder().decode(Response.self, from: payload)
+    }
+
     private func execute(
         version: SwikiAPIVersion,
         method: SwikiHTTPMethod,
@@ -161,6 +199,18 @@ final class SwikiHTTPTransport: Sendable {
             throw SwikiClientError.invalidURL(path: fullPath)
         }
 
+        return try await executeAuthenticated(url: url, method: method, bodyData: bodyData)
+    }
+
+    private func executeGraphQL(bodyData: Data?) async throws -> (Data, HTTPURLResponse) {
+        try await executeAuthenticated(url: configuration.graphQLURL, method: .post, bodyData: bodyData)
+    }
+
+    private func executeAuthenticated(
+        url: URL,
+        method: SwikiHTTPMethod,
+        bodyData: Data?
+    ) async throws -> (Data, HTTPURLResponse) {
         let initialRequest = try await buildRequest(url: url, method: method, bodyData: bodyData)
         let (initialData, initialResponse) = try await perform(request: initialRequest)
         guard let initialHTTPResponse = initialResponse as? HTTPURLResponse else {
@@ -271,6 +321,33 @@ final class SwikiHTTPTransport: Sendable {
     private func makeDecoder() -> JSONDecoder {
         let decoder = JSONDecoder()
         decoder.set(apiType: .rest)
+        decoder.dateDecodingStrategy = .custom { decoder in
+            let container = try decoder.singleValueContainer()
+
+            if let timestamp = try? container.decode(Double.self) {
+                return Date(timeIntervalSince1970: timestamp)
+            }
+
+            if let timestamp = try? container.decode(Int.self) {
+                return Date(timeIntervalSince1970: TimeInterval(timestamp))
+            }
+
+            let rawValue = try container.decode(String.self)
+            if let parsed = Self.parseDate(rawValue) {
+                return parsed
+            }
+
+            throw DecodingError.dataCorruptedError(
+                in: container,
+                debugDescription: "Unsupported date format: \(rawValue)"
+            )
+        }
+        return decoder
+    }
+
+    private func makeGraphQLDecoder() -> JSONDecoder {
+        let decoder = JSONDecoder()
+        decoder.set(apiType: .graphQL)
         decoder.dateDecodingStrategy = .custom { decoder in
             let container = try decoder.singleValueContainer()
 
