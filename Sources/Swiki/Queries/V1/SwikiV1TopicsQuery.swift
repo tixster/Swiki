@@ -1,21 +1,56 @@
 import Foundation
+import SwikiModels
 
 public struct SwikiV1TopicsQuery: SwikiQueryConvertible {
-    public let forum: String?
+    public typealias Forum = SwikiTopicForum
+    public typealias LinkedType = SwikiTopicLinkedType
+    public typealias TopicType = SwikiTopicType
+
+    public struct Page: RawRepresentable, Sendable {
+        public let rawValue: Int
+
+        public init?(rawValue: Int) {
+            guard (1...100_000).contains(rawValue) else {
+                return nil
+            }
+            self.rawValue = rawValue
+        }
+
+        public init?(_ rawValue: Int) {
+            self.init(rawValue: rawValue)
+        }
+    }
+
+    public struct Limit: RawRepresentable, Sendable {
+        public let rawValue: Int
+
+        public init?(rawValue: Int) {
+            guard (1...30).contains(rawValue) else {
+                return nil
+            }
+            self.rawValue = rawValue
+        }
+
+        public init?(_ rawValue: Int) {
+            self.init(rawValue: rawValue)
+        }
+    }
+
+    public let forum: Forum?
     public let linkedID: Int?
-    public let linkedType: String?
-    public let type: String?
-    public let page: Int?
-    public let limit: Int?
+    public let linkedType: LinkedType?
+    public let type: TopicType?
+    public let page: Page?
+    public let limit: Limit?
     public let extra: SwikiQuery
 
     public init(
-        forum: String? = nil,
+        forum: Forum? = nil,
         linkedID: Int? = nil,
-        linkedType: String? = nil,
-        type: String? = nil,
-        page: Int? = nil,
-        limit: Int? = nil,
+        linkedType: LinkedType? = nil,
+        type: TopicType? = nil,
+        page: Page? = nil,
+        limit: Limit? = nil,
         extra: SwikiQuery = [:]
     ) {
         self.forum = forum
@@ -29,12 +64,12 @@ public struct SwikiV1TopicsQuery: SwikiQueryConvertible {
 
     public var asSwikiQuery: SwikiQuery {
         var query: SwikiQuery = [
-            "forum": forum,
+            "forum": forum?.rawValue,
             "linked_id": linkedID.map(String.init),
-            "linked_type": linkedType,
-            "type": type,
-            "page": page.map(String.init),
-            "limit": limit.map(String.init)
+            "linked_type": linkedType?.rawValue,
+            "type": type?.rawValue,
+            "page": page.map { String($0.rawValue) },
+            "limit": limit.map { String($0.rawValue) }
         ]
         query = query.filter { $0.value != nil }
         return SwikiQueryEncoding.merge(query, with: extra)

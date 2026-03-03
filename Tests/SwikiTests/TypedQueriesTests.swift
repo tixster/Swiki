@@ -68,6 +68,37 @@ struct TypedQueriesTests {
     }
 
     @Test
+    func v1AnimesQueryEncodesStatusFiltersGroupedModes() {
+        let query = SwikiV1AnimesQuery(
+            statusFilters: [.include(.released), .exclude(.ongoing), .include(.anons)]
+        )
+
+        let encoded = query.asSwikiQuery
+
+        #expect(encoded["status"] == "released,!ongoing,anons")
+    }
+
+    @Test
+    func v1AnimesQueryEncodesCombinedKindStatusAndSeasonFilters() throws {
+        let y2016 = try #require(SwikiSeason(rawValue: "2016"))
+        let y2015 = try #require(SwikiSeason(rawValue: "2015"))
+        let summer2016 = try #require(SwikiSeason(rawValue: "summer_2016"))
+
+        let query = SwikiV1AnimesQuery(
+            season: y2016,
+            kindFilters: [.include(.tv), .exclude(.movie), .include(.ova)],
+            statusFilters: [.include(.released), .exclude(.ongoing)],
+            seasonFilters: [.include(y2015), .exclude(summer2016)]
+        )
+
+        let encoded = query.asSwikiQuery
+
+        #expect(encoded["kind"] == "tv,!movie,ova")
+        #expect(encoded["status"] == "released,!ongoing")
+        #expect(encoded["season"] == "2016,2015,!summer_2016")
+    }
+
+    @Test
     func v2UserRatesQueryEncodesExpectedKeys() {
         let query = SwikiV2UserRatesQuery(
             page: 3,
@@ -99,5 +130,48 @@ struct TypedQueriesTests {
 
         #expect(encoded["kind"] == "manga,one_shot,!novel")
         #expect(encoded["season"] == "2016,!summer_2016")
+    }
+
+    @Test
+    func v1MangasQueryEncodesKindFiltersWithStatusAndSeasonFilters() throws {
+        let y2016 = try #require(SwikiSeason(rawValue: "2016"))
+        let y2015 = try #require(SwikiSeason(rawValue: "2015"))
+
+        let query = SwikiV1MangasQuery(
+            kindFilters: [.include(.manga), .exclude(.oneShot), .include(.manhwa)],
+            status: .released,
+            season: y2016,
+            seasonFilters: [.include(y2015)]
+        )
+
+        let encoded = query.asSwikiQuery
+
+        #expect(encoded["kind"] == "manga,!one_shot,manhwa")
+        #expect(encoded["status"] == "released")
+        #expect(encoded["season"] == "2016,2015")
+    }
+
+    @Test
+    func v1TopicsQueryEncodesTypedValues() throws {
+        let page = try #require(SwikiV1TopicsQuery.Page(1))
+        let limit = try #require(SwikiV1TopicsQuery.Limit(30))
+
+        let query = SwikiV1TopicsQuery(
+            forum: .myClubs,
+            linkedID: 42,
+            linkedType: .anime,
+            type: .entryAnimeTopic,
+            page: page,
+            limit: limit
+        )
+
+        let encoded = query.asSwikiQuery
+
+        #expect(encoded["forum"] == "my_clubs")
+        #expect(encoded["linked_id"] == "42")
+        #expect(encoded["linked_type"] == "Anime")
+        #expect(encoded["type"] == "Topics::EntryTopics::AnimeTopic")
+        #expect(encoded["page"] == "1")
+        #expect(encoded["limit"] == "30")
     }
 }

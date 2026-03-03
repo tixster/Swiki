@@ -13,7 +13,7 @@ public struct SwikiV1MangasQuery: SwikiQueryConvertible {
     /// - exclude: `!manga,!one_shot`
     /// - mixed: `manga,!one_shot`
     public let kindFilters: [SwikiQueryFilter<SwikiMangaKind>]
-    public let status: String?
+    public let status: SwikiMangaStatus?
     public let season: SwikiSeason?
     /// Supports grouped/subtraction/combined modes:
     /// - include: `2016,2015`
@@ -38,7 +38,7 @@ public struct SwikiV1MangasQuery: SwikiQueryConvertible {
         order: SwikiOrder? = nil,
         type: String? = nil,
         kindFilters: [SwikiQueryFilter<SwikiMangaKind>] = [],
-        status: String? = nil,
+        status: SwikiMangaStatus? = nil,
         season: SwikiSeason? = nil,
         seasonFilters: [SwikiQueryFilter<SwikiSeason>] = [],
         score: Int? = nil,
@@ -81,7 +81,7 @@ public struct SwikiV1MangasQuery: SwikiQueryConvertible {
             "order": order?.rawValue,
             "type": type,
             "kind": SwikiQueryEncoding.csv(filters: kindFilters),
-            "status": status,
+            "status": status?.rawValue,
             "season": SwikiQueryEncoding.csv(single: season, filters: seasonFilters),
             "score": score.map(String.init),
             "genre": SwikiQueryEncoding.csv(genre),
