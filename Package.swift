@@ -50,7 +50,7 @@ let package = Package(
         ),
         .testTarget(
             name: "SwikiTests",
-            dependencies: ["Swiki", "SwikiModels"]
+            dependencies: ["Swiki", "SwikiModels", "SwikiGraphQLOperationGenerator"]
         ),
     ]
 )
