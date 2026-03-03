@@ -24,11 +24,9 @@ public struct SwikiV2EpisodeNotificationsClient: Sendable {
 
     private struct CreatePayload: Encodable {
         let episodeNotification: EpisodeNotificationPayload
-        let token: String
 
         enum CodingKeys: String, CodingKey {
             case episodeNotification = "episode_notification"
-            case token
         }
     }
 
@@ -40,7 +38,7 @@ public struct SwikiV2EpisodeNotificationsClient: Sendable {
 }
 
 public extension SwikiV2EpisodeNotificationsClient {
-    func create<Body: Encodable>(body: Body, query: SwikiV2EpisodeNotificationsQuery = .init()) async throws -> SwikiEpisodeNotification {
+    func create<Body: Encodable>(body: Body, query: SwikiV2EpisodeNotificationsQuery) async throws -> SwikiEpisodeNotification {
         try await transport.request(version: .v2, method: .post, path: "episode_notifications", query: query.asSwikiQuery, body: body)
     }
 
@@ -52,8 +50,7 @@ public extension SwikiV2EpisodeNotificationsClient {
         isRaw: Bool? = nil,
         isSubtitles: Bool? = nil,
         isFandub: Bool? = nil,
-        isAnime365: Bool? = nil,
-        query: SwikiV2EpisodeNotificationsQuery = .init()
+        isAnime365: Bool? = nil
     ) async throws -> SwikiEpisodeNotification {
         let payload = CreatePayload(
             episodeNotification: EpisodeNotificationPayload(
@@ -64,10 +61,9 @@ public extension SwikiV2EpisodeNotificationsClient {
                 isSubtitles: isSubtitles,
                 isFandub: isFandub,
                 isAnime365: isAnime365
-            ),
-            token: token
+            )
         )
 
-        return try await create(body: payload, query: query)
+        return try await create(body: payload, query: .init(token: token))
     }
 }

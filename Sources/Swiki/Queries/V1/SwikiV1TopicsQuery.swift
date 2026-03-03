@@ -4,6 +4,7 @@ public struct SwikiV1TopicsQuery: SwikiQueryConvertible {
     public let forum: String?
     public let linkedID: Int?
     public let linkedType: String?
+    public let type: String?
     public let page: Int?
     public let limit: Int?
     public let extra: SwikiQuery
@@ -12,6 +13,7 @@ public struct SwikiV1TopicsQuery: SwikiQueryConvertible {
         forum: String? = nil,
         linkedID: Int? = nil,
         linkedType: String? = nil,
+        type: String? = nil,
         page: Int? = nil,
         limit: Int? = nil,
         extra: SwikiQuery = [:]
@@ -19,6 +21,7 @@ public struct SwikiV1TopicsQuery: SwikiQueryConvertible {
         self.forum = forum
         self.linkedID = linkedID
         self.linkedType = linkedType
+        self.type = type
         self.page = page
         self.limit = limit
         self.extra = extra
@@ -29,6 +32,7 @@ public struct SwikiV1TopicsQuery: SwikiQueryConvertible {
             "forum": forum,
             "linked_id": linkedID.map(String.init),
             "linked_type": linkedType,
+            "type": type,
             "page": page.map(String.init),
             "limit": limit.map(String.init)
         ]

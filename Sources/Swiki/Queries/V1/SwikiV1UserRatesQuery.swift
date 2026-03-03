@@ -8,6 +8,7 @@ public struct SwikiV1UserRatesQuery: SwikiQueryConvertible {
     public let targetID: String?
     public let targetType: SwikiUserRateTargetType?
     public let status: SwikiUserRateStatus?
+    public let censored: Bool?
     public let extra: SwikiQuery
 
     public init(
@@ -17,6 +18,7 @@ public struct SwikiV1UserRatesQuery: SwikiQueryConvertible {
         targetID: String? = nil,
         targetType: SwikiUserRateTargetType? = nil,
         status: SwikiUserRateStatus? = nil,
+        censored: Bool? = nil,
         extra: SwikiQuery = [:]
     ) {
         self.page = page
@@ -25,6 +27,7 @@ public struct SwikiV1UserRatesQuery: SwikiQueryConvertible {
         self.targetID = targetID
         self.targetType = targetType
         self.status = status
+        self.censored = censored
         self.extra = extra
     }
 
@@ -35,7 +38,8 @@ public struct SwikiV1UserRatesQuery: SwikiQueryConvertible {
             "user_id": userID,
             "target_id": targetID,
             "target_type": targetType?.rawValue,
-            "status": status?.rawValue
+            "status": status?.rawValue,
+            "censored": censored.map(SwikiQueryEncoding.bool)
         ]
         query = query.filter { $0.value != nil }
         return SwikiQueryEncoding.merge(query, with: extra)

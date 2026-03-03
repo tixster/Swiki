@@ -27,6 +27,24 @@ enum SwikiQueryEncoding {
         return values.joined(separator: ",")
     }
 
+    static func csv<Value>(
+        single: Value?,
+        filters: [SwikiQueryFilter<Value>]
+    ) -> String? where Value: RawRepresentable & Sendable, Value.RawValue == String {
+        var tokens: [String] = []
+        if let single {
+            tokens.append(single.rawValue)
+        }
+        tokens.append(contentsOf: filters.map(\.queryToken))
+        return tokens.isEmpty ? nil : tokens.joined(separator: ",")
+    }
+
+    static func csv<Value>(
+        filters: [SwikiQueryFilter<Value>]
+    ) -> String? where Value: RawRepresentable & Sendable, Value.RawValue == String {
+        csv(single: Optional<Value>.none, filters: filters)
+    }
+
     static func merge(_ lhs: SwikiQuery, with rhs: SwikiQuery) -> SwikiQuery {
         var result = lhs
         for (key, value) in rhs {

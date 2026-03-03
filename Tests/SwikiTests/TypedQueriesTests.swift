@@ -10,7 +10,7 @@ struct TypedQueriesTests {
             page: 2,
             limit: 10,
             order: .ranked,
-            status: .released,
+            statusFilters: [.include(.released)],
             duration: .lessThan10Minutes,
             genre: [1, 2],
             censored: true,
@@ -51,6 +51,23 @@ struct TypedQueriesTests {
     }
 
     @Test
+    func v1AnimesQueryEncodesKindAndSeasonGroupedModes() throws {
+        let season2016 = try #require(SwikiSeason(rawValue: "2016"))
+        let summer2016 = try #require(SwikiSeason(rawValue: "summer_2016"))
+
+        let query = SwikiV1AnimesQuery(
+            season: season2016,
+            kindFilters: [.include(.tv), .include(.movie), .exclude(.special)],
+            seasonFilters: [.exclude(summer2016)]
+        )
+
+        let encoded = query.asSwikiQuery
+
+        #expect(encoded["kind"] == "tv,movie,!special")
+        #expect(encoded["season"] == "2016,!summer_2016")
+    }
+
+    @Test
     func v2UserRatesQueryEncodesExpectedKeys() {
         let query = SwikiV2UserRatesQuery(
             page: 3,
@@ -65,5 +82,22 @@ struct TypedQueriesTests {
         #expect(encoded["limit"] == "15")
         #expect(encoded["user_id"] == "77")
         #expect(encoded["status"] == "completed")
+    }
+
+    @Test
+    func v1MangasQueryEncodesKindAndSeasonGroupedModes() throws {
+        let season2016 = try #require(SwikiSeason(rawValue: "2016"))
+        let summer2016 = try #require(SwikiSeason(rawValue: "summer_2016"))
+
+        let query = SwikiV1MangasQuery(
+            kindFilters: [.include(.manga), .include(.oneShot), .exclude(.novel)],
+            season: season2016,
+            seasonFilters: [.exclude(summer2016)]
+        )
+
+        let encoded = query.asSwikiQuery
+
+        #expect(encoded["kind"] == "manga,one_shot,!novel")
+        #expect(encoded["season"] == "2016,!summer_2016")
     }
 }
