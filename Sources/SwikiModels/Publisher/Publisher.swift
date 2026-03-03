@@ -4,7 +4,7 @@ public struct SwikiPublisher: Decodable, Sendable {
     public let id: String
     public let name: String
     public let russian: String?
-    public let url: URL
+    public let url: URL?
 
     enum CodingKeys: String, CodingKey {
         case id
@@ -18,6 +18,6 @@ public struct SwikiPublisher: Decodable, Sendable {
         self.id = try container.decodeStringOrInt(forKey: .id)
         self.name = try container.decode(String.self, forKey: .name)
         self.russian = try container.decodeIfPresent(String.self, forKey: .russian)
-        self.url = try container.decode(URL.self, forKey: .url)
+        self.url = try container.decodeIfPresent(URL.self, forKey: .url)
     }
 }

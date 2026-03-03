@@ -1,25 +1,23 @@
 import Foundation
 
 public struct SwikiAnimeConstants: Decodable, Sendable {
-    public let kind: [String]
-    public let status: [String]
-    public let rating: [String]
-    public let duration: [String]
+    public let kind: [SwikiAnimeKind]
+    public let status: [SwikiAnimeStatus]
 }
 
 public struct SwikiMangaConstants: Decodable, Sendable {
-    public let kind: [String]
-    public let status: [String]
+    public let kind: [SwikiMangaKind]
+    public let status: [SwikiMangaStatus]
 }
 
 public struct SwikiUserRateConstants: Decodable, Sendable {
-    public let status: [String]
+    public let status: [SwikiUserRateStatus]
 }
 
 public struct SwikiClubConstants: Decodable, Sendable {
-    public let joinPolicy: [String]
-    public let commentPolicy: [String]
-    public let imageUploadPolicy: [String]
+    public let joinPolicy: [SwikiClubJoinPolicy]
+    public let commentPolicy: [SwikiClubCommentPolicy]
+    public let imageUploadPolicy: [SwikiClubImageUploadPolicy]
 
     enum CodingKeys: String, CodingKey {
         case joinPolicy = "join_policy"

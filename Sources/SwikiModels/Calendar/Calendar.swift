@@ -3,14 +3,30 @@ import Foundation
 public struct SwikiCalendar: Decodable, Sendable {
     public let nextEpisode: Int
     public let nextEpisodeAt: Date
-    public let duration: Int
+    public let duration: String
     public let anime: SwikiCalendarAnime
+
+    public var durationMinutes: Int? { Int(duration) }
 
     enum CodingKeys: String, CodingKey {
         case nextEpisode = "next_episode"
         case nextEpisodeAt = "next_episode_at"
         case duration
         case anime
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.nextEpisode = try container.decode(Int.self, forKey: .nextEpisode)
+        self.nextEpisodeAt = try container.decode(Date.self, forKey: .nextEpisodeAt)
+        if let stringDuration = try? container.decode(String.self, forKey: .duration) {
+            self.duration = stringDuration
+        } else if let intDuration = try? container.decode(Int.self, forKey: .duration) {
+            self.duration = String(intDuration)
+        } else {
+            self.duration = "0"
+        }
+        self.anime = try container.decode(SwikiCalendarAnime.self, forKey: .anime)
     }
 }
 

@@ -12,7 +12,7 @@ public struct SwikiV1TopicsClient: SwikiResourceSubclient {
 
 public extension SwikiV1TopicsClient {
     func get(query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws -> [SwikiTopic] { try await list(query: query) }
-    func updates(query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws -> [SwikiTopic] {
+    func updates(query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws -> [SwikiExtendedLightTopic] {
         try await request(.get, action: "updates", query: query)
     }
     func get(id: String, query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws -> SwikiTopic { try await resourceClient.get(id: id, query: query) }

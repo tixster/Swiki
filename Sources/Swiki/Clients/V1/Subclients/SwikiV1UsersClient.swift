@@ -14,18 +14,18 @@ public extension SwikiV1UsersClient {
     func get(query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws -> [SwikiUser] {
         try await request(.get, query: query)
     }
-    func get(id: String, query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws -> SwikiUser {
+    func get(id: String, query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws -> SwikiUserId {
         try await request(.get, id: id, query: query)
     }
-    func showByNickname(_ nickname: String, query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws -> SwikiUser {
+    func showByNickname(_ nickname: String, query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws -> SwikiUserId {
         var merged = query.asSwikiQuery
         merged["is_nickname"] = "1"
         return try await request(.get, id: nickname, query: merged)
     }
-    func info(id: String, query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws -> SwikiUser {
+    func info(id: String, query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws -> SwikiUserInfo {
         try await request(.get, id: id, action: "info", query: query)
     }
-    func whoami(query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws -> SwikiUser {
+    func whoami(query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws -> SwikiUserInfo {
         try await request(.get, action: "whoami", query: query)
     }
     func signOut(query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws {
@@ -37,10 +37,10 @@ public extension SwikiV1UsersClient {
     func clubs(id: String, query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws -> [SwikiClub] {
         try await request(.get, id: id, action: "clubs", query: query)
     }
-    func animeRates(id: String, query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws -> [SwikiUserRate] {
+    func animeRates(id: String, query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws -> [SwikiAnimeRate] {
         try await request(.get, id: id, action: "anime_rates", query: query)
     }
-    func mangaRates(id: String, query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws -> [SwikiUserRate] {
+    func mangaRates(id: String, query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws -> [SwikiAnimeRate] {
         try await request(.get, id: id, action: "manga_rates", query: query)
     }
     func favorites(id: String, query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws -> SwikiUserFavorites {

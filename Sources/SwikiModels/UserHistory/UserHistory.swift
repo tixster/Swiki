@@ -4,7 +4,7 @@ public struct SwikiUserHistory: Decodable, Sendable {
     public let id: String
     public let createdAt: Date
     public let description: String
-    public let target: SwikiJSONValue?
+    public let target: SwikiLinked?
 
     enum CodingKeys: String, CodingKey {
         case id
@@ -18,6 +18,6 @@ public struct SwikiUserHistory: Decodable, Sendable {
         self.id = try container.decodeStringOrInt(forKey: .id)
         self.createdAt = try container.decode(Date.self, forKey: .createdAt)
         self.description = try container.decode(String.self, forKey: .description)
-        self.target = try container.decodeIfPresent(SwikiJSONValue.self, forKey: .target)
+        self.target = try container.decodeIfPresent(SwikiLinked.self, forKey: .target)
     }
 }

@@ -9,6 +9,29 @@ public struct SwikiUserFavorites: Decodable, Sendable {
     public let mangakas: [SwikiFavoriteEntry]
     public let seyu: [SwikiFavoriteEntry]
     public let producers: [SwikiFavoriteEntry]
+
+    enum CodingKeys: String, CodingKey {
+        case animes
+        case mangas
+        case ranobe
+        case characters
+        case people
+        case mangakas
+        case seyu
+        case producers
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.animes = try container.decodeIfPresent([SwikiFavoriteEntry].self, forKey: .animes) ?? []
+        self.mangas = try container.decodeIfPresent([SwikiFavoriteEntry].self, forKey: .mangas) ?? []
+        self.ranobe = try container.decodeIfPresent([SwikiFavoriteEntry].self, forKey: .ranobe) ?? []
+        self.characters = try container.decodeIfPresent([SwikiFavoriteEntry].self, forKey: .characters) ?? []
+        self.people = try container.decodeIfPresent([SwikiFavoriteEntry].self, forKey: .people) ?? []
+        self.mangakas = try container.decodeIfPresent([SwikiFavoriteEntry].self, forKey: .mangakas) ?? []
+        self.seyu = try container.decodeIfPresent([SwikiFavoriteEntry].self, forKey: .seyu) ?? []
+        self.producers = try container.decodeIfPresent([SwikiFavoriteEntry].self, forKey: .producers) ?? []
+    }
 }
 
 public struct SwikiFavoriteEntry: Decodable, Sendable {
