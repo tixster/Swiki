@@ -61,7 +61,4 @@ public extension SwikiV1UsersClient {
     func bans(id: String, query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws -> [SwikiBan] {
         try await request(.get, id: id, action: "bans", query: query)
     }
-    func stats(id: String, query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws -> SwikiStats {
-        try await request(.get, id: id, action: "stats", query: query)
-    }
 }

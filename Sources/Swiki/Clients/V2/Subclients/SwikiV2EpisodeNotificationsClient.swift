@@ -1,38 +1,73 @@
 import Foundation
 import SwikiModels
 
-public struct SwikiV2EpisodeNotificationsClient: SwikiResourceSubclient {
-    public typealias Model = SwikiEpisodeNotification
-    public let resourceClient: SwikiResourceClient<SwikiEpisodeNotification>
+public struct SwikiV2EpisodeNotificationsClient: Sendable {
+    private struct EpisodeNotificationPayload: Encodable {
+        let animeId: String
+        let episode: Int
+        let airedAt: Date
+        let isRaw: Bool?
+        let isSubtitles: Bool?
+        let isFandub: Bool?
+        let isAnime365: Bool?
+
+        enum CodingKeys: String, CodingKey {
+            case animeId = "anime_id"
+            case episode
+            case airedAt = "aired_at"
+            case isRaw = "is_raw"
+            case isSubtitles = "is_subtitles"
+            case isFandub = "is_fandub"
+            case isAnime365 = "is_anime365"
+        }
+    }
+
+    private struct CreatePayload: Encodable {
+        let episodeNotification: EpisodeNotificationPayload
+        let token: String
+
+        enum CodingKeys: String, CodingKey {
+            case episodeNotification = "episode_notification"
+            case token
+        }
+    }
+
+    private let transport: SwikiHTTPTransport
 
     init(transport: SwikiHTTPTransport) {
-        self.resourceClient = SwikiResourceClient<Model>(transport: transport, version: .v2, path: "episode_notifications")
+        self.transport = transport
     }
 }
 
 public extension SwikiV2EpisodeNotificationsClient {
-    func get(query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws -> [SwikiEpisodeNotification] {
-        try await list(query: query)
-    }
-
-    func get(id: String, query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws -> SwikiEpisodeNotification {
-        try await resourceClient.get(id: id, query: query)
-    }
-
     func create<Body: Encodable>(body: Body, query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws -> SwikiEpisodeNotification {
-        try await resourceClient.create(body: body, query: query)
+        try await transport.request(version: .v2, method: .post, path: "episode_notifications", query: query, body: body)
     }
 
-    func update<Body: Encodable>(
-        id: String,
-        body: Body,
-        query: some SwikiQueryConvertible = [:] as SwikiQuery,
-        method: SwikiHTTPMethod = .put
+    func create(
+        token: String,
+        animeId: String,
+        episode: Int,
+        airedAt: Date,
+        isRaw: Bool? = nil,
+        isSubtitles: Bool? = nil,
+        isFandub: Bool? = nil,
+        isAnime365: Bool? = nil,
+        query: some SwikiQueryConvertible = [:] as SwikiQuery
     ) async throws -> SwikiEpisodeNotification {
-        try await resourceClient.update(id: id, body: body, query: query, method: method)
-    }
+        let payload = CreatePayload(
+            episodeNotification: EpisodeNotificationPayload(
+                animeId: animeId,
+                episode: episode,
+                airedAt: airedAt,
+                isRaw: isRaw,
+                isSubtitles: isSubtitles,
+                isFandub: isFandub,
+                isAnime365: isAnime365
+            ),
+            token: token
+        )
 
-    func delete(id: String, query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws {
-        try await resourceClient.delete(id: id, query: query)
+        return try await create(body: payload, query: query)
     }
 }

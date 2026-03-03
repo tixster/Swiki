@@ -1,18 +1,19 @@
 import Foundation
 import SwikiModels
 
-public struct SwikiV1UserImagesClient: SwikiResourceSubclient {
-    public typealias Model = SwikiUserImage
-    public let resourceClient: SwikiResourceClient<SwikiUserImage>
+public struct SwikiV1UserImagesClient: Sendable {
+    private let transport: SwikiHTTPTransport
 
     init(transport: SwikiHTTPTransport) {
-        self.resourceClient = SwikiResourceClient<Model>(transport: transport, version: .v1, path: "user_images")
+        self.transport = transport
     }
 }
 
 public extension SwikiV1UserImagesClient {
-    func create<Body: Encodable>(body: Body, query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws -> SwikiUserImage {
-        try await resourceClient.create(body: body, query: query)
+    func create<Body: Encodable>(
+        body: Body,
+        query: some SwikiQueryConvertible = [:] as SwikiQuery
+    ) async throws -> SwikiUserImageUploadResponse {
+        try await transport.request(version: .v1, method: .post, path: "user_images", query: query, body: body)
     }
-    func delete(id: String, query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws { try await resourceClient.delete(id: id, query: query) }
 }

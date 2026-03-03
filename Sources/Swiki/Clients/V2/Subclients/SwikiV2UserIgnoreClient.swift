@@ -1,21 +1,20 @@
 import Foundation
 import SwikiModels
 
-public struct SwikiV2UserIgnoreClient: SwikiResourceSubclient {
-    public typealias Model = SwikiUserIgnore
-    public let resourceClient: SwikiResourceClient<SwikiUserIgnore>
+public struct SwikiV2UserIgnoreClient: Sendable {
+    private let transport: SwikiHTTPTransport
 
     init(transport: SwikiHTTPTransport) {
-        self.resourceClient = SwikiResourceClient<Model>(transport: transport, version: .v2, path: "user_ignore")
+        self.transport = transport
     }
 }
 
 public extension SwikiV2UserIgnoreClient {
-    func create(userId: String, query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws {
-        try await request(.post, id: userId, query: query)
+    func create(userId: String, query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws -> SwikiUserIgnore {
+        try await transport.request(version: .v2, method: .post, path: "users", id: userId, action: "ignore", query: query)
     }
 
-    func delete(userId: String, query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws {
-        try await request(.delete, id: userId, query: query)
+    func delete(userId: String, query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws -> SwikiUserIgnore {
+        try await transport.request(version: .v2, method: .delete, path: "users", id: userId, action: "ignore", query: query)
     }
 }

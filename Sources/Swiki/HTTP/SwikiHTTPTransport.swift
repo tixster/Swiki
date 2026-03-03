@@ -88,10 +88,6 @@ final class SwikiHTTPTransport: Sendable {
             bodyData: nil
         )
 
-        guard !data.isEmpty else {
-            throw SwikiClientError.emptyResponse
-        }
-
         return try makeDecoder().decode(Response.self, from: data)
     }
 
@@ -132,10 +128,6 @@ final class SwikiHTTPTransport: Sendable {
             query: query,
             bodyData: bodyData
         )
-
-        guard !data.isEmpty else {
-            throw SwikiClientError.emptyResponse
-        }
 
         return try makeDecoder().decode(Response.self, from: data)
     }
