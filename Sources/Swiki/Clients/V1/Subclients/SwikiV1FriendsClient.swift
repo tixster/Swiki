@@ -10,11 +10,11 @@ public struct SwikiV1FriendsClient: Sendable {
 }
 
 public extension SwikiV1FriendsClient {
-    func create(id: String, query: SwikiQuery = [:]) async throws -> SwikiNoticeResponse {
-        try await transport.request(version: .v1, method: .post, path: "friends", id: id, query: query)
+    func create(id: String) async throws -> SwikiNoticeResponse {
+        try await transport.request(version: .v1, method: .post, path: "friends", id: id)
     }
 
-    func delete(id: String, query: SwikiQuery = [:]) async throws -> SwikiNoticeResponse {
-        try await transport.request(version: .v1, method: .delete, path: "friends", id: id, query: query)
+    func delete(id: String) async throws -> SwikiNoticeResponse {
+        try await transport.request(version: .v1, method: .delete, path: "friends", id: id)
     }
 }

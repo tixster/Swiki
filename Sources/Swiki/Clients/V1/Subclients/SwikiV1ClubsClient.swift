@@ -12,9 +12,9 @@ public struct SwikiV1ClubsClient: SwikiResourceSubclient {
 
 public extension SwikiV1ClubsClient {
     func get(query: SwikiV1ClubsQuery = .init()) async throws -> [SwikiClub] { try await list(query: query.asSwikiQuery) }
-    func get(id: String, query: SwikiV1ClubsQuery = .init()) async throws -> SwikiClub { try await resourceClient.get(id: id, query: query.asSwikiQuery) }
-    func update<Body: Encodable>(id: String, body: Body, query: SwikiV1ClubsQuery = .init()) async throws -> SwikiClub {
-        try await resourceClient.update(id: id, body: body, query: query.asSwikiQuery, method: .put)
+    func get(id: String) async throws -> SwikiClub { try await resourceClient.get(id: id) }
+    func update<Body: Encodable>(id: String, body: Body) async throws -> SwikiClub {
+        try await resourceClient.update(id: id, body: body, method: .put)
     }
     func animes(id: String, query: SwikiV1ClubsQuery = .init()) async throws -> [SwikiAnimeV1Preview] {
         try await request(.get, id: id, action: "animes", query: query.asSwikiQuery)
@@ -34,10 +34,10 @@ public extension SwikiV1ClubsClient {
     func images(id: String, query: SwikiV1ClubsQuery = .init()) async throws -> [SwikiClubImage] {
         try await request(.get, id: id, action: "images", query: query.asSwikiQuery)
     }
-    func join(id: String, query: SwikiV1ClubsQuery = .init()) async throws {
-        try await request(.post, id: id, action: "join", query: query.asSwikiQuery)
+    func join(id: String) async throws {
+        try await request(.post, id: id, action: "join")
     }
-    func leave(id: String, query: SwikiV1ClubsQuery = .init()) async throws {
-        try await request(.post, id: id, action: "leave", query: query.asSwikiQuery)
+    func leave(id: String) async throws {
+        try await request(.post, id: id, action: "leave")
     }
 }

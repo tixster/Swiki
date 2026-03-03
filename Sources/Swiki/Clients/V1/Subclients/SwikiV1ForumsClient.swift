@@ -11,5 +11,5 @@ public struct SwikiV1ForumsClient: SwikiResourceSubclient {
 }
 
 public extension SwikiV1ForumsClient {
-    func get(query: SwikiQuery = [:]) async throws -> [SwikiForum] { try await list(query: query) }
+    func get() async throws -> [SwikiForum] { try await list() }
 }

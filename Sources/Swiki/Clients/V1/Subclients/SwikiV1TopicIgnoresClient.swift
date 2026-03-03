@@ -30,20 +30,18 @@ public extension SwikiV1TopicIgnoresClient {
 
     func create(
         topicId: String,
-        userId: String? = nil,
-        query: SwikiQuery = [:]
+        userId: String? = nil
     ) async throws -> SwikiTopicIgnoreCreateResponse {
         let payload = CreateTopicIgnorePayload(topicIgnore: TopicIgnorePayload(topicId: topicId, userId: userId))
         return try await transport.request(
             version: .v1,
             method: .post,
             path: "topic_ignores",
-            query: query,
             body: payload
         )
     }
 
-    func delete(id: String, query: SwikiQuery = [:]) async throws -> SwikiTopicIgnoreDeleteResponse {
-        try await transport.request(version: .v1, method: .delete, path: "topic_ignores", id: id, query: query)
+    func delete(id: String) async throws -> SwikiTopicIgnoreDeleteResponse {
+        try await transport.request(version: .v1, method: .delete, path: "topic_ignores", id: id)
     }
 }

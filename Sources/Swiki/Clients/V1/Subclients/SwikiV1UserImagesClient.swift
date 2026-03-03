@@ -11,9 +11,8 @@ public struct SwikiV1UserImagesClient: Sendable {
 
 public extension SwikiV1UserImagesClient {
     func create<Body: Encodable>(
-        body: Body,
-        query: SwikiQuery = [:]
+        body: Body
     ) async throws -> SwikiUserImageUploadResponse {
-        try await transport.request(version: .v1, method: .post, path: "user_images", query: query, body: body)
+        try await transport.request(version: .v1, method: .post, path: "user_images", body: body)
     }
 }

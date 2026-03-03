@@ -11,15 +11,15 @@ public struct SwikiV1StylesClient: SwikiResourceSubclient {
 }
 
 public extension SwikiV1StylesClient {
-    func get(query: SwikiQuery = [:]) async throws -> [SwikiStyle] { try await list(query: query) }
-    func get(id: String, query: SwikiQuery = [:]) async throws -> SwikiStyle { try await resourceClient.get(id: id, query: query) }
-    func preview<Body: Encodable>(body: Body, query: SwikiQuery = [:]) async throws -> SwikiStyle {
-        try await request(.post, action: "preview", query: query, body: body)
+    func get() async throws -> [SwikiStyle] { try await list() }
+    func get(id: String) async throws -> SwikiStyle { try await resourceClient.get(id: id) }
+    func preview<Body: Encodable>(body: Body) async throws -> SwikiStyle {
+        try await request(.post, action: "preview", body: body)
     }
-    func create<Body: Encodable>(body: Body, query: SwikiQuery = [:]) async throws -> SwikiStyle {
-        try await resourceClient.create(body: body, query: query)
+    func create<Body: Encodable>(body: Body) async throws -> SwikiStyle {
+        try await resourceClient.create(body: body)
     }
-    func update<Body: Encodable>(id: String, body: Body, query: SwikiQuery = [:]) async throws -> SwikiStyle {
-        try await resourceClient.update(id: id, body: body, query: query, method: .post)
+    func update<Body: Encodable>(id: String, body: Body) async throws -> SwikiStyle {
+        try await resourceClient.update(id: id, body: body, method: .post)
     }
 }

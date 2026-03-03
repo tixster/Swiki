@@ -11,23 +11,23 @@ public struct SwikiV1ConstantsClient: SwikiResourceSubclient {
 }
 
 public extension SwikiV1ConstantsClient {
-    func anime(query: SwikiQuery = [:]) async throws -> SwikiAnimeConstants {
-        try await request(.get, action: "anime", query: query)
+    func anime() async throws -> SwikiAnimeConstants {
+        try await request(.get, action: "anime")
     }
 
-    func manga(query: SwikiQuery = [:]) async throws -> SwikiMangaConstants {
-        try await request(.get, action: "manga", query: query)
+    func manga() async throws -> SwikiMangaConstants {
+        try await request(.get, action: "manga")
     }
 
-    func userRate(query: SwikiQuery = [:]) async throws -> SwikiUserRateConstants {
-        try await request(.get, action: "user_rate", query: query)
+    func userRate() async throws -> SwikiUserRateConstants {
+        try await request(.get, action: "user_rate")
     }
 
-    func club(query: SwikiQuery = [:]) async throws -> SwikiClubConstants {
-        try await request(.get, action: "club", query: query)
+    func club() async throws -> SwikiClubConstants {
+        try await request(.get, action: "club")
     }
 
-    func smileys(query: SwikiQuery = [:]) async throws -> [SwikiSmileyConstant] {
-        try await request(.get, action: "smileys", query: query)
+    func smileys() async throws -> [SwikiSmileyConstant] {
+        try await request(.get, action: "smileys")
     }
 }

@@ -8,16 +8,15 @@ public struct SwikiV1WhoamiClient: Sendable {
         self.transport = transport
     }
 
-    public func get(query: SwikiQuery = [:]) async throws -> SwikiUserInfo {
+    public func get() async throws -> SwikiUserInfo {
         try await transport.request(
             version: .v1,
             method: .get,
-            path: "users/whoami",
-            query: query
+            path: "users/whoami"
         )
     }
 }
 
 public extension SwikiV1WhoamiClient {
-    func whoami(query: SwikiQuery = [:]) async throws -> SwikiUserInfo { try await get(query: query) }
+    func whoami() async throws -> SwikiUserInfo { try await get() }
 }

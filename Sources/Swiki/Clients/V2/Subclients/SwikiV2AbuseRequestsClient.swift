@@ -30,52 +30,46 @@ public struct SwikiV2AbuseRequestsClient: Sendable {
 }
 
 public extension SwikiV2AbuseRequestsClient {
-    func offtopic(commentId: String, query: SwikiQuery = [:]) async throws -> SwikiAbuseOfftopicResponse {
+    func offtopic(commentId: String) async throws -> SwikiAbuseOfftopicResponse {
         try await transport.request(
             version: .v2,
             method: .post,
             path: "abuse_requests",
             action: "offtopic",
-            query: query,
             body: OfftopicPayload(commentId: commentId)
         )
     }
 
     func convertReview(
         commentId: String? = nil,
-        topicId: String? = nil,
-        query: SwikiQuery = [:]
+        topicId: String? = nil
     ) async throws {
         try await transport.request(
             version: .v2,
             method: .post,
             path: "abuse_requests",
             action: "convert_review",
-            query: query,
             body: ActionPayload(commentId: commentId, topicId: topicId, reason: nil)
         )
     }
 
     func review(
         commentId: String? = nil,
-        topicId: String? = nil,
-        query: SwikiQuery = [:]
+        topicId: String? = nil
     ) async throws {
-        try await convertReview(commentId: commentId, topicId: topicId, query: query)
+        try await convertReview(commentId: commentId, topicId: topicId)
     }
 
     func abuse(
         commentId: String? = nil,
         topicId: String? = nil,
-        reason: String? = nil,
-        query: SwikiQuery = [:]
+        reason: String? = nil
     ) async throws {
         try await transport.request(
             version: .v2,
             method: .post,
             path: "abuse_requests",
             action: "abuse",
-            query: query,
             body: ActionPayload(commentId: commentId, topicId: topicId, reason: reason)
         )
     }
@@ -83,15 +77,13 @@ public extension SwikiV2AbuseRequestsClient {
     func spoiler(
         commentId: String? = nil,
         topicId: String? = nil,
-        reason: String? = nil,
-        query: SwikiQuery = [:]
+        reason: String? = nil
     ) async throws {
         try await transport.request(
             version: .v2,
             method: .post,
             path: "abuse_requests",
             action: "spoiler",
-            query: query,
             body: ActionPayload(commentId: commentId, topicId: topicId, reason: reason)
         )
     }

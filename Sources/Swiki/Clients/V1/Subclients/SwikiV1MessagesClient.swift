@@ -12,7 +12,7 @@ public struct SwikiV1MessagesClient: SwikiResourceSubclient {
 
 public extension SwikiV1MessagesClient {
     func get(query: SwikiV1MessagesQuery = .init()) async throws -> [SwikiMessage] { try await list(query: query.asSwikiQuery) }
-    func get(id: String, query: SwikiV1MessagesQuery = .init()) async throws -> SwikiMessage { try await resourceClient.get(id: id, query: query.asSwikiQuery) }
+    func get(id: String) async throws -> SwikiMessage { try await resourceClient.get(id: id) }
     func markRead(id: String, query: SwikiV1MessagesQuery = .init()) async throws {
         try await request(.post, id: id, action: "mark_read", query: query.asSwikiQuery)
     }
@@ -40,7 +40,7 @@ public extension SwikiV1MessagesClient {
     func update<Body: Encodable>(id: String, body: Body, query: SwikiV1MessagesQuery = .init()) async throws -> SwikiMessage {
         try await resourceClient.update(id: id, body: body, query: query.asSwikiQuery, method: .post)
     }
-    func delete(id: String, query: SwikiV1MessagesQuery = .init()) async throws {
-        try await resourceClient.delete(id: id, query: query.asSwikiQuery)
+    func delete(id: String) async throws {
+        try await resourceClient.delete(id: id)
     }
 }

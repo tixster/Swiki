@@ -11,13 +11,13 @@ public struct SwikiV1ReviewsClient: SwikiResourceSubclient {
 }
 
 public extension SwikiV1ReviewsClient {
-    func get(query: SwikiQuery = [:]) async throws -> [SwikiReview] { try await list(query: query) }
-    func get(id: String, query: SwikiQuery = [:]) async throws -> SwikiReview { try await resourceClient.get(id: id, query: query) }
+    func get() async throws -> [SwikiReview] { try await list() }
+    func get(id: String) async throws -> SwikiReview { try await resourceClient.get(id: id) }
     func create<Body: Encodable>(body: Body, query: SwikiQuery = [:]) async throws -> SwikiReview {
         try await resourceClient.create(body: body, query: query)
     }
     func update<Body: Encodable>(id: String, body: Body, query: SwikiQuery = [:]) async throws -> SwikiReview {
         try await resourceClient.update(id: id, body: body, query: query, method: .put)
     }
-    func delete(id: String, query: SwikiQuery = [:]) async throws { try await resourceClient.delete(id: id, query: query) }
+    func delete(id: String) async throws { try await resourceClient.delete(id: id) }
 }

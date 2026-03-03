@@ -15,7 +15,7 @@ public extension SwikiV1DialogsClient {
     func messages(fromNickname: String, query: SwikiQuery = [:]) async throws -> [SwikiMessage] {
         try await request(.get, id: fromNickname, query: query)
     }
-    func delete(nickname: String, query: SwikiQuery = [:]) async throws {
-        try await request(.delete, id: nickname, query: query)
+    func delete(nickname: String) async throws {
+        try await request(.delete, id: nickname)
     }
 }
