@@ -5,6 +5,7 @@
 [![SPDX](https://img.shields.io/badge/SPDX-MIT-blue.svg)](https://spdx.org/licenses/MIT.html)
 ![Platforms](https://img.shields.io/badge/platforms-iOS%2016%20%7C%20macOS%2013%20%7C%20tvOS%2016%20%7C%20watchOS%209%20%7C%20Linux-orange)
 ![API](https://img.shields.io/badge/API-V1%20%7C%20V2%20%7C%20GraphQL-orange?logo=graphql)
+[![CI](https://github.com/Tixster/Swiki/actions/workflows/ci.yml/badge.svg)](https://github.com/Tixster/Swiki/actions/workflows/ci.yml)
 
 ## Возможности
 - Разделение клиентов по версиям API: `swiki.v1`, `swiki.v2`, `swiki.graphQL`.
