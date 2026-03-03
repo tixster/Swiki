@@ -14,7 +14,7 @@ struct SwikiActor {
 
 actor SwikiLimiterActor {
 
-    // Ограничения согласно API: https://shikimori.one/api/doc
+    // Ограничения согласно API: https://shikimori.io/api/doc
     // API access is limited by 5rps and 90rpm
     private let rpsLimit: Int
     private let rpmLimit: Int

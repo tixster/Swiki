@@ -43,13 +43,16 @@ public enum SwikiAPIVersion: String, Sendable {
 final class SwikiHTTPTransport: Sendable {
     private let configuration: SwikiConfiguration
     private let session: URLSession
+    private let oauthClient: SwikiOAuthClient?
 
     init(
         configuration: SwikiConfiguration,
-        session: URLSession
+        session: URLSession,
+        oauthClient: SwikiOAuthClient? = nil
     ) {
         self.configuration = configuration
         self.session = session
+        self.oauthClient = oauthClient
     }
 
     func request<Response: Decodable>(
@@ -158,17 +161,56 @@ final class SwikiHTTPTransport: Sendable {
             throw SwikiClientError.invalidURL(path: fullPath)
         }
 
+        let initialRequest = try await buildRequest(url: url, method: method, bodyData: bodyData)
+        let (initialData, initialResponse) = try await perform(request: initialRequest)
+        guard let initialHTTPResponse = initialResponse as? HTTPURLResponse else {
+            throw SwikiClientError.invalidResponse
+        }
+
+        if initialHTTPResponse.statusCode == 401,
+           let oauthClient,
+           try await oauthClient.refreshTokenIfPossible() {
+            let retryRequest = try await buildRequest(url: url, method: method, bodyData: bodyData)
+            let (retryData, retryResponse) = try await perform(request: retryRequest)
+            guard let retryHTTPResponse = retryResponse as? HTTPURLResponse else {
+                throw SwikiClientError.invalidResponse
+            }
+
+            guard (200...299).contains(retryHTTPResponse.statusCode) else {
+                let responseBody = retryData.isEmpty ? nil : String(data: retryData, encoding: .utf8)
+                throw SwikiClientError.badStatusCode(retryHTTPResponse.statusCode, responseBody)
+            }
+
+            return (retryData, retryHTTPResponse)
+        }
+
+        guard (200...299).contains(initialHTTPResponse.statusCode) else {
+            let responseBody = initialData.isEmpty ? nil : String(data: initialData, encoding: .utf8)
+            throw SwikiClientError.badStatusCode(initialHTTPResponse.statusCode, responseBody)
+        }
+
+        return (initialData, initialHTTPResponse)
+    }
+
+    private func buildRequest(
+        url: URL,
+        method: SwikiHTTPMethod,
+        bodyData: Data?
+    ) async throws -> URLRequest {
         var request = URLRequest(url: url)
         request.httpMethod = method.rawValue
         request.setValue(configuration.userAgent, forHTTPHeaderField: "User-Agent")
         request.setValue("application/json", forHTTPHeaderField: "Accept")
 
-        if let accessToken = configuration.accessToken, !accessToken.isEmpty {
+        let oauthAccessToken = try await oauthClient?.validAccessToken()
+        let staticAccessToken = configuration.accessToken
+        if let accessToken = oauthAccessToken ?? staticAccessToken, !accessToken.isEmpty {
             request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
         }
 
-        if let clientId = configuration.clientId, !clientId.isEmpty {
-            request.setValue(clientId, forHTTPHeaderField: "X-Client-Id")
+        let headerClientId = configuration.clientId ?? configuration.oauthCredentials?.clientId
+        if let headerClientId, !headerClientId.isEmpty {
+            request.setValue(headerClientId, forHTTPHeaderField: "X-Client-Id")
         }
 
         for (key, value) in configuration.additionalHeaders {
@@ -180,26 +222,16 @@ final class SwikiHTTPTransport: Sendable {
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         }
 
-        let preparedRequest = request
-        let (data, response): (Data, URLResponse)
+        return request
+    }
+
+    private func perform(request: URLRequest) async throws -> (Data, URLResponse) {
         if configuration.isRpsRpmRestrictionsEnabled {
-            (data, response) = try await SwikiActor.shared.submit {
-                try await self.session.data(for: preparedRequest)
+            return try await SwikiActor.shared.submit {
+                try await self.session.data(for: request)
             }
-        } else {
-            (data, response) = try await session.data(for: preparedRequest)
         }
-
-        guard let httpResponse = response as? HTTPURLResponse else {
-            throw SwikiClientError.invalidResponse
-        }
-
-        guard (200...299).contains(httpResponse.statusCode) else {
-            let responseBody = data.isEmpty ? nil : String(data: data, encoding: .utf8)
-            throw SwikiClientError.badStatusCode(httpResponse.statusCode, responseBody)
-        }
-
-        return (data, httpResponse)
+        return try await session.data(for: request)
     }
 
     private func makePath(path: String, id: String?, action: String?) -> String {
