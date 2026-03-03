@@ -1,31 +1,22 @@
 import Foundation
-import SwikiModels
 
 /**
- Клиент Shikimori API
+ Клиент Shikimori API.
 
- - warning: Добавьте имя приложения Oauth2 в заголовок запросов User-Agent.
- - warning: Не имитируйте браузер.
- - warning: Ваш IP-адрес может быть заблокирован,
- если вы используете API без правильно настроенного заголовка User-Agent.
-
-
- # Notes: #
- 1. Когда вы запрашиваете N элементов из API с разбивкой на страницы,
- в большинстве случаев вы получите N + 1 результатов, если у API есть следующая страница.
-
- # Example #
- ```
-TODO: - добавить пример
- ```
+ Использование:
+ - `swiki.v1.<resource>` для методов API v1
+ - `swiki.v2.<resource>` для методов API v2
  */
-@SwikiActor
-final class Swiki: Sendable {
+public final class Swiki: Sendable {
+    public let v1: SwikiV1Client
+    public let v2: SwikiV2Client
 
-    func handleMetohd() async throws {
-        try await SwikiActor.shared.submit {
-
-        }
+    public init(
+        configuration: SwikiConfiguration,
+        session: URLSession = .shared
+    ) {
+        let transport = SwikiHTTPTransport(configuration: configuration, session: session)
+        self.v1 = SwikiV1Client(transport: transport)
+        self.v2 = SwikiV2Client(transport: transport)
     }
-
 }
