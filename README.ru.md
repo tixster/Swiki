@@ -1,5 +1,5 @@
 # Swiki
-Typed Swift client for the Shikimori API (`v1`, `v2`, `GraphQL`) with OAuth2 support, automatic token refresh, and GraphQL operation generation.
+Типизированный Swift-клиент для Shikimori API (`v1`, `v2`, `GraphQL`) с поддержкой OAuth2, авто-refresh токена и генерацией GraphQL операций.
 
 <p align="center">
   <a href="README.md">
@@ -16,32 +16,32 @@ Typed Swift client for the Shikimori API (`v1`, `v2`, `GraphQL`) with OAuth2 sup
 ![API](https://img.shields.io/badge/API-V1%20%7C%20V2%20%7C%20GraphQL-orange?logo=shikimori)
 [![CI](https://github.com/Tixster/Swiki/actions/workflows/ci.yml/badge.svg)](https://github.com/Tixster/Swiki/actions/workflows/ci.yml)
 
-## Features
-- API versioned clients: `swiki.v1`, `swiki.v2`, `swiki.graphQL`.
-- Dedicated subclients per resource (`users`, `animes`, `userRates`, `topicIgnore`, etc.).
-- Unified CRUD interface (`list`, `get`, `create`, `update`, `delete`) plus resource-specific methods.
+## Возможности
+- Разделение клиентов по версиям API: `swiki.v1`, `swiki.v2`, `swiki.graphQL`.
+- Отдельные саб-клиенты на каждый ресурс (`users`, `animes`, `userRates`, `topicIgnore` и т.д.).
+- Единый CRUD-интерфейс (`list`, `get`, `create`, `update`, `delete`) + ресурсные методы.
 - OAuth2:
-  - exchange `authorization_code` for a token,
-  - manual and automatic token refresh,
-  - `ASWebAuthenticationSession` on Apple platforms.
-- Token storage via `SwikiOAuthTokenStore`:
-  - Keychain by default on Apple platforms,
-  - custom storage for other platforms.
+  - обмен `authorization_code` на токен,
+  - refresh токена вручную и автоматически,
+  - `ASWebAuthenticationSession` для Apple платформ.
+- Хранилище токенов через `SwikiOAuthTokenStore`:
+  - дефолтно Keychain на Apple-платформах,
+  - кастомное хранилище для остальных платформ.
 - GraphQL:
-  - raw queries,
-  - typed operations (`SwikiGraphQLOperation`),
-  - generate operations from `.graphql` files (one `.swift` file per operation).
+  - raw запросы,
+  - типизированные операции (`SwikiGraphQLOperation`),
+  - генерация операций из `.graphql` файлов (каждая операция в отдельный `.swift` файл).
 
-## Requirements
+## Требования
 - Swift `6.2+`
-- Platforms:
+- Платформы:
   - iOS 16+
   - macOS 13+
   - tvOS 16+
   - watchOS 9+
   - Linux
 
-## Installation (Swift Package Manager)
+## Установка (Swift Package Manager)
 ```swift
 dependencies: [
     .package(url: "https://github.com/Tixster/Swiki.git", branch: "main")
@@ -59,12 +59,12 @@ targets: [
 ]
 ```
 
-If you only need the models:
+Если нужны только модели:
 ```swift
 .product(name: "SwikiModels", package: "Swiki")
 ```
 
-## Quick Start
+## Быстрый старт
 ```swift
 import Swiki
 
@@ -80,19 +80,19 @@ let users = try await swiki.v1.users.list(query: [
 ])
 ```
 
-## Configuration
+## Конфигурация
 `SwikiConfiguration`:
-- `userAgent` (required)
-- `clientId` / `accessToken` (static authorization)
+- `userAgent` (обязателен)
+- `clientId` / `accessToken` (статическая авторизация)
 - `oauthCredentials` + `oauthTokenStore` (OAuth2)
-- `oauthBaseURL` (default: `https://shikimori.io`)
-- `graphQLURL` (default: `https://shikimori.io/api/graphql`)
-- `baseURL` (default: `https://shikimori.io/api`)
-- `apiLogger` (`swift-log` `Logger` for API request logging)
+- `oauthBaseURL` (по умолчанию `https://shikimori.io`)
+- `graphQLURL` (по умолчанию `https://shikimori.io/api/graphql`)
+- `baseURL` (по умолчанию `https://shikimori.io/api`)
+- `apiLogger` (`swift-log` `Logger` для логирования API запросов)
 - `additionalHeaders`
-- `isRpsRpmRestrictionsEnabled` (`true` by default)
+- `isRpsRpmRestrictionsEnabled` (`true` по умолчанию)
 
-### API Logging (`swift-log`)
+### Логирование API (`swift-log`)
 ```swift
 import Swiki
 import Logging
@@ -107,10 +107,10 @@ let config = SwikiConfiguration(
 )
 ```
 
-Log metadata includes: `kind`, `method`, `url`, `attempt`, `status`, `duration_ms`, request/response body size, and error text.
+В логах добавляются метаданные запроса: `kind`, `method`, `url`, `attempt`, `status`, `duration_ms`, размер request/response body и текст ошибки.
 
 ## OAuth2
-### 1) Initialization
+### 1) Инициализация
 ```swift
 import Swiki
 
@@ -128,7 +128,7 @@ let config = SwikiConfiguration(
 let swiki = Swiki(configuration: config)
 ```
 
-### 2) Apple platforms: `ASWebAuthenticationSession`
+### 2) Apple платформы: `ASWebAuthenticationSession`
 ```swift
 #if canImport(AuthenticationServices)
 let token = try await swiki.oauth?.authorizeWithWebAuthenticationSession(
@@ -137,26 +137,26 @@ let token = try await swiki.oauth?.authorizeWithWebAuthenticationSession(
 #endif
 ```
 
-### 3) Universal flow (manual)
+### 3) Универсальный flow (вручную)
 ```swift
-guard let oauth = swiki.oauth else { fatalError("OAuth is not configured") }
+guard let oauth = swiki.oauth else { fatalError("OAuth не настроен") }
 let url = try oauth.authorizationURL(scopes: [.userRates, .comments])
-// Open url in a browser and get `code` from your redirect URI
+// Открываете url в браузере, получаете `code` из redirect URI
 let token = try await oauth.exchangeCode("<authorization_code>")
 ```
 
-### 4) Token refresh
-- Automatically:
-  - on `401`, the request is retried after `refreshTokenIfPossible()`;
-  - when a token expires, `validAccessToken()` attempts refresh.
-- Manually:
+### 4) Refresh токена
+- Автоматически:
+  - при `401` запрос будет повторён после `refreshTokenIfPossible()`;
+  - при истечении токена `validAccessToken()` попробует refresh.
+- Вручную:
 ```swift
 let newToken = try await swiki.oauth?.refreshToken()
 ```
 
-### 5) Token storage
-- Apple platforms: `SwikiKeychainOAuthTokenStore` is used by default.
-- Other platforms: provide your own `SwikiOAuthTokenStore` implementation.
+### 5) Хранилище токенов
+- Apple-платформы: по умолчанию используется `SwikiKeychainOAuthTokenStore`.
+- Другие платформы: передайте свою реализацию `SwikiOAuthTokenStore`.
 
 ```swift
 public struct CustomTokenStore: SwikiOAuthTokenStore {
@@ -167,31 +167,31 @@ public struct CustomTokenStore: SwikiOAuthTokenStore {
     }
 
     public func saveToken(_ token: SwikiOAuthToken?) async throws {
-        // persist token
+        // сохранить token
     }
 }
 ```
 
 ## REST API
-### Structure
+### Структура
 ```swift
 swiki.v1.<resource>
 swiki.v2.<resource>
 ```
 
-### Basic subclient methods
-Most subclients support:
+### Базовые методы саб-клиента
+Большинство саб-клиентов поддерживает:
 - `list(query:)`
 - `get(id:query:)`
 - `create(body:query:)`
 - `update(id:body:query:method:)`
 - `delete(id:query:)`
-- `request(...)` for arbitrary methods/actions
+- `request(...)` для произвольного метода/экшена
 
-### Typed Queries (v1/v2)
-All `query` parameters in `v1/v2` subclients accept `SwikiQueryConvertible`:
-- plain dictionary `SwikiQuery`,
-- typed query models (`SwikiV1AnimesQuery`, `SwikiV1UsersQuery`, `SwikiV1UserRatesQuery`, `SwikiV1TopicsQuery`, `SwikiV1CommentsQuery`, `SwikiV2UserRatesQuery`, etc.).
+### Типизированные Query (v1/v2)
+Все `query`-параметры в `v1/v2` саб-клиентах принимают `SwikiQueryConvertible`:
+- обычный словарь `SwikiQuery`,
+- типизированные query-модели (`SwikiV1AnimesQuery`, `SwikiV1UsersQuery`, `SwikiV1UserRatesQuery`, `SwikiV1TopicsQuery`, `SwikiV1CommentsQuery`, `SwikiV2UserRatesQuery` и др.).
 
 ```swift
 let animes = try await swiki.v1.animes.get(
@@ -215,13 +215,13 @@ let rates = try await swiki.v2.userRates.get(
 )
 ```
 
-### V1 resources
+### V1 ресурсы
 `achievements`, `animes`, `appears`, `bans`, `calendars`, `characters`, `clubs`, `collections`, `comments`, `constants`, `dialogs`, `favorites`, `forums`, `friends`, `genres`, `ignores`, `mangas`, `messages`, `people`, `publishers`, `ranobe`, `reviews`, `stats`, `studios`, `styles`, `topicIgnores`, `topics`, `userImages`, `userRates`, `userRatesLogs`, `users`, `videos`, `whoami`.
 
-### V2 resources
+### V2 ресурсы
 `abuseRequests`, `episodeNotifications`, `topicIgnore`, `userIgnore`, `userRates`.
 
-### REST examples
+### Примеры REST
 ```swift
 // v1 users
 let user = try await swiki.v1.users.get(id: "1")
@@ -266,7 +266,7 @@ let response: SearchResponse = try await swiki.graphQL.execute(
 )
 ```
 
-### 2) Typed operations
+### 2) Типизированные операции
 ```swift
 import Swiki
 import SwikiModels
@@ -287,10 +287,10 @@ let data = try await swiki.graphQL.execute(operation: operation)
 print(data.userRates.count)
 ```
 
-## GraphQL Operation Generation
-Operations are stored in `GraphQLOperations/*.graphql`.
+## Генерация GraphQL операций
+Операции хранятся в `GraphQLOperations/*.graphql`.
 
-Generate with:
+Генерация:
 ```bash
 swift run SwikiGraphQLOperationGenerator \
   --schema Sources/SwikiModels/schema.graphql \
@@ -298,44 +298,44 @@ swift run SwikiGraphQLOperationGenerator \
   --output Sources/SwikiModels/GraphQL
 ```
 
-After generation:
+После генерации:
 - `Sources/SwikiModels/GraphQL/SwikiGraphQLOperations.generated.swift` (namespace)
-- `Sources/SwikiModels/GraphQL/SwikiGraphQLOperations+<OperationName>.generated.swift` (one file per operation)
+- `Sources/SwikiModels/GraphQL/SwikiGraphQLOperations+<OperationName>.generated.swift` (один файл на операцию)
 
-Current default operations:
+Текущие дефолтные операции:
 - `DefaultAnimesOperation`
 - `DefaultMangasOperation`
 - `DefaultCharactersOperation`
 - `DefaultPeopleOperation`
 - `DefaultUserRatesOperation`
 
-## Model Typing
-- All REST models are in `SwikiModels`.
-- GraphQL generator is configured to reuse parts of `SwikiModels`:
-  - enum types (`SwikiAnimeKind`, `SwikiUserRateStatus`, etc.),
-  - `SwikiIncompleteDate` for `IncompleteDate`.
+## Типизация моделей
+- Все REST модели находятся в `SwikiModels`.
+- Для GraphQL в генераторе подключено переиспользование части `SwikiModels`:
+  - enum-типы (`SwikiAnimeKind`, `SwikiUserRateStatus`, и т.д.),
+  - `SwikiIncompleteDate` для `IncompleteDate`.
 
-## Limits and Headers
-- Built-in request limiter by default: `5 RPS` and `90 RPM` (can be disabled with `isRpsRpmRestrictionsEnabled: false`).
-- Added headers:
-  - `User-Agent` (from configuration),
-  - `Authorization: Bearer ...` (if token is available),
-  - `X-Client-Id` (if `clientId`/`oauthCredentials.clientId` is set),
-  - any `additionalHeaders`.
+## Лимиты и заголовки
+- Встроенный лимитер запросов по умолчанию: `5 RPS` и `90 RPM` (можно отключить `isRpsRpmRestrictionsEnabled: false`).
+- Добавляются заголовки:
+  - `User-Agent` (из конфигурации),
+  - `Authorization: Bearer ...` (если есть токен),
+  - `X-Client-Id` (если задан `clientId`/`oauthCredentials.clientId`),
+  - любые `additionalHeaders`.
 
-## Errors
-- REST/GraphQL transport: `SwikiClientError`
+## Ошибки
+- REST/GraphQL транспорт: `SwikiClientError`
 - OAuth: `SwikiOAuthError`
 - Keychain store: `SwikiKeychainOAuthTokenStoreError`
 
-## Project Structure
-- `Sources/Swiki` - clients, transport, OAuth, configuration
-- `Sources/SwikiModels` - REST/GraphQL models
-- `Sources/SwikiGraphQLOperationGenerator` - GraphQL operation generator CLI
-- `GraphQLOperations` - source `.graphql` operations
-- `Tests/SwikiTests` - tests
+## Структура проекта
+- `Sources/Swiki` — клиенты, транспорт, OAuth, конфигурация
+- `Sources/SwikiModels` — модели REST/GraphQL
+- `Sources/SwikiGraphQLOperationGenerator` — CLI генератор GraphQL операций
+- `GraphQLOperations` — исходные `.graphql` операции
+- `Tests/SwikiTests` — тесты
 
-## Useful Commands
+## Полезные команды
 ```bash
 swift build
 swift test
@@ -343,16 +343,16 @@ swift run SwikiGraphQLOperationGenerator --help
 ```
 
 ## Example SwiftUI Project
-A ready-to-run example app is available in:
+Готовый пример приложения находится в:
 - `Examples/SwikiExampleApp`
 
-What the example demonstrates:
-- OAuth authorization (`ASWebAuthenticationSession`)
-- REST requests (`v1/users/whoami`, `v1/animes`)
-- Typed GraphQL operation
+Что показывает пример:
+- OAuth авторизацию (`ASWebAuthenticationSession`)
+- REST запросы (`v1/users/whoami`, `v1/animes`)
+- GraphQL типизированную операцию
 
-Detailed run instructions:
+Подробная инструкция запуска:
 - `Examples/SwikiExampleApp/README.md`
 
-## License
-MIT. See `LICENSE`.
+## Лицензия
+MIT. См. файл `LICENSE`.
