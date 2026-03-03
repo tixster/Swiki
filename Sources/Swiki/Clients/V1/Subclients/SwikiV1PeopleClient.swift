@@ -11,6 +11,6 @@ public struct SwikiV1PeopleClient: SwikiResourceSubclient {
 }
 
 public extension SwikiV1PeopleClient {
-    func get(query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws -> [SwikiPerson] { try await list(query: query) }
-    func get(id: String, query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws -> SwikiPerson { try await resourceClient.get(id: id, query: query) }
+    func get(query: SwikiV1PeopleQuery) async throws -> [SwikiPerson] { try await list(query: query.asSwikiQuery) }
+    func get(id: String, query: SwikiQuery = [:]) async throws -> SwikiPerson { try await resourceClient.get(id: id, query: query) }
 }

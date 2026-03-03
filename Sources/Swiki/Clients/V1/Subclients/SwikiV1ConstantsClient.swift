@@ -11,23 +11,23 @@ public struct SwikiV1ConstantsClient: SwikiResourceSubclient {
 }
 
 public extension SwikiV1ConstantsClient {
-    func anime(query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws -> SwikiAnimeConstants {
+    func anime(query: SwikiQuery = [:]) async throws -> SwikiAnimeConstants {
         try await request(.get, action: "anime", query: query)
     }
 
-    func manga(query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws -> SwikiMangaConstants {
+    func manga(query: SwikiQuery = [:]) async throws -> SwikiMangaConstants {
         try await request(.get, action: "manga", query: query)
     }
 
-    func userRate(query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws -> SwikiUserRateConstants {
+    func userRate(query: SwikiQuery = [:]) async throws -> SwikiUserRateConstants {
         try await request(.get, action: "user_rate", query: query)
     }
 
-    func club(query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws -> SwikiClubConstants {
+    func club(query: SwikiQuery = [:]) async throws -> SwikiClubConstants {
         try await request(.get, action: "club", query: query)
     }
 
-    func smileys(query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws -> [SwikiSmileyConstant] {
+    func smileys(query: SwikiQuery = [:]) async throws -> [SwikiSmileyConstant] {
         try await request(.get, action: "smileys", query: query)
     }
 }

@@ -10,11 +10,11 @@ public struct SwikiV2TopicIgnoreClient: Sendable {
 }
 
 public extension SwikiV2TopicIgnoreClient {
-    func create(topicId: String, query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws -> SwikiTopicIgnore {
+    func create(topicId: String, query: SwikiQuery = [:]) async throws -> SwikiTopicIgnore {
         try await transport.request(version: .v2, method: .post, path: "topics", id: topicId, action: "ignore", query: query)
     }
 
-    func delete(topicId: String, query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws -> SwikiTopicIgnore {
+    func delete(topicId: String, query: SwikiQuery = [:]) async throws -> SwikiTopicIgnore {
         try await transport.request(version: .v2, method: .delete, path: "topics", id: topicId, action: "ignore", query: query)
     }
 }

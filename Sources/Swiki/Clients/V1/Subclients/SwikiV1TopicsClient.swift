@@ -11,16 +11,16 @@ public struct SwikiV1TopicsClient: SwikiResourceSubclient {
 }
 
 public extension SwikiV1TopicsClient {
-    func get(query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws -> [SwikiTopic] { try await list(query: query) }
-    func updates(query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws -> [SwikiExtendedLightTopic] {
-        try await request(.get, action: "updates", query: query)
+    func get(query: SwikiV1TopicsQuery = .init()) async throws -> [SwikiTopic] { try await list(query: query.asSwikiQuery) }
+    func updates(query: SwikiV1TopicsQuery = .init()) async throws -> [SwikiExtendedLightTopic] {
+        try await request(.get, action: "updates", query: query.asSwikiQuery)
     }
-    func get(id: String, query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws -> SwikiTopic { try await resourceClient.get(id: id, query: query) }
-    func create<Body: Encodable>(body: Body, query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws -> SwikiTopic {
-        try await resourceClient.create(body: body, query: query)
+    func get(id: String, query: SwikiV1TopicsQuery = .init()) async throws -> SwikiTopic { try await resourceClient.get(id: id, query: query.asSwikiQuery) }
+    func create<Body: Encodable>(body: Body, query: SwikiV1TopicsQuery = .init()) async throws -> SwikiTopic {
+        try await resourceClient.create(body: body, query: query.asSwikiQuery)
     }
-    func update<Body: Encodable>(id: String, body: Body, query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws -> SwikiTopic {
-        try await resourceClient.update(id: id, body: body, query: query, method: .put)
+    func update<Body: Encodable>(id: String, body: Body, query: SwikiV1TopicsQuery = .init()) async throws -> SwikiTopic {
+        try await resourceClient.update(id: id, body: body, query: query.asSwikiQuery, method: .put)
     }
-    func delete(id: String, query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws { try await resourceClient.delete(id: id, query: query) }
+    func delete(id: String, query: SwikiV1TopicsQuery = .init()) async throws { try await resourceClient.delete(id: id, query: query.asSwikiQuery) }
 }

@@ -30,7 +30,7 @@ public struct SwikiV2AbuseRequestsClient: Sendable {
 }
 
 public extension SwikiV2AbuseRequestsClient {
-    func offtopic(commentId: String, query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws -> SwikiAbuseOfftopicResponse {
+    func offtopic(commentId: String, query: SwikiQuery = [:]) async throws -> SwikiAbuseOfftopicResponse {
         try await transport.request(
             version: .v2,
             method: .post,
@@ -44,8 +44,8 @@ public extension SwikiV2AbuseRequestsClient {
     func convertReview(
         commentId: String? = nil,
         topicId: String? = nil,
-        query: some SwikiQueryConvertible = [:] as SwikiQuery
-    ) async throws -> SwikiEmptyResponse {
+        query: SwikiQuery = [:]
+    ) async throws {
         try await transport.request(
             version: .v2,
             method: .post,
@@ -59,8 +59,8 @@ public extension SwikiV2AbuseRequestsClient {
     func review(
         commentId: String? = nil,
         topicId: String? = nil,
-        query: some SwikiQueryConvertible = [:] as SwikiQuery
-    ) async throws -> SwikiEmptyResponse {
+        query: SwikiQuery = [:]
+    ) async throws {
         try await convertReview(commentId: commentId, topicId: topicId, query: query)
     }
 
@@ -68,8 +68,8 @@ public extension SwikiV2AbuseRequestsClient {
         commentId: String? = nil,
         topicId: String? = nil,
         reason: String? = nil,
-        query: some SwikiQueryConvertible = [:] as SwikiQuery
-    ) async throws -> SwikiEmptyResponse {
+        query: SwikiQuery = [:]
+    ) async throws {
         try await transport.request(
             version: .v2,
             method: .post,
@@ -84,8 +84,8 @@ public extension SwikiV2AbuseRequestsClient {
         commentId: String? = nil,
         topicId: String? = nil,
         reason: String? = nil,
-        query: some SwikiQueryConvertible = [:] as SwikiQuery
-    ) async throws -> SwikiEmptyResponse {
+        query: SwikiQuery = [:]
+    ) async throws {
         try await transport.request(
             version: .v2,
             method: .post,

@@ -51,7 +51,7 @@ public extension SwikiV1FavoritesClient {
     func create(
         linkedType: LinkedType,
         linkedId: String,
-        query: some SwikiQueryConvertible = [:] as SwikiQuery
+        query: SwikiQuery = [:]
     ) async throws -> SwikiNoticeResponse {
         let action = [linkedId, linkedType.kindRawValue].compactMap { value in
             guard let value, !value.isEmpty else { return nil }
@@ -70,7 +70,7 @@ public extension SwikiV1FavoritesClient {
     func delete(
         linkedType: LinkedType,
         linkedId: String,
-        query: some SwikiQueryConvertible = [:] as SwikiQuery
+        query: SwikiQuery = [:]
     ) async throws -> SwikiNoticeResponse {
         try await transport.request(
             version: .v1,
@@ -82,11 +82,11 @@ public extension SwikiV1FavoritesClient {
         )
     }
 
-    func reorder(id: String, query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws {
+    func reorder(id: String, query: SwikiQuery = [:]) async throws {
         try await transport.request(version: .v1, method: .post, path: "favorites", id: id, action: "reorder", query: query)
     }
 
-    func reorder<Body: Encodable>(id: String, body: Body, query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws {
+    func reorder<Body: Encodable>(id: String, body: Body, query: SwikiQuery = [:]) async throws {
         try await transport.request(
             version: .v1,
             method: .post,

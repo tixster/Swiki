@@ -11,5 +11,5 @@ public struct SwikiV1CalendarsClient: SwikiResourceSubclient {
 }
 
 public extension SwikiV1CalendarsClient {
-    func get(query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws -> [SwikiCalendar] { try await list(query: query) }
+    func get(query: SwikiQuery = [:]) async throws -> [SwikiCalendar] { try await list(query: query) }
 }

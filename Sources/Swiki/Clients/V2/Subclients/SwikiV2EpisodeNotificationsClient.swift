@@ -40,8 +40,8 @@ public struct SwikiV2EpisodeNotificationsClient: Sendable {
 }
 
 public extension SwikiV2EpisodeNotificationsClient {
-    func create<Body: Encodable>(body: Body, query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws -> SwikiEpisodeNotification {
-        try await transport.request(version: .v2, method: .post, path: "episode_notifications", query: query, body: body)
+    func create<Body: Encodable>(body: Body, query: SwikiV2EpisodeNotificationsQuery = .init()) async throws -> SwikiEpisodeNotification {
+        try await transport.request(version: .v2, method: .post, path: "episode_notifications", query: query.asSwikiQuery, body: body)
     }
 
     func create(
@@ -53,7 +53,7 @@ public extension SwikiV2EpisodeNotificationsClient {
         isSubtitles: Bool? = nil,
         isFandub: Bool? = nil,
         isAnime365: Bool? = nil,
-        query: some SwikiQueryConvertible = [:] as SwikiQuery
+        query: SwikiV2EpisodeNotificationsQuery = .init()
     ) async throws -> SwikiEpisodeNotification {
         let payload = CreatePayload(
             episodeNotification: EpisodeNotificationPayload(

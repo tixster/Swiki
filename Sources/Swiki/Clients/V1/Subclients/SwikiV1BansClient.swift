@@ -11,5 +11,5 @@ public struct SwikiV1BansClient: SwikiResourceSubclient {
 }
 
 public extension SwikiV1BansClient {
-    func get(query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws -> [SwikiBan] { try await list(query: query) }
+    func get(query: SwikiQuery = [:]) async throws -> [SwikiBan] { try await list(query: query) }
 }

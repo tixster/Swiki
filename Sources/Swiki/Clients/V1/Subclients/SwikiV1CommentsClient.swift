@@ -11,13 +11,13 @@ public struct SwikiV1CommentsClient: SwikiResourceSubclient {
 }
 
 public extension SwikiV1CommentsClient {
-    func get(query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws -> [SwikiComment] { try await list(query: query) }
-    func get(id: String, query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws -> SwikiComment { try await resourceClient.get(id: id, query: query) }
-    func create<Body: Encodable>(body: Body, query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws -> SwikiComment {
-        try await resourceClient.create(body: body, query: query)
+    func get(query: SwikiV1CommentsQuery = .init()) async throws -> [SwikiComment] { try await list(query: query.asSwikiQuery) }
+    func get(id: String, query: SwikiV1CommentsQuery = .init()) async throws -> SwikiComment { try await resourceClient.get(id: id, query: query.asSwikiQuery) }
+    func create<Body: Encodable>(body: Body, query: SwikiV1CommentsQuery = .init()) async throws -> SwikiComment {
+        try await resourceClient.create(body: body, query: query.asSwikiQuery)
     }
-    func update<Body: Encodable>(id: String, body: Body, query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws -> SwikiComment {
-        try await resourceClient.update(id: id, body: body, query: query, method: .put)
+    func update<Body: Encodable>(id: String, body: Body, query: SwikiV1CommentsQuery = .init()) async throws -> SwikiComment {
+        try await resourceClient.update(id: id, body: body, query: query.asSwikiQuery, method: .put)
     }
-    func delete(id: String, query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws { try await resourceClient.delete(id: id, query: query) }
+    func delete(id: String, query: SwikiV1CommentsQuery = .init()) async throws { try await resourceClient.delete(id: id, query: query.asSwikiQuery) }
 }

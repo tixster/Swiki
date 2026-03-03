@@ -10,15 +10,15 @@ public struct SwikiV1AppearsClient: Sendable {
 }
 
 public extension SwikiV1AppearsClient {
-    func create(ids: [String], query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws {
-        var merged = query.asSwikiQuery
+    func create(ids: [String], query: SwikiQuery = [:]) async throws {
+        var merged = query
         if !ids.isEmpty {
             merged["ids"] = ids.joined(separator: ",")
         }
         try await transport.request(version: .v1, method: .post, path: "appears", query: merged)
     }
 
-    func markRead(ids: [String], query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws {
+    func markRead(ids: [String], query: SwikiQuery = [:]) async throws {
         try await create(ids: ids, query: query)
     }
 }

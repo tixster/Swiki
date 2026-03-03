@@ -11,5 +11,5 @@ public struct SwikiV1UserRatesLogsClient: SwikiResourceSubclient {
 }
 
 public extension SwikiV1UserRatesLogsClient {
-    func get(query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws -> [SwikiUserRateLog] { try await list(query: query) }
+    func get(query: SwikiQuery = [:]) async throws -> [SwikiUserRateLog] { try await list(query: query) }
 }

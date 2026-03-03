@@ -10,11 +10,11 @@ public struct SwikiV1IgnoresClient: Sendable {
 }
 
 public extension SwikiV1IgnoresClient {
-    func create(id: String, query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws -> SwikiNoticeResponse {
+    func create(id: String, query: SwikiQuery = [:]) async throws -> SwikiNoticeResponse {
         try await transport.request(version: .v1, method: .post, path: "ignores", id: id, query: query)
     }
 
-    func delete(id: String, query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws -> SwikiNoticeResponse {
+    func delete(id: String, query: SwikiQuery = [:]) async throws -> SwikiNoticeResponse {
         try await transport.request(version: .v1, method: .delete, path: "ignores", id: id, query: query)
     }
 }

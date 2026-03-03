@@ -11,32 +11,32 @@ public struct SwikiV2UserRatesClient: SwikiResourceSubclient {
 }
 
 public extension SwikiV2UserRatesClient {
-    func get(query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws -> [SwikiUserRate] {
-        try await list(query: query)
+    func get(query: SwikiV2UserRatesQuery = .init()) async throws -> [SwikiUserRate] {
+        try await list(query: query.asSwikiQuery)
     }
 
-    func get(id: String, query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws -> SwikiUserRate {
-        try await resourceClient.get(id: id, query: query)
+    func get(id: String, query: SwikiV2UserRatesQuery = .init()) async throws -> SwikiUserRate {
+        try await resourceClient.get(id: id, query: query.asSwikiQuery)
     }
 
-    func create<Body: Encodable>(body: Body, query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws -> SwikiUserRate {
-        try await resourceClient.create(body: body, query: query)
+    func create<Body: Encodable>(body: Body, query: SwikiV2UserRatesQuery = .init()) async throws -> SwikiUserRate {
+        try await resourceClient.create(body: body, query: query.asSwikiQuery)
     }
 
     func update<Body: Encodable>(
         id: String,
         body: Body,
-        query: some SwikiQueryConvertible = [:] as SwikiQuery,
+        query: SwikiV2UserRatesQuery = .init(),
         method: SwikiHTTPMethod = .put
     ) async throws -> SwikiUserRate {
-        try await resourceClient.update(id: id, body: body, query: query, method: method)
+        try await resourceClient.update(id: id, body: body, query: query.asSwikiQuery, method: method)
     }
 
-    func delete(id: String, query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws {
-        try await resourceClient.delete(id: id, query: query)
+    func delete(id: String, query: SwikiV2UserRatesQuery = .init()) async throws {
+        try await resourceClient.delete(id: id, query: query.asSwikiQuery)
     }
 
-    func increment(id: String, query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws -> SwikiUserRate {
-        try await request(.get, id: id, action: "increment", query: query)
+    func increment(id: String, query: SwikiV2UserRatesQuery = .init()) async throws -> SwikiUserRate {
+        try await request(.get, id: id, action: "increment", query: query.asSwikiQuery)
     }
 }

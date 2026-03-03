@@ -13,14 +13,14 @@ public struct SwikiV1VideosClient: SwikiResourceSubclient {
 }
 
 public extension SwikiV1VideosClient {
-    func get(query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws -> [SwikiVideo] { try await list(query: query) }
-    func get(animeId: String, query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws -> [SwikiVideo] {
+    func get(query: SwikiQuery = [:]) async throws -> [SwikiVideo] { try await list(query: query) }
+    func get(animeId: String, query: SwikiQuery = [:]) async throws -> [SwikiVideo] {
         try await transport.request(version: .v1, method: .get, path: "animes/\(animeId)/videos", query: query)
     }
     func create<Body: Encodable>(
         animeId: String,
         body: Body,
-        query: some SwikiQueryConvertible = [:] as SwikiQuery
+        query: SwikiQuery = [:]
     ) async throws -> SwikiVideo {
         try await transport.request(
             version: .v1,
@@ -30,7 +30,7 @@ public extension SwikiV1VideosClient {
             body: body
         )
     }
-    func delete(animeId: String, videoId: String, query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws {
+    func delete(animeId: String, videoId: String, query: SwikiQuery = [:]) async throws {
         try await transport.request(
             version: .v1,
             method: .delete,

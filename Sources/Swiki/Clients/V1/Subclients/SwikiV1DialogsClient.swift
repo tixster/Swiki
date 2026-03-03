@@ -11,11 +11,11 @@ public struct SwikiV1DialogsClient: SwikiResourceSubclient {
 }
 
 public extension SwikiV1DialogsClient {
-    func get(query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws -> [SwikiDialog] { try await list(query: query) }
-    func messages(fromNickname: String, query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws -> [SwikiMessage] {
+    func get(query: SwikiQuery = [:]) async throws -> [SwikiDialog] { try await list(query: query) }
+    func messages(fromNickname: String, query: SwikiQuery = [:]) async throws -> [SwikiMessage] {
         try await request(.get, id: fromNickname, query: query)
     }
-    func delete(nickname: String, query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws {
+    func delete(nickname: String, query: SwikiQuery = [:]) async throws {
         try await request(.delete, id: nickname, query: query)
     }
 }
