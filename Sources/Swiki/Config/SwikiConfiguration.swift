@@ -1,4 +1,5 @@
 import Foundation
+import Logging
 
 public struct SwikiConfiguration: Sendable {
     /// OAuth2 Credentials
@@ -11,6 +12,7 @@ public struct SwikiConfiguration: Sendable {
     public let oauthBaseURL: URL
     public let graphQLURL: URL
     public let userAgent: String
+    public let apiLogger: Logger?
     public let isRpsRpmRestrictionsEnabled: Bool
     public let baseURL: URL
     public let additionalHeaders: [String: String]
@@ -23,6 +25,7 @@ public struct SwikiConfiguration: Sendable {
         oauthBaseURL: URL = SwikiConfig.baseDomen,
         graphQLURL: URL = SwikiConfig.baseDomen.appendingPathComponent("api").appendingPathComponent("graphql"),
         userAgent: String,
+        apiLogger: Logger? = nil,
         isRpsRpmRestrictionsEnabled: Bool = true,
         baseURL: URL = SwikiConfig.baseDomen.appendingPathComponent("api"),
         additionalHeaders: [String: String] = [:]
@@ -34,6 +37,7 @@ public struct SwikiConfiguration: Sendable {
         self.oauthBaseURL = oauthBaseURL
         self.graphQLURL = graphQLURL
         self.userAgent = userAgent
+        self.apiLogger = apiLogger
         self.isRpsRpmRestrictionsEnabled = isRpsRpmRestrictionsEnabled
         self.baseURL = baseURL
         self.additionalHeaders = additionalHeaders

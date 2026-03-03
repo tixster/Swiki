@@ -16,7 +16,7 @@ public extension SwikiV1ClubsClient {
     func update<Body: Encodable>(id: String, body: Body, query: SwikiQuery = [:]) async throws -> SwikiClub {
         try await resourceClient.update(id: id, body: body, query: query, method: .put)
     }
-    func animes(id: String, query: SwikiQuery = [:]) async throws -> [SwikiAnimeV1] {
+    func animes(id: String, query: SwikiQuery = [:]) async throws -> [SwikiAnimeV1Preview] {
         try await request(.get, id: id, action: "animes", query: query)
     }
     func mangas(id: String, query: SwikiQuery = [:]) async throws -> [SwikiManga] {

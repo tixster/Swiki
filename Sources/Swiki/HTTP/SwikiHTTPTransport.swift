@@ -2,6 +2,7 @@ import Foundation
 #if canImport(FoundationNetworking)
 import FoundationNetworking
 #endif
+import Logging
 import SwikiModels
 
 public typealias SwikiQuery = [String: String?]
@@ -45,11 +46,16 @@ public enum SwikiClientError: Error, LocalizedError, Sendable {
 }
 
 public enum SwikiAPIVersion: String, Sendable {
-    case v1 = "1.0"
-    case v2 = "2.0"
+    case v1 = ""
+    case v2 = "v2"
 }
 
 final class SwikiHTTPTransport: Sendable {
+    private enum RequestKind: Sendable {
+        case rest(version: SwikiAPIVersion, path: String)
+        case graphQL(operationName: String?)
+    }
+
     private let configuration: SwikiConfiguration
     private let session: URLSession
     private let oauthClient: SwikiOAuthClient?
@@ -158,7 +164,10 @@ final class SwikiHTTPTransport: Sendable {
 
     func graphQL(request: GraphQLRequest) async throws -> GraphQLResult {
         let requestBody = try GraphQLJSONEncoder().encode(request)
-        let (data, _) = try await executeGraphQL(bodyData: requestBody)
+        let (data, _) = try await executeGraphQL(
+            bodyData: requestBody,
+            operationName: request.operationName
+        )
 
         if data.isEmpty {
             return GraphQLResult()
@@ -199,46 +208,206 @@ final class SwikiHTTPTransport: Sendable {
             throw SwikiClientError.invalidURL(path: fullPath)
         }
 
-        return try await executeAuthenticated(url: url, method: method, bodyData: bodyData)
+        return try await executeAuthenticated(
+            url: url,
+            method: method,
+            bodyData: bodyData,
+            kind: .rest(version: version, path: fullPath)
+        )
     }
 
-    private func executeGraphQL(bodyData: Data?) async throws -> (Data, HTTPURLResponse) {
-        try await executeAuthenticated(url: configuration.graphQLURL, method: .post, bodyData: bodyData)
+    private func executeGraphQL(
+        bodyData: Data?,
+        operationName: String?
+    ) async throws -> (Data, HTTPURLResponse) {
+        try await executeAuthenticated(
+            url: configuration.graphQLURL,
+            method: .post,
+            bodyData: bodyData,
+            kind: .graphQL(operationName: operationName)
+        )
     }
 
     private func executeAuthenticated(
         url: URL,
         method: SwikiHTTPMethod,
-        bodyData: Data?
+        bodyData: Data?,
+        kind: RequestKind
     ) async throws -> (Data, HTTPURLResponse) {
+        let requestID = String(UUID().uuidString.prefix(8))
         let initialRequest = try await buildRequest(url: url, method: method, bodyData: bodyData)
-        let (initialData, initialResponse) = try await perform(request: initialRequest)
+        let initialStartedAt = Date()
+        logRequestStart(
+            requestID: requestID,
+            kind: kind,
+            method: method,
+            url: url,
+            attempt: 1,
+            bodyData: bodyData
+        )
+
+        let (initialData, initialResponse): (Data, URLResponse)
+        do {
+            (initialData, initialResponse) = try await perform(request: initialRequest)
+        } catch {
+            logFailure(
+                requestID: requestID,
+                kind: kind,
+                method: method,
+                url: url,
+                attempt: 1,
+                statusCode: nil,
+                bodyData: bodyData,
+                responseData: nil,
+                startedAt: initialStartedAt,
+                error: error
+            )
+            throw error
+        }
+
         guard let initialHTTPResponse = initialResponse as? HTTPURLResponse else {
+            logFailure(
+                requestID: requestID,
+                kind: kind,
+                method: method,
+                url: url,
+                attempt: 1,
+                statusCode: nil,
+                bodyData: bodyData,
+                responseData: initialData,
+                startedAt: initialStartedAt,
+                error: SwikiClientError.invalidResponse
+            )
             throw SwikiClientError.invalidResponse
         }
 
         if initialHTTPResponse.statusCode == 401,
            let oauthClient,
            try await oauthClient.refreshTokenIfPossible() {
+            log(
+                level: .warning,
+                message: "🟡 🔁 API REQUEST RETRY (401 after refresh)",
+                metadata: requestMetadata(
+                    requestID: requestID,
+                    kind: kind,
+                    method: method,
+                    url: url,
+                    attempt: 1,
+                    statusCode: initialHTTPResponse.statusCode,
+                    requestBodyBytes: bodyData?.count,
+                    responseBodyBytes: initialData.count,
+                    durationMs: durationMs(since: initialStartedAt),
+                    error: nil
+                )
+            )
+
             let retryRequest = try await buildRequest(url: url, method: method, bodyData: bodyData)
-            let (retryData, retryResponse) = try await perform(request: retryRequest)
+            let retryStartedAt = Date()
+            logRequestStart(
+                requestID: requestID,
+                kind: kind,
+                method: method,
+                url: url,
+                attempt: 2,
+                bodyData: bodyData
+            )
+
+            let (retryData, retryResponse): (Data, URLResponse)
+            do {
+                (retryData, retryResponse) = try await perform(request: retryRequest)
+            } catch {
+                logFailure(
+                    requestID: requestID,
+                    kind: kind,
+                    method: method,
+                    url: url,
+                    attempt: 2,
+                    statusCode: nil,
+                    bodyData: bodyData,
+                    responseData: nil,
+                    startedAt: retryStartedAt,
+                    error: error
+                )
+                throw error
+            }
+
             guard let retryHTTPResponse = retryResponse as? HTTPURLResponse else {
+                logFailure(
+                    requestID: requestID,
+                    kind: kind,
+                    method: method,
+                    url: url,
+                    attempt: 2,
+                    statusCode: nil,
+                    bodyData: bodyData,
+                    responseData: retryData,
+                    startedAt: retryStartedAt,
+                    error: SwikiClientError.invalidResponse
+                )
                 throw SwikiClientError.invalidResponse
             }
 
             guard (200...299).contains(retryHTTPResponse.statusCode) else {
                 let responseBody = retryData.isEmpty ? nil : String(data: retryData, encoding: .utf8)
+                let error = SwikiClientError.badStatusCode(retryHTTPResponse.statusCode, responseBody)
+                logFailure(
+                    requestID: requestID,
+                    kind: kind,
+                    method: method,
+                    url: url,
+                    attempt: 2,
+                    statusCode: retryHTTPResponse.statusCode,
+                    bodyData: bodyData,
+                    responseData: retryData,
+                    startedAt: retryStartedAt,
+                    error: error
+                )
                 throw SwikiClientError.badStatusCode(retryHTTPResponse.statusCode, responseBody)
             }
 
+            logSuccess(
+                requestID: requestID,
+                kind: kind,
+                method: method,
+                url: url,
+                attempt: 2,
+                statusCode: retryHTTPResponse.statusCode,
+                bodyData: bodyData,
+                responseData: retryData,
+                startedAt: retryStartedAt
+            )
             return (retryData, retryHTTPResponse)
         }
 
         guard (200...299).contains(initialHTTPResponse.statusCode) else {
             let responseBody = initialData.isEmpty ? nil : String(data: initialData, encoding: .utf8)
+            let error = SwikiClientError.badStatusCode(initialHTTPResponse.statusCode, responseBody)
+            logFailure(
+                requestID: requestID,
+                kind: kind,
+                method: method,
+                url: url,
+                attempt: 1,
+                statusCode: initialHTTPResponse.statusCode,
+                bodyData: bodyData,
+                responseData: initialData,
+                startedAt: initialStartedAt,
+                error: error
+            )
             throw SwikiClientError.badStatusCode(initialHTTPResponse.statusCode, responseBody)
         }
 
+        logSuccess(
+            requestID: requestID,
+            kind: kind,
+            method: method,
+            url: url,
+            attempt: 1,
+            statusCode: initialHTTPResponse.statusCode,
+            bodyData: bodyData,
+            responseData: initialData,
+            startedAt: initialStartedAt
+        )
         return (initialData, initialHTTPResponse)
     }
 
@@ -396,5 +565,153 @@ final class SwikiHTTPTransport: Sendable {
         yyyyMMdd.locale = Locale(identifier: "en_US_POSIX")
         yyyyMMdd.timeZone = TimeZone(secondsFromGMT: 0)
         return yyyyMMdd.date(from: rawValue)
+    }
+
+    private func logRequestStart(
+        requestID: String,
+        kind: RequestKind,
+        method: SwikiHTTPMethod,
+        url: URL,
+        attempt: Int,
+        bodyData: Data?
+    ) {
+        log(
+            level: .debug,
+            message: "🔵 ───── API REQUEST START ─────",
+            metadata: requestMetadata(
+                requestID: requestID,
+                kind: kind,
+                method: method,
+                url: url,
+                attempt: attempt,
+                statusCode: nil,
+                requestBodyBytes: bodyData?.count,
+                responseBodyBytes: nil,
+                durationMs: nil,
+                error: nil
+            )
+        )
+    }
+
+    private func logSuccess(
+        requestID: String,
+        kind: RequestKind,
+        method: SwikiHTTPMethod,
+        url: URL,
+        attempt: Int,
+        statusCode: Int,
+        bodyData: Data?,
+        responseData: Data,
+        startedAt: Date
+    ) {
+        log(
+            level: .info,
+            message: "🟢 ───── API REQUEST SUCCESS ─────",
+            metadata: requestMetadata(
+                requestID: requestID,
+                kind: kind,
+                method: method,
+                url: url,
+                attempt: attempt,
+                statusCode: statusCode,
+                requestBodyBytes: bodyData?.count,
+                responseBodyBytes: responseData.count,
+                durationMs: durationMs(since: startedAt),
+                error: nil
+            )
+        )
+    }
+
+    private func logFailure(
+        requestID: String,
+        kind: RequestKind,
+        method: SwikiHTTPMethod,
+        url: URL,
+        attempt: Int,
+        statusCode: Int?,
+        bodyData: Data?,
+        responseData: Data?,
+        startedAt: Date,
+        error: Error
+    ) {
+        log(
+            level: .error,
+            message: "🔴 ───── API REQUEST FAILED ─────",
+            metadata: requestMetadata(
+                requestID: requestID,
+                kind: kind,
+                method: method,
+                url: url,
+                attempt: attempt,
+                statusCode: statusCode,
+                requestBodyBytes: bodyData?.count,
+                responseBodyBytes: responseData?.count,
+                durationMs: durationMs(since: startedAt),
+                error: String(describing: error)
+            )
+        )
+    }
+
+    private func requestMetadata(
+        requestID: String,
+        kind: RequestKind,
+        method: SwikiHTTPMethod,
+        url: URL,
+        attempt: Int,
+        statusCode: Int?,
+        requestBodyBytes: Int?,
+        responseBodyBytes: Int?,
+        durationMs: Int?,
+        error: String?
+    ) -> Logger.Metadata {
+        var metadata: Logger.Metadata = [
+            "request_id": .string(requestID),
+            "kind": .string(requestKindDescription(kind)),
+            "method": .string(method.rawValue),
+            "url": .string(url.absoluteString),
+            "attempt": .stringConvertible(attempt)
+        ]
+
+        if let statusCode {
+            metadata["status"] = .stringConvertible(statusCode)
+        }
+        if let requestBodyBytes {
+            metadata["request_body_bytes"] = .stringConvertible(requestBodyBytes)
+        }
+        if let responseBodyBytes {
+            metadata["response_body_bytes"] = .stringConvertible(responseBodyBytes)
+        }
+        if let durationMs {
+            metadata["duration_ms"] = .stringConvertible(durationMs)
+        }
+        if let error {
+            metadata["error"] = .string(error)
+        }
+
+        return metadata
+    }
+
+    private func requestKindDescription(_ kind: RequestKind) -> String {
+        switch kind {
+        case let .rest(version, path):
+            return "rest:\(version.rawValue):\(path)"
+        case let .graphQL(operationName):
+            if let operationName, !operationName.isEmpty {
+                return "graphql:\(operationName)"
+            }
+            return "graphql"
+        }
+    }
+
+    private func durationMs(since startedAt: Date) -> Int {
+        Int(Date().timeIntervalSince(startedAt) * 1_000)
+    }
+
+    private func log(level: Logger.Level, message: String, metadata: Logger.Metadata) {
+        guard let logger = configuration.apiLogger else {
+            return
+        }
+
+        logger.log(level: level, "\(message)", metadata: metadata)
     }
 }

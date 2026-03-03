@@ -60,6 +60,7 @@ public struct SwikiAnimeV1: Decodable, Sendable {
         case english
         case japanese
         case synonims
+        case synonyms
         case licenseNameRu = "license_name_ru"
         case duration
         case description
@@ -106,7 +107,9 @@ public struct SwikiAnimeV1: Decodable, Sendable {
         self.rating = try container.decode(SwikiAnimeRating.self, forKey: .rating)
         self.english = try container.decode([String].self, forKey: .english)
         self.japanese = try container.decode([String].self, forKey: .japanese)
-        self.synonims = try container.decode([String].self, forKey: .synonims)
+        self.synonims = (try? container.decode([String].self, forKey: .synonyms))
+            ?? (try? container.decode([String].self, forKey: .synonims))
+            ?? []
         self.licenseNameRu = try container.decodeIfPresent(String.self, forKey: .licenseNameRu)
         self.duration = try container.decode(Int.self, forKey: .duration)
         self.description = try container.decodeIfPresent(String.self, forKey: .description)
@@ -118,7 +121,7 @@ public struct SwikiAnimeV1: Decodable, Sendable {
         self.ongoing = try container.decode(Bool.self, forKey: .ongoing)
         self.threadId = try container.decode(Int.self, forKey: .threadId)
         self.topicId = try container.decode(Int.self, forKey: .topicId)
-        self.myAnimeListId = try container.decode(Int.self, forKey: .topicId)
+        self.myAnimeListId = try container.decode(Int.self, forKey: .myAnimeListId)
         self.ratesScoresStats = try container.decode([SwikiRateScore].self, forKey: .ratesScoresStats)
         self.ratesStatusesStats = try container.decode([SwikiRateStatus].self, forKey: .ratesStatusesStats)
         self.updatedAt = try container.decode(Date.self, forKey: .updatedAt)

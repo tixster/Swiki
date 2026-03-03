@@ -22,7 +22,8 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/GraphQLSwift/GraphQL", .upToNextMajor(from: "4.1.0")),
-        .package(url: "https://github.com/apple/swift-argument-parser", .upToNextMajor(from: "1.7.0"))
+        .package(url: "https://github.com/apple/swift-argument-parser", .upToNextMajor(from: "1.7.0")),
+        .package(url: "https://github.com/apple/swift-log", .upToNextMajor(from: "1.6.0"))
     ],
     targets: [
         .executableTarget(
@@ -35,7 +36,8 @@ let package = Package(
         .target(
             name: "Swiki",
             dependencies: [
-                "SwikiModels"
+                "SwikiModels",
+                .product(name: "Logging", package: "swift-log")
             ],
             swiftSettings: [.swiftLanguageMode(.v6)]
         ),

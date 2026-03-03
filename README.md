@@ -79,8 +79,26 @@ let users = try await swiki.v1.users.list(query: [
 - `oauthBaseURL` (по умолчанию `https://shikimori.io`)
 - `graphQLURL` (по умолчанию `https://shikimori.io/api/graphql`)
 - `baseURL` (по умолчанию `https://shikimori.io/api`)
+- `apiLogger` (`swift-log` `Logger` для логирования API запросов)
 - `additionalHeaders`
 - `isRpsRpmRestrictionsEnabled` (`true` по умолчанию)
+
+### Логирование API (`swift-log`)
+```swift
+import Swiki
+import Logging
+
+LoggingSystem.bootstrap(StreamLogHandler.standardOutput)
+
+let logger = Logger(label: "com.example.swiki.api")
+
+let config = SwikiConfiguration(
+    userAgent: "MyApp/1.0 (me@example.com)",
+    apiLogger: logger
+)
+```
+
+В логах добавляются метаданные запроса: `kind`, `method`, `url`, `attempt`, `status`, `duration_ms`, размер request/response body и текст ошибки.
 
 ## OAuth2
 ### 1) Инициализация
@@ -287,6 +305,18 @@ swift build
 swift test
 swift run SwikiGraphQLOperationGenerator --help
 ```
+
+## Example SwiftUI Project
+Готовый пример приложения находится в:
+- `Examples/SwikiExampleApp`
+
+Что показывает пример:
+- OAuth авторизацию (`ASWebAuthenticationSession`)
+- REST запросы (`v1/users/whoami`, `v1/animes`)
+- GraphQL типизированную операцию
+
+Подробная инструкция запуска:
+- `Examples/SwikiExampleApp/README.md`
 
 ## Лицензия
 MIT. См. файл `LICENSE`.
