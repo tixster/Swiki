@@ -11,5 +11,5 @@ public struct SwikiV1GenresClient: SwikiResourceSubclient {
 }
 
 public extension SwikiV1GenresClient {
-    func index(query: SwikiQuery = [:]) async throws -> [SwikiGenre] { try await list(query: query) }
+    func get(query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws -> [SwikiGenre] { try await list(query: query) }
 }

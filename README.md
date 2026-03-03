@@ -179,6 +179,33 @@ swiki.v2.<resource>
 - `delete(id:query:)`
 - `request(...)` для произвольного метода/экшена
 
+### Типизированные Query (v1/v2)
+Все `query`-параметры в `v1/v2` саб-клиентах принимают `SwikiQueryConvertible`:
+- обычный словарь `SwikiQuery`,
+- типизированные query-модели (`SwikiV1AnimesQuery`, `SwikiV1UsersQuery`, `SwikiV1UserRatesQuery`, `SwikiV1TopicsQuery`, `SwikiV1CommentsQuery`, `SwikiV2UserRatesQuery` и др.).
+
+```swift
+let animes = try await swiki.v1.animes.get(
+    query: SwikiV1AnimesQuery(
+        page: 1,
+        limit: 5,
+        order: .ranked,
+        status: .released,
+        search: "bakemonogatari"
+    )
+)
+
+let rates = try await swiki.v2.userRates.get(
+    query: SwikiV2UserRatesQuery(
+        page: 1,
+        limit: 20,
+        userID: "123",
+        targetType: .anime,
+        status: .watching
+    )
+)
+```
+
 ### V1 ресурсы
 `achievements`, `animes`, `appears`, `bans`, `calendars`, `characters`, `clubs`, `collections`, `comments`, `constants`, `dialogs`, `favorites`, `forums`, `friends`, `genres`, `ignores`, `mangas`, `messages`, `people`, `publishers`, `ranobe`, `reviews`, `stats`, `studios`, `styles`, `topicIgnores`, `topics`, `userImages`, `userRates`, `userRatesLogs`, `users`, `videos`, `whoami`.
 

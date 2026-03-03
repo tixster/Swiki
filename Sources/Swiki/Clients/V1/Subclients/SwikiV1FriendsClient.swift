@@ -11,11 +11,11 @@ public struct SwikiV1FriendsClient: SwikiResourceSubclient {
 }
 
 public extension SwikiV1FriendsClient {
-    func index(query: SwikiQuery = [:]) async throws -> [SwikiFriend] { try await list(query: query) }
-    func create(id: String, query: SwikiQuery = [:]) async throws -> SwikiFriend {
+    func get(query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws -> [SwikiFriend] { try await list(query: query) }
+    func create(id: String, query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws -> SwikiFriend {
         try await request(.post, id: id, query: query)
     }
-    func delete(id: String, query: SwikiQuery = [:]) async throws {
+    func delete(id: String, query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws {
         try await request(.delete, id: id, query: query)
     }
 }

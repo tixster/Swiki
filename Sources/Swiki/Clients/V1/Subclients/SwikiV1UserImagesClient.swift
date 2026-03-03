@@ -11,8 +11,8 @@ public struct SwikiV1UserImagesClient: SwikiResourceSubclient {
 }
 
 public extension SwikiV1UserImagesClient {
-    func create<Body: Encodable>(body: Body, query: SwikiQuery = [:]) async throws -> SwikiUserImage {
+    func create<Body: Encodable>(body: Body, query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws -> SwikiUserImage {
         try await resourceClient.create(body: body, query: query)
     }
-    func delete(id: String, query: SwikiQuery = [:]) async throws { try await resourceClient.delete(id: id, query: query) }
+    func delete(id: String, query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws { try await resourceClient.delete(id: id, query: query) }
 }

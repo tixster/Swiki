@@ -99,11 +99,11 @@ final class ExampleAppViewModel: ObservableObject {
         }
 
         await perform("Searching animes for '\(animeSearch)'") {
-            let query: SwikiQuery = [
-                "search": animeSearch,
-                "limit": String(animeLimit)
-            ]
-            let items = try await swiki.v1.animes.index(query: query)
+            let query = SwikiV1AnimesQuery(
+                limit: animeLimit,
+                search: animeSearch
+            )
+            let items = try await swiki.v1.animes.get(query: query)
             animeNames = items.map(\.name)
             appendLog("Loaded \(items.count) anime items")
         }

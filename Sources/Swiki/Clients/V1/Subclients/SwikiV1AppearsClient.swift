@@ -11,5 +11,5 @@ public struct SwikiV1AppearsClient: SwikiResourceSubclient {
 }
 
 public extension SwikiV1AppearsClient {
-    func index(query: SwikiQuery = [:]) async throws -> [SwikiAppear] { try await list(query: query) }
+    func get(query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws -> [SwikiAppear] { try await list(query: query) }
 }

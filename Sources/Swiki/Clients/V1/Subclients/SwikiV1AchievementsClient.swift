@@ -11,5 +11,5 @@ public struct SwikiV1AchievementsClient: SwikiResourceSubclient {
 }
 
 public extension SwikiV1AchievementsClient {
-    func index(query: SwikiQuery = [:]) async throws -> [Achievement] { try await list(query: query) }
+    func get(query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws -> [Achievement] { try await list(query: query) }
 }

@@ -11,11 +11,11 @@ public struct SwikiV2UserIgnoreClient: SwikiResourceSubclient {
 }
 
 public extension SwikiV2UserIgnoreClient {
-    func create(userId: String, query: SwikiQuery = [:]) async throws {
+    func create(userId: String, query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws {
         try await request(.post, id: userId, query: query)
     }
 
-    func delete(userId: String, query: SwikiQuery = [:]) async throws {
+    func delete(userId: String, query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws {
         try await request(.delete, id: userId, query: query)
     }
 }

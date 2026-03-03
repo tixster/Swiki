@@ -11,7 +11,7 @@ public struct SwikiV2AbuseRequestsClient: SwikiResourceSubclient {
 }
 
 public extension SwikiV2AbuseRequestsClient {
-    func create<Body: Encodable>(body: Body, query: SwikiQuery = [:]) async throws -> SwikiAbuseRequest {
+    func create<Body: Encodable>(body: Body, query: some SwikiQueryConvertible = [:] as SwikiQuery) async throws -> SwikiAbuseRequest {
         try await resourceClient.create(body: body, query: query)
     }
 }

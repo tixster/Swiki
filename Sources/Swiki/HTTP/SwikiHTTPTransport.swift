@@ -95,6 +95,24 @@ final class SwikiHTTPTransport: Sendable {
         return try makeDecoder().decode(Response.self, from: data)
     }
 
+    func request<Response: Decodable>(
+        version: SwikiAPIVersion,
+        method: SwikiHTTPMethod,
+        path: String,
+        id: String? = nil,
+        action: String? = nil,
+        query: some SwikiQueryConvertible
+    ) async throws -> Response {
+        try await request(
+            version: version,
+            method: method,
+            path: path,
+            id: id,
+            action: action,
+            query: query.asSwikiQuery
+        )
+    }
+
     func request<Response: Decodable, Body: Encodable>(
         version: SwikiAPIVersion,
         method: SwikiHTTPMethod,
@@ -122,6 +140,26 @@ final class SwikiHTTPTransport: Sendable {
         return try makeDecoder().decode(Response.self, from: data)
     }
 
+    func request<Response: Decodable, Body: Encodable>(
+        version: SwikiAPIVersion,
+        method: SwikiHTTPMethod,
+        path: String,
+        id: String? = nil,
+        action: String? = nil,
+        query: some SwikiQueryConvertible,
+        body: Body
+    ) async throws -> Response {
+        try await request(
+            version: version,
+            method: method,
+            path: path,
+            id: id,
+            action: action,
+            query: query.asSwikiQuery,
+            body: body
+        )
+    }
+
     func request(
         version: SwikiAPIVersion,
         method: SwikiHTTPMethod,
@@ -138,6 +176,24 @@ final class SwikiHTTPTransport: Sendable {
             action: action,
             query: query,
             bodyData: nil
+        )
+    }
+
+    func request(
+        version: SwikiAPIVersion,
+        method: SwikiHTTPMethod,
+        path: String,
+        id: String? = nil,
+        action: String? = nil,
+        query: some SwikiQueryConvertible
+    ) async throws {
+        try await request(
+            version: version,
+            method: method,
+            path: path,
+            id: id,
+            action: action,
+            query: query.asSwikiQuery
         )
     }
 
@@ -159,6 +215,26 @@ final class SwikiHTTPTransport: Sendable {
             action: action,
             query: query,
             bodyData: bodyData
+        )
+    }
+
+    func request<Body: Encodable>(
+        version: SwikiAPIVersion,
+        method: SwikiHTTPMethod,
+        path: String,
+        id: String? = nil,
+        action: String? = nil,
+        query: some SwikiQueryConvertible,
+        body: Body
+    ) async throws {
+        try await request(
+            version: version,
+            method: method,
+            path: path,
+            id: id,
+            action: action,
+            query: query.asSwikiQuery,
+            body: body
         )
     }
 
