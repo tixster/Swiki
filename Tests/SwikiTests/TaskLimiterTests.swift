@@ -86,7 +86,7 @@ struct TaskLimiterTests {
     /// Тест, что даже при большом количестве задач (например, 10),
     /// мы не превышаем 5 rps.
     /// Тут можно измерять общее время, чтобы убедиться, что операции
-    /// распределяются как минимум на 2 секунды, если мы запустим 10 шт. подряд.
+    /// распределяются как минимум примерно на 1 секунду, если мы запустим 10 шт. подряд.
     @Test
     func multipleTasksOverRpsLimit() async throws {
         let limiter = SwikiLimiterActor()
@@ -110,10 +110,47 @@ struct TaskLimiterTests {
         let endAll = Date()
         let totalDelta = endAll.timeIntervalSince(startAll)
 
-        // Если rpsLimit = 5, значит 10 задач не смогут завершиться быстрее, чем за ~2 сек
-        // (5 задач в первую секунду, ещё 5 — во вторую).
-        #expect(totalDelta <= 2, "10 tasks with rps=5 should take at least ~2s in total (took \(totalDelta))")
+        // Если rpsLimit = 5, значит 10 задач не смогут завершиться быстрее, чем за ~1 сек:
+        // 5 задач в первой секунде и ещё 5 после открытия окна.
+        #expect(totalDelta >= 0.9, "10 tasks with rps=5 should take at least ~1s in total (took \(totalDelta))")
+        #expect(totalDelta <= 2.5, "10 tasks with rps=5 should not be delayed excessively (took \(totalDelta))")
+    }
+
+    /// Тест, что минутный лимит также соблюдается.
+    /// Для скорости теста используем укороченное «минутное» окно = 2 секунды.
+    @Test
+    func minuteWindowRateLimit() async throws {
+        let limiter = SwikiLimiterActor(
+            rpsLimit: 10,
+            rpmLimit: 3,
+            rpsWindow: .seconds(1),
+            rpmWindow: .seconds(2)
+        )
+
+        let timesStorage = TimesStorage()
+
+        try await withThrowingTaskGroup(of: Void.self) { group in
+            for i in 1...4 {
+                group.addTask { @Sendable in
+                    _ = try await limiter.submit {
+                        return i
+                    }
+                    await timesStorage.append(Date())
+                }
+            }
+            try await group.waitForAll()
+        }
+
+        var completionTimes = await timesStorage.times
+        completionTimes.sort()
+
+        #expect(completionTimes.count == 4, "Should have 4 completion timestamps")
+
+        let third = completionTimes[2]
+        let fourth = completionTimes[3]
+        let delta = fourth.timeIntervalSince(third)
+
+        #expect(delta >= 1.8, "4th task should be delayed by ~2s due to rpm window (delta = \(delta))")
     }
 
 }
-

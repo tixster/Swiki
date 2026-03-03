@@ -2,9 +2,9 @@ import Foundation
 import GraphQLGeneratorMacros
 
 public struct SwikiUser: Decodable, Sendable {
-    @graphQLResolver public let id: String
-    @graphQLResolver public let nickname: String
-    @graphQLResolver public let url: URL?
-    @graphQLResolver public let avatarUrl: URL
-    @graphQLResolver public let lastOnlineAt: Date
+    public let id: String
+    public let nickname: String
+    public let url: URL?
+    public let avatarUrl: URL
+    public let lastOnlineAt: Date
 }

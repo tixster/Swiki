@@ -12,42 +12,38 @@ struct SwikiActor {
     static let shared = SwikiLimiterActor()
 }
 
-fileprivate struct SubmittedJob<T: Sendable>: Sendable {
-    let work: @Sendable () async throws -> T
-    let continuation: CheckedContinuation<T, any Error>
-}
-
 actor SwikiLimiterActor {
-
-    /// Обёртка для SubmittedJob
-    private struct AnySubmittedJob: Sendable{
-        let run: @Sendable () async -> Void
-    }
 
     // Ограничения согласно API: https://shikimori.one/api/doc
     // API access is limited by 5rps and 90rpm
-    private let rpsLimit = 5
-    private let rpmLimit = 90
+    private let rpsLimit: Int
+    private let rpmLimit: Int
+    private let rpsWindow: Duration
+    private let rpmWindow: Duration
+    private let clock: ContinuousClock
 
-    // Временные метки, чтобы считать RPS/RPM
-    private var requestTimestamps: [Date] = []
-
-    // MARK: - AsyncStream и его Continuation
-
-    /// Continuation, чтобы «складывать» новые задания в поток.
-    private let continuation: AsyncStream<AnySubmittedJob>.Continuation
-    /// AsyncStream, по которому «воркер» будет итерироваться.
-    nonisolated private let stream: AsyncStream<AnySubmittedJob>
+    // Временные метки старта запросов в монотонном времени.
+    private var requestTimestamps: [ContinuousClock.Instant] = []
 
     // MARK: - Инициализация
 
-    init() {
-        (self.stream, self.continuation) = AsyncStream<AnySubmittedJob>.makeStream()
-        Task {
-            for await anyJob in stream {
-                await anyJob.run()
-            }
-        }
+    init(
+        rpsLimit: Int = 5,
+        rpmLimit: Int = 90,
+        rpsWindow: Duration = .seconds(1),
+        rpmWindow: Duration = .seconds(60),
+        clock: ContinuousClock = ContinuousClock()
+    ) {
+        precondition(rpsLimit > 0, "rpsLimit must be > 0")
+        precondition(rpmLimit > 0, "rpmLimit must be > 0")
+        precondition(rpsWindow > .zero, "rpsWindow must be > 0")
+        precondition(rpmWindow > .zero, "rpmWindow must be > 0")
+
+        self.rpsLimit = rpsLimit
+        self.rpmLimit = rpmLimit
+        self.rpsWindow = rpsWindow
+        self.rpmWindow = rpmWindow
+        self.clock = clock
     }
 
     // MARK: - Публичный метод submit<T>
@@ -56,84 +52,56 @@ actor SwikiLimiterActor {
     func submit<T: Sendable>(
         _ work: @Sendable @escaping () async throws -> T
     ) async throws -> T {
-        return try await withCheckedThrowingContinuation { continuation in
-            let job = SubmittedJob(work: work, continuation: continuation)
-
-            // Оборачиваем в AnySubmittedJob для Stream
-            let anyJob = AnySubmittedJob {
-                await self.runJob(job)
-            }
-
-            self.continuation.yield(anyJob)
-        }
-    }
-
-    // MARK: - Основная логика выполнения одного задания
-
-    /// «Разворачиваем» SubmittedJob и обрабатываем RPS/RPM.
-    private func runJob<T>(_ job: SubmittedJob<T>) async {
-        do {
-            // Перед выполнением — ждём, если лимиты превышены
-            try await waitIfNeeded()
-
-            requestTimestamps.append(Date())
-
-            let result = try await job.work()
-
-            job.continuation.resume(returning: result)
-        } catch {
-            job.continuation.resume(throwing: error)
-        }
+        // Перед выполнением — ждём, если лимиты превышены.
+        try await waitIfNeeded()
+        requestTimestamps.append(clock.now)
+        return try await work()
     }
 
 
     // MARK: - Логика ожидания при превышении лимитов
 
     private func waitIfNeeded() async throws {
-        let now = Date()
-        // Удаляем старые timestamps (старше 60 сек):
-        requestTimestamps.removeAll { now.timeIntervalSince($0) >= 60 }
+        while true {
+            let now = clock.now
+            pruneOldTimestamps(relativeTo: now)
 
-        // 1) 90 в минуту
-        // Проверка: если собралось достаточно «таймстемпов», чтобы превысить лимит в минуту (rpmLimit),
-        // и при этом удаётся взять первый (самый старый) элемент массива timestamps...
-        if requestTimestamps.count >= rpmLimit, let oldest = requestTimestamps.first {
+            let waitForRpm = rpmDelay(relativeTo: now)
+            let waitForRps = rpsDelay(relativeTo: now)
+            let waitDuration = max(waitForRpm, waitForRps)
 
-            // Считаем, сколько времени прошло с момента самого старого запроса
-            let timeSinceOldest = now.timeIntervalSince(oldest)
-
-            // Если мы хотим максимум 90 запросов/минуту, то выясняем,
-            // сколько «остаётся» до 60 секунд с момента самого старого.
-            // Если timeSinceOldest = 10, то needToWait = 50
-            let needToWait = 60 - timeSinceOldest
-
-            // Проверяем, действительно ли нужно ждать (ведь может оказаться, что timeSinceOldest уже 60+ секунд)
-            if needToWait > 0 {
-                try Task.checkCancellation()
-                try await Task.sleep(nanoseconds: UInt64(needToWait * 1_000_000_000))
+            if waitDuration <= .zero {
+                return
             }
+
+            try Task.checkCancellation()
+            try await clock.sleep(for: waitDuration)
+        }
+    }
+
+    private func pruneOldTimestamps(relativeTo now: ContinuousClock.Instant) {
+        let oldestAllowed = now.advanced(by: .zero - rpmWindow)
+        requestTimestamps.removeAll { $0 <= oldestAllowed }
+    }
+
+    private func rpmDelay(relativeTo now: ContinuousClock.Instant) -> Duration {
+        guard requestTimestamps.count >= rpmLimit, let oldest = requestTimestamps.first else {
+            return .zero
         }
 
-        // 2) 5 в секунду
-        // Берём все timestamps, которые произошли менее чем за 1 секунду до now
-        let requestsLastSecond = requestTimestamps.filter { now.timeIntervalSince($0) < 1 }
+        let availableAt = oldest.advanced(by: rpmWindow)
+        return max(.zero, now.duration(to: availableAt))
+    }
 
-        // Если таких запросов уже достаточно, чтобы превысить лимит rpsLimit (5),
-        // и мы можем получить самый старый из них.
-        if requestsLastSecond.count >= rpsLimit, let oldestInLastSecond = requestsLastSecond.first {
+    private func rpsDelay(relativeTo now: ContinuousClock.Instant) -> Duration {
+        let oldestAllowed = now.advanced(by: .zero - rpsWindow)
+        let recentRequests = requestTimestamps.filter { $0 > oldestAllowed }
 
-            // Сколько времени прошло с момента «старейшего» из последних запросов
-            let timeSinceOldest = now.timeIntervalSince(oldestInLastSecond)
-
-            // Сколько ещё ждать, чтобы уложиться в 1 запрос в 200 мс (итого 5/сек),
-            // по сути — (1 секунда - прошедшее время).
-            let needToWait = 1 - timeSinceOldest
-
-            if needToWait > 0 {
-                try Task.checkCancellation()
-                try await Task.sleep(nanoseconds: UInt64(needToWait * 1_000_000_000))
-            }
-            
+        guard recentRequests.count >= rpsLimit, let oldestInWindow = recentRequests.first else {
+            return .zero
         }
+
+        let availableAt = oldestInWindow.advanced(by: rpsWindow)
+        return max(.zero, now.duration(to: availableAt))
     }
 }

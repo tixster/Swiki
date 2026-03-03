@@ -32,7 +32,8 @@ let package = Package(
             name: "Swiki",
             dependencies: [
                 "SwikiModels"
-            ]
+            ],
+            swiftSettings: [.swiftLanguageMode(.v6)]
         ),
         .target(
             name: "SwikiModels",
