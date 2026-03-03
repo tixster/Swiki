@@ -1,4 +1,4 @@
-// swift-tools-version: 6.0
+// swift-tools-version: 6.2
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -6,10 +6,10 @@ import PackageDescription
 let package = Package(
     name: "Swiki",
     platforms: [
-        .iOS(.v13),
-        .macOS(.v10_15),
-        .tvOS(.v13),
-        .watchOS(.v6)
+        .iOS(.v16),
+        .macOS(.v13),
+        .tvOS(.v16),
+        .watchOS(.v9)
     ],
     products: [
         .library(
@@ -20,6 +20,13 @@ let package = Package(
             targets: ["SwikiModels"]
         ),
     ],
+    dependencies: [
+        .package(
+            url: "https://github.com/GraphQLSwift/graphql-generator",
+            .upToNextMajor(from: "1.1.0")
+        ),
+        .package(url: "https://github.com/GraphQLSwift/GraphQL", .upToNextMajor(from: "4.1.0"))
+    ],
     targets: [
         .target(
             name: "Swiki",
@@ -28,7 +35,15 @@ let package = Package(
             ]
         ),
         .target(
-            name: "SwikiModels"
+            name: "SwikiModels",
+            dependencies: [
+                .product(name: "GraphQL", package: "GraphQL"),
+                .product(name: "GraphQLGeneratorRuntime", package: "graphql-generator"),
+                .product(name: "GraphQLGeneratorMacros", package: "graphql-generator")
+            ],
+            plugins: [
+                .plugin(name: "GraphQLGeneratorPlugin", package: "graphql-generator"),
+            ]
         ),
         .testTarget(
             name: "SwikiTests",
