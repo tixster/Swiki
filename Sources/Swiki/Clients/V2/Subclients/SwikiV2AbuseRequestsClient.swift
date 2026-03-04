@@ -30,6 +30,9 @@ public struct SwikiV2AbuseRequestsClient: Sendable {
 }
 
 public extension SwikiV2AbuseRequestsClient {
+    /// POST ``/api/v2/abuse_requests/offtopic``
+    ///
+    /// Mark a comment as offtopic.
     func offtopic(commentId: String) async throws -> SwikiAbuseOfftopicResponse {
         try await transport.request(
             version: .v2,
@@ -40,6 +43,9 @@ public extension SwikiV2AbuseRequestsClient {
         )
     }
 
+    /// POST ``/api/v2/abuse_requests/convert_review``
+    ///
+    /// Convert comment/topic to review.
     func convertReview(
         commentId: String? = nil,
         topicId: String? = nil
@@ -53,6 +59,9 @@ public extension SwikiV2AbuseRequestsClient {
         )
     }
 
+    /// POST ``/api/v2/abuse_requests/convert_review``
+    ///
+    /// Alias for ``convertReview(commentId:topicId:)``.
     func review(
         commentId: String? = nil,
         topicId: String? = nil
@@ -60,6 +69,9 @@ public extension SwikiV2AbuseRequestsClient {
         try await convertReview(commentId: commentId, topicId: topicId)
     }
 
+    /// POST ``/api/v2/abuse_requests/abuse``
+    ///
+    /// Create abuse request.
     func abuse(
         commentId: String? = nil,
         topicId: String? = nil,
@@ -74,6 +86,9 @@ public extension SwikiV2AbuseRequestsClient {
         )
     }
 
+    /// POST ``/api/v2/abuse_requests/spoiler``
+    ///
+    /// Create spoiler request.
     func spoiler(
         commentId: String? = nil,
         topicId: String? = nil,

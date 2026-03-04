@@ -1,6 +1,6 @@
 import Foundation
 
-public enum SwikiTopicForum: String, Sendable {
+public enum SwikiTopicForum: String, Sendable, Codable {
     case all
     case animanga
     case site
@@ -17,7 +17,7 @@ public enum SwikiTopicForum: String, Sendable {
     case cosplay
 }
 
-public enum SwikiTopicLinkedType: String, Sendable {
+public enum SwikiTopicLinkedType: String, Sendable, Codable {
     case anime = "Anime"
     case manga = "Manga"
     case ranobe = "Ranobe"
@@ -33,7 +33,7 @@ public enum SwikiTopicLinkedType: String, Sendable {
     case article = "Article"
 }
 
-public enum SwikiTopicType: String, Sendable {
+public enum SwikiTopicType: String, Sendable, Codable {
     case topic = "Topic"
     case clubUserTopic = "Topics::ClubUserTopic"
     case entryTopic = "Topics::EntryTopic"

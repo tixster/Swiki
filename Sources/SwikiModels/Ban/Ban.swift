@@ -45,8 +45,8 @@ public struct SwikiBan: Decodable, Sendable {
     public let reason: String
     public let createdAt: Date
     public let durationMinutes: Int
-    public let user: SwikiUser?
-    public let moderator: SwikiUser?
+    public let user: SwikiUserPreview?
+    public let moderator: SwikiUserPreview?
 
     enum CodingKeys: String, CodingKey {
         case id
@@ -69,7 +69,7 @@ public struct SwikiBan: Decodable, Sendable {
         self.reason = try container.decode(String.self, forKey: .reason)
         self.createdAt = try container.decode(Date.self, forKey: .createdAt)
         self.durationMinutes = try container.decode(Int.self, forKey: .durationMinutes)
-        self.user = try container.decodeIfPresent(SwikiUser.self, forKey: .user)
-        self.moderator = try container.decodeIfPresent(SwikiUser.self, forKey: .moderator)
+        self.user = try container.decodeIfPresent(SwikiUserPreview.self, forKey: .user)
+        self.moderator = try container.decodeIfPresent(SwikiUserPreview.self, forKey: .moderator)
     }
 }

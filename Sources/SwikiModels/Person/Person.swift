@@ -25,9 +25,9 @@ public struct SwikiPersonGroupedRole: Decodable, Sendable {
 }
 
 public struct SwikiPersonRoleEntry: Decodable, Sendable {
-    public let characters: [SwikiCharacter]?
+    public let characters: [SwikiCharacterPreview]?
     public let animes: [SwikiAnimeV1Preview]?
-    public let mangas: [SwikiUserLinked]?
+    public let mangas: [SwikiMangaV1Preview]?
 }
 
 public struct SwikiPerson: Decodable, Sendable {

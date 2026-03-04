@@ -1,4 +1,5 @@
 import Foundation
+@_exported import SwikiModels
 #if canImport(FoundationNetworking)
 import FoundationNetworking
 #endif

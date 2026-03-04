@@ -1,33 +1,23 @@
-//
-//  SwikiReviewCreatePayloadBody.swift
-//  Swiki
-//
-//  Created by Кирилл Тила on 04.03.2026.
-//
+import Foundation
 
-
-struct SwikiReviewCreatePayloadBody: Encodable, Sendable {
-    let review: SwikiReviewCreatePayload
+struct SwikiReviewUpdatePayloadBody: Encodable, Sendable {
+    let review: SwikiReviewUpdatePayload
 }
 
-public struct SwikiReviewCreatePayload: Encodable, Sendable {
+public struct SwikiReviewUpdatePayload: Encodable, Sendable {
 
-    public let animeId: String
     public let body: String
-    public let opinion: SwikiReviewOpinion
+    public let opinion: SwikiReviewOpinion?
 
     enum CodingKeys: String, CodingKey {
-        case animeId = "anime_id"
         case body
         case opinion
     }
 
     public init(
-        animeId: String,
         body: String,
-        opinion: SwikiReviewOpinion
+        opinion: SwikiReviewOpinion?
     ) {
-        self.animeId = animeId
         self.body = body
         self.opinion = opinion
     }

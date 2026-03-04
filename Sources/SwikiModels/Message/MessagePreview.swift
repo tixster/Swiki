@@ -2,7 +2,7 @@ import Foundation
 
 public struct SwikiMessagePreview: Decodable, Sendable {
     public let id: String
-    public let kind: String
+    public let kind: SwikiMessageKind
     public let read: Bool
     public let body: String
     public let htmlBody: String
@@ -27,10 +27,8 @@ public struct SwikiMessagePreview: Decodable, Sendable {
     public init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.id = try container.decodeStringOrInt(forKey: .id)
-        self.kind = try container.decode(String.self, forKey: .kind)
-        let read = try container.decodeIfPresent(Bool.self, forKey: .read)
-        let legacyRead = try container.decodeIfPresent(Bool.self, forKey: .isRead)
-        self.read = read ?? legacyRead ?? false
+        self.kind = (try? container.decode(SwikiMessageKind.self, forKey: .kind)) ?? .unknown
+        self.read = try container.decode(Bool.self, forKey: .read)
         self.body = try container.decode(String.self, forKey: .body)
         self.htmlBody = try container.decode(String.self, forKey: .htmlBody)
         self.linkedId = try container.decodeStringOrIntIfPresent(forKey: .linkedId)

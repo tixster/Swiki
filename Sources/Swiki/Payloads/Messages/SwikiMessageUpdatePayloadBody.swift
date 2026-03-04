@@ -1,15 +1,11 @@
 import Foundation
+import SwikiModels
 
-struct SwikiMessageUpdatePayloadBody: Encodable, Sendable {
-    let message: SwikiMessageUpdatePayload
-}
+public struct SwikiMessageDeleteAllPayload: Encodable, Sendable {
+    public let type: SwikiMessageType
 
-
-public struct SwikiMessageUpdatePayload: Encodable, Sendable {
-    public let body: String
-
-    init(body: String) {
-        self.body = body
+    public init(type: SwikiMessageType) {
+        self.type = type
     }
 
 }

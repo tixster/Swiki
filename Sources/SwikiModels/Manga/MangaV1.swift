@@ -1,5 +1,7 @@
 import Foundation
 
+public typealias SwikiRanobeV1 = SwikiMangaV1
+
 /// RestV1 full model for `/api/mangas/:id` and `/api/ranobe/:id`.
 public struct SwikiMangaV1: Decodable, Sendable {
     public let id: String

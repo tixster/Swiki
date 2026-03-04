@@ -80,7 +80,7 @@ public extension SwikiV1ClubsClient {
     /// GET ``/api/clubs/:id/members``
     ///
     /// Show club's members
-    func members(id: String, query: SwikiV1ClubsQuery = .init()) async throws -> [SwikiUser] {
+    func members(id: String, query: SwikiV1ClubsQuery = .init()) async throws -> [SwikiUserPreview] {
         try await request(.get, id: id, route: "members", query: query.asSwikiQuery)
     }
 

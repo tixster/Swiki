@@ -1,8 +1,6 @@
-//
-//  File.swift
-//  Swiki
-//
-//  Created by Кирилл Тила on 04.03.2026.
-//
-
 import Foundation
+
+public enum SwikiMessageType: String, Codable, Sendable {
+    case news
+    case notification
+}

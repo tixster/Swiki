@@ -26,7 +26,7 @@ public struct SwikiExternalLink: Decodable, Sendable {
     public init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.id = try container.decodeStringOrIntIfPresent(forKey: .id)
-        self.kind = try container.decode(SwikiExternalLinkKind.self, forKey: .kind)
+        self.kind = (try? container.decode(SwikiExternalLinkKind.self, forKey: .kind)) ?? .unknown
         self.url = try container.decode(URL.self, forKey: .url)
         self.source = try container.decodeIfPresent(String.self, forKey: .source)
         self.entryId = try container.decodeStringOrIntIfPresent(forKey: .entryId)

@@ -8,32 +8,39 @@ public struct SwikiV1VideosClient: SwikiResourceSubclient {
 
     init(transport: SwikiHTTPTransport) {
         self.transport = transport
-        self.resourceClient = SwikiResourceClient<Model>(transport: transport, version: .v1, path: "videos")
+        self.resourceClient = SwikiResourceClient<Model>(transport: transport, version: .v1, path: "animes")
     }
 }
 
 public extension SwikiV1VideosClient {
-    func get(query: SwikiQuery = [:]) async throws -> [SwikiVideo] { try await list(query: query) }
-    func get(animeId: String) async throws -> [SwikiVideo] {
-        try await transport.request(version: .v1, method: .get, path: "animes/\(animeId)/videos")
+
+
+    /// GET ``/api/animes/:anime_id/videos``
+    ///
+    ///      List videos
+    func list(animeId: String) async throws -> [SwikiVideo] {
+        try await request(.get, id: animeId, route: "videos")
     }
-    func create<Body: Encodable>(
+
+    /// POST ``/api/animes/:anime_id/videos``
+    ///
+    /// Create a video for an anime.
+    func create(
         animeId: String,
-        body: Body
+        video: SwikiVideosCreatePayload
     ) async throws -> SwikiVideo {
-        try await transport.request(
-            version: .v1,
-            method: .post,
-            path: "animes/\(animeId)/videos",
-            body: body
+        try await request(
+            .get,
+            id: animeId,
+            route: "videos",
+            body: SwikiVideosCreatePayloadBody(video: video)
         )
     }
+    /// DELETE ``/api/animes/:anime_id/videos/:video_id``
+    ///
+    /// Delete a video from an anime.
     func delete(animeId: String, videoId: String) async throws {
-        try await transport.request(
-            version: .v1,
-            method: .delete,
-            path: "animes/\(animeId)/videos",
-            id: videoId
-        )
+        try await request(.delete, id: animeId, route: "videos/\(videoId)")
     }
+    
 }

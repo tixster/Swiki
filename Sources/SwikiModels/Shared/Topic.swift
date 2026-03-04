@@ -52,43 +52,6 @@ public struct SwikiLinked: Decodable, Sendable {
     }
 }
 
-public struct SwikiExtendedLightTopic: Decodable, Sendable {
-    public let id: String
-    public let linked: SwikiLinked?
-    public let event: String?
-    public let createdAt: Date?
-    public let episode: Int?
-    public let url: URL?
-
-    enum CodingKeys: String, CodingKey {
-        case id
-        case linked
-        case event
-        case createdAt = "created_at"
-        case episode
-        case url
-    }
-
-    public init(from decoder: any Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.id = try container.decodeStringOrIntIfPresent(forKey: .id) ?? ""
-        self.linked = try container.decodeIfPresent(SwikiLinked.self, forKey: .linked)
-        self.event = try container.decodeIfPresent(String.self, forKey: .event)
-        self.createdAt = try container.decodeIfPresent(Date.self, forKey: .createdAt)
-        if let intValue = try? container.decodeIfPresent(Int.self, forKey: .episode) {
-            self.episode = intValue
-        } else if
-            let stringValue = try? container.decodeIfPresent(String.self, forKey: .episode),
-            let intValue = Int(stringValue)
-        {
-            self.episode = intValue
-        } else {
-            self.episode = nil
-        }
-        self.url = try container.decodeIfPresent(URL.self, forKey: .url)
-    }
-}
-
 public struct SwikiTopic: Decodable, Sendable {
     public let id: String
     public let linked: SwikiLinked?
@@ -101,15 +64,12 @@ public struct SwikiTopic: Decodable, Sendable {
     public let htmlFooter: String?
     public let commentsCount: Int
     public let forum: SwikiForum?
-    public let user: SwikiUser?
+    public let user: SwikiUserPreview?
     public let type: String
     public let linkedId: String?
-    public let linkedType: String?
+    public let linkedType: SwikiTopicLinkedType?
     public let viewed: Bool
     public let lastCommentViewed: Bool?
-    public let url: URL?
-    public let tags: [String]
-    public let updatedAt: Date?
 
     enum CodingKeys: String, CodingKey {
         case id
@@ -130,9 +90,6 @@ public struct SwikiTopic: Decodable, Sendable {
         case linkedType = "linked_type"
         case viewed
         case lastCommentViewed = "last_comment_viewed"
-        case url
-        case tags
-        case updatedAt = "updated_at"
     }
 
     public init(from decoder: any Decoder) throws {
@@ -159,10 +116,10 @@ public struct SwikiTopic: Decodable, Sendable {
         self.htmlFooter = try container.decodeIfPresent(String.self, forKey: .htmlFooter)
         self.commentsCount = try container.decodeIfPresent(Int.self, forKey: .commentsCount) ?? 0
         self.forum = try container.decodeIfPresent(SwikiForum.self, forKey: .forum)
-        self.user = try container.decodeIfPresent(SwikiUser.self, forKey: .user)
+        self.user = try container.decodeIfPresent(SwikiUserPreview.self, forKey: .user)
         self.type = try container.decodeIfPresent(String.self, forKey: .type) ?? ""
         self.linkedId = try container.decodeStringOrIntIfPresent(forKey: .linkedId)
-        self.linkedType = try container.decodeIfPresent(String.self, forKey: .linkedType)
+        self.linkedType = try container.decodeIfPresent(SwikiTopicLinkedType.self, forKey: .linkedType)
         self.viewed = try container.decodeIfPresent(Bool.self, forKey: .viewed) ?? false
         if let boolValue = try? container.decodeIfPresent(Bool.self, forKey: .lastCommentViewed) {
             self.lastCommentViewed = boolValue
@@ -171,8 +128,5 @@ public struct SwikiTopic: Decodable, Sendable {
         } else {
             self.lastCommentViewed = nil
         }
-        self.url = try container.decodeIfPresent(URL.self, forKey: .url)
-        self.tags = try container.decodeIfPresent([String].self, forKey: .tags) ?? []
-        self.updatedAt = try container.decodeIfPresent(Date.self, forKey: .updatedAt)
     }
 }

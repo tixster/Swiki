@@ -11,13 +11,26 @@ public struct SwikiV1ReviewsClient: SwikiResourceSubclient {
 }
 
 public extension SwikiV1ReviewsClient {
-    func get() async throws -> [SwikiReview] { try await list() }
-    func get(id: String) async throws -> SwikiReview { try await resourceClient.get(id: id) }
-    func create<Body: Encodable>(body: Body, query: SwikiQuery = [:]) async throws -> SwikiReview {
-        try await resourceClient.create(body: body, query: query)
+
+    /// POST ``/api/reviews``
+    ///
+    /// Create a review.
+    func create(review: SwikiReviewCreatePayload) async throws -> SwikiReview {
+        try await resourceClient.create(body: SwikiReviewCreatePayloadBody(review: review))
     }
-    func update<Body: Encodable>(id: String, body: Body, query: SwikiQuery = [:]) async throws -> SwikiReview {
-        try await resourceClient.update(id: id, body: body, query: query, method: .put)
+
+    /// PUT ``/api/reviews/:id``
+    ///
+    /// Update a review.
+    func update(id: String, review: SwikiReviewUpdatePayload) async throws -> SwikiReview {
+        try await resourceClient.update(id: id, body: SwikiReviewUpdatePayloadBody(review: review), method: .put)
     }
-    func delete(id: String) async throws { try await resourceClient.delete(id: id) }
+
+    /// DELETE ``/api/reviews/:id``
+    ///
+    /// Delete a review.
+    func delete(id: String) async throws {
+        try await resourceClient.delete(id: id)
+    }
+
 }

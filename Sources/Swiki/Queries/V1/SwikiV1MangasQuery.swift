@@ -1,7 +1,9 @@
 import Foundation
 import SwikiModels
 
-public struct SwikiV1MangasQuery: SwikiQueryConvertible {
+public typealias SwikiV1RanobeSearchQuery = SwikiV1MangasSearchQuery
+
+public struct SwikiV1MangasSearchQuery: SwikiQueryConvertible {
     public typealias Filter<Value: RawRepresentable & Sendable> = SwikiQueryFilter<Value> where Value.RawValue == String
     /// Must be a number between 1 and 100000.
     public var page: Int?
@@ -130,6 +132,37 @@ public struct SwikiV1MangasQuery: SwikiQueryConvertible {
             "ids": SwikiQueryEncoding.csv(ids),
             "exclude_ids": SwikiQueryEncoding.csv(excludeIDs),
             "search": search
+        ]
+        query = query.filter { $0.value != nil }
+        return SwikiQueryEncoding.merge(query, with: extra)
+    }
+}
+
+public typealias SwikiV1RanobeQuery = SwikiV1MangasQuery
+
+public struct SwikiV1MangasQuery: SwikiQueryConvertible {
+    /// Must be a number between 1 and 100000.
+    public var page: Int?
+    /// limit: 30 maximum.
+    public var limit: Int?
+    /// extra fields
+    public var extra: SwikiQuery
+
+    public init(
+        page: Int? = nil,
+        limit: Int? = nil,
+        extra: SwikiQuery = [:]
+    ) {
+        self.page = page
+        self.limit = limit
+        self.extra = extra
+    }
+
+
+    public var asSwikiQuery: SwikiQuery {
+        var query: SwikiQuery = [
+            "page": page?.description,
+            "limit": limit?.description,
         ]
         query = query.filter { $0.value != nil }
         return SwikiQueryEncoding.merge(query, with: extra)

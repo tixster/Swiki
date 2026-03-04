@@ -38,10 +38,16 @@ public struct SwikiV2EpisodeNotificationsClient: Sendable {
 }
 
 public extension SwikiV2EpisodeNotificationsClient {
+    /// POST ``/api/v2/episode_notifications``
+    ///
+    /// Create episode notification with custom body.
     func create<Body: Encodable>(body: Body, query: SwikiV2EpisodeNotificationsQuery) async throws -> SwikiEpisodeNotification {
         try await transport.request(version: .v2, method: .post, path: "episode_notifications", query: query.asSwikiQuery, body: body)
     }
 
+    /// POST ``/api/v2/episode_notifications``
+    ///
+    /// Create episode notification.
     func create(
         token: String,
         animeId: String,

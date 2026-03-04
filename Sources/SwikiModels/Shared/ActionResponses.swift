@@ -6,33 +6,26 @@ public struct SwikiNoticeResponse: Decodable, Sendable {
 }
 
 public struct SwikiTopicIgnoreCreateResponse: Decodable, Sendable {
-    public let id: String?
-    public let url: URL?
-    public let method: String?
+    public let id: String
+    public let url: URL
+    public let method: String
 
     enum CodingKeys: String, CodingKey {
         case id
         case url
         case method
     }
-
-    public init(from decoder: any Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.id = try container.decodeStringOrIntIfPresent(forKey: .id)
-        self.url = try container.decodeIfPresent(URL.self, forKey: .url)
-        self.method = try container.decodeIfPresent(String.self, forKey: .method)
-    }
 }
 
 public struct SwikiTopicIgnoreDeleteResponse: Decodable, Sendable {
-    public let url: URL?
-    public let method: String?
+    public let url: URL
+    public let method: String
 }
 
 public struct SwikiUserImageUploadResponse: Decodable, Sendable {
     public let id: String
-    public let preview: URL?
-    public let url: URL?
+    public let preview: URL
+    public let url: URL
     public let bbcode: String
 
     enum CodingKeys: String, CodingKey {
@@ -45,8 +38,8 @@ public struct SwikiUserImageUploadResponse: Decodable, Sendable {
     public init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.id = try container.decodeStringOrInt(forKey: .id)
-        self.preview = try container.decodeIfPresent(URL.self, forKey: .preview)
-        self.url = try container.decodeIfPresent(URL.self, forKey: .url)
+        self.preview = try container.decode(URL.self, forKey: .preview)
+        self.url = try container.decode(URL.self, forKey: .url)
         self.bbcode = try container.decode(String.self, forKey: .bbcode)
     }
 }

@@ -1,20 +1,16 @@
-//
-//  SwikiStylePreviewPayloadBody.swift
-//  Swiki
-//
-//  Created by Кирилл Тила on 04.03.2026.
-//
-
-
 import Foundation
 
-struct SwikiStylePreviewPayloadBody: Encodable, Sendable {
-    public let style: SwikiStylePreviewPayload
+struct SwikiStyleUpdatePayloadBody: Encodable, Sendable {
+    let style: SwikiStyleUpdatePayload
 }
 
-public struct SwikiStylePreviewPayload: Encodable, Sendable {
-    public let css: String
-    public init(css: String) {
+public struct SwikiStyleUpdatePayload: Encodable, Sendable {
+    public let css: String?
+    public let name: String?
+
+    public init(css: String?, name: String?) {
         self.css = css
+        self.name = name
     }
+
 }

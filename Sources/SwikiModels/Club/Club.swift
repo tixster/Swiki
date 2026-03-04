@@ -14,7 +14,7 @@ public struct SwikiClub: Decodable, Sendable {
     public let topicId: String?
     public let userRole: SwikiClubUserRole?
     public let styleId: String?
-    public let members: [SwikiUser]?
+    public let members: [SwikiUserPreview]?
     public let animes: [SwikiAnimeV1Preview]?
     public let mangas: [SwikiMangaV1Preview]?
     public let images: [SwikiClubImage]?
@@ -63,7 +63,7 @@ public struct SwikiClub: Decodable, Sendable {
             self.userRole = nil
         }
         self.styleId = try container.decodeStringOrIntIfPresent(forKey: .styleId)
-        self.members = try container.decodeIfPresent([SwikiUser].self, forKey: .members)
+        self.members = try container.decodeIfPresent([SwikiUserPreview].self, forKey: .members)
         self.animes = try container.decodeIfPresent([SwikiAnimeV1Preview].self, forKey: .animes)
         self.mangas = try container.decodeIfPresent([SwikiMangaV1Preview].self, forKey: .mangas)
         self.images = try container.decodeIfPresent([SwikiClubImage].self, forKey: .images)

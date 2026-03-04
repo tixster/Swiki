@@ -1,6 +1,6 @@
 import Foundation
 
-public struct SwikiUser: Decodable, Sendable {
+public struct SwikiUserPreview: Decodable, Sendable {
     public let id: String
     public let nickname: String
     public let url: URL?
@@ -78,7 +78,7 @@ public struct SwikiUserInfo: Decodable, Sendable {
     }
 }
 
-public struct SwikiUserId: Decodable, Sendable {
+public struct SwikiUser: Decodable, Sendable {
     public let id: String
     public let nickname: String
     public let avatar: URL

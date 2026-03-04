@@ -98,6 +98,7 @@ final class SwikiHTTPTransport: Sendable {
         id: String? = nil,
         route: String? = nil,
         query: SwikiQuery = [:],
+        contentType: String? = nil,
         body: Body
     ) async throws -> Response {
         let bodyData = try makeEncoder().encode(body)
@@ -108,6 +109,7 @@ final class SwikiHTTPTransport: Sendable {
             id: id,
             route: route,
             query: query,
+            contentType: contentType,
             bodyData: bodyData
         )
 
@@ -140,6 +142,7 @@ final class SwikiHTTPTransport: Sendable {
         id: String? = nil,
         route: String? = nil,
         query: SwikiQuery = [:],
+        contentType: String? = nil,
         body: Body
     ) async throws {
         let bodyData = try makeEncoder().encode(body)
@@ -150,6 +153,7 @@ final class SwikiHTTPTransport: Sendable {
             id: id,
             route: route,
             query: query,
+            contentType: contentType,
             bodyData: bodyData
         )
     }
@@ -193,6 +197,7 @@ final class SwikiHTTPTransport: Sendable {
         id: String?,
         route: String?,
         query: SwikiQuery,
+        contentType: String? = nil,
         bodyData: Data?
     ) async throws -> (Data, HTTPURLResponse) {
         let fullPath = makePath(path: path, id: id, route: route)
@@ -203,6 +208,7 @@ final class SwikiHTTPTransport: Sendable {
         return try await executeAuthenticated(
             url: url,
             method: method,
+            contentType: contentType,
             bodyData: bodyData,
             kind: .rest(version: version, path: fullPath)
         )
@@ -223,11 +229,17 @@ final class SwikiHTTPTransport: Sendable {
     private func executeAuthenticated(
         url: URL,
         method: SwikiHTTPMethod,
+        contentType: String? = nil,
         bodyData: Data?,
         kind: RequestKind
     ) async throws -> (Data, HTTPURLResponse) {
         let requestID = String(UUID().uuidString.prefix(8))
-        let initialRequest = try await buildRequest(url: url, method: method, bodyData: bodyData)
+        let initialRequest = try await buildRequest(
+            url: url,
+            method: method,
+            contentType: contentType,
+            bodyData: bodyData
+        )
         let initialStartedAt = Date()
         logRequestStart(
             requestID: requestID,
@@ -293,7 +305,12 @@ final class SwikiHTTPTransport: Sendable {
                 )
             )
 
-            let retryRequest = try await buildRequest(url: url, method: method, bodyData: bodyData)
+            let retryRequest = try await buildRequest(
+                url: url,
+                method: method,
+                contentType: contentType,
+                bodyData: bodyData
+            )
             let retryStartedAt = Date()
             logRequestStart(
                 requestID: requestID,
@@ -406,6 +423,7 @@ final class SwikiHTTPTransport: Sendable {
     private func buildRequest(
         url: URL,
         method: SwikiHTTPMethod,
+        contentType: String? = nil,
         bodyData: Data?
     ) async throws -> URLRequest {
         var request = URLRequest(url: url)
@@ -430,7 +448,11 @@ final class SwikiHTTPTransport: Sendable {
 
         if let bodyData {
             request.httpBody = bodyData
-            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            if let contentType {
+                request.setValue(contentType, forHTTPHeaderField: "Content-Type")
+            } else {
+                request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            }
         }
 
         return request

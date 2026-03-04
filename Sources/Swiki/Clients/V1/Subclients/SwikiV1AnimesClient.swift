@@ -97,7 +97,7 @@ public extension SwikiV1AnimesClient {
     }
 
     /// GET ``/api/animes/search``
-    @available(*, deprecated, renamed: "animes(query:)", message: "Use List animes API instead")
+    @available(*, deprecated, renamed: "list(query:)", message: "Use List animes API instead")
     func search(_ search: String) async throws -> [SwikiAnimeV1Preview] {
         try await request(
             .get,

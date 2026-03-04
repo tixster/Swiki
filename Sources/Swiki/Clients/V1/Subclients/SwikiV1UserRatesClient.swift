@@ -11,13 +11,23 @@ public struct SwikiV1UserRatesClient: SwikiResourceSubclient {
 }
 
 public extension SwikiV1UserRatesClient {
-    func get(query: SwikiV1UserRatesQuery = .init()) async throws -> [SwikiUserRate] { try await list(query: query.asSwikiQuery) }
-    func get(id: String) async throws -> SwikiUserRate { try await resourceClient.get(id: id) }
-    func create<Body: Encodable>(body: Body) async throws -> SwikiUserRate {
-        try await resourceClient.create(body: body)
+
+    /// DELETE ``/api/user_rates/:type/cleanup``
+    ///
+    /// Delete entire user rates and history
+    ///
+    /// - Note: Requires ``user_rates`` oauth scope
+    func cleanup(type: SwikiUserRatesType) async throws {
+        try await request(.delete, id: type.rawValue, route: "cleanup")
     }
-    func update<Body: Encodable>(id: String, body: Body) async throws -> SwikiUserRate {
-        try await resourceClient.update(id: id, body: body, method: .put)
+
+    /// DELETE ``/api/user_rates/:type/reset``
+    ///
+    /// Reset all user scores to 0
+    ///
+    /// - Note: Requires ``user_rates`` oauth scope
+    func reset(type: SwikiUserRatesType) async throws {
+        try await request(.delete, id: type.rawValue, route: "reset")
     }
-    func delete(id: String) async throws { try await resourceClient.delete(id: id) }
+
 }

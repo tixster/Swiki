@@ -1,19 +1,11 @@
-//
-//  SwikiMessageDeleteAllPayload.swift
-//  Swiki
-//
-//  Created by Кирилл Тила on 04.03.2026.
-//
-
-
 import Foundation
-import SwikiModels
 
-public struct SwikiMessageDeleteAllPayload: Encodable, Sendable {
-    public let type: SwikiMessageType
+public struct SwikiMessageMarkReadPayload: Encodable, Sendable {
+    public let ids: [String]
+    public let isRead: String
 
-    public init(type: SwikiMessageType) {
-        self.type = type
+    public init(ids: [String], isRead: Bool) {
+        self.ids = ids
+        self.isRead = isRead ? 1.description : 0.description
     }
-
 }

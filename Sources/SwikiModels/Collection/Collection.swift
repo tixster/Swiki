@@ -9,7 +9,7 @@ public struct SwikiCollection: Decodable, Sendable {
     public let createdAt: Date?
     public let commentsCount: Int
     public let forum: SwikiForum?
-    public let user: SwikiUser?
+    public let user: SwikiUserPreview?
     public let type: String
     public let linkedId: String?
     public let linkedType: String?
@@ -52,7 +52,7 @@ public struct SwikiCollection: Decodable, Sendable {
         self.createdAt = try container.decodeIfPresent(Date.self, forKey: .createdAt)
         self.commentsCount = try container.decodeIfPresent(Int.self, forKey: .commentsCount) ?? 0
         self.forum = try container.decodeIfPresent(SwikiForum.self, forKey: .forum)
-        self.user = try container.decodeIfPresent(SwikiUser.self, forKey: .user)
+        self.user = try container.decodeIfPresent(SwikiUserPreview.self, forKey: .user)
         self.type = try container.decodeIfPresent(String.self, forKey: .type) ?? ""
         self.linkedId = try container.decodeStringOrIntIfPresent(forKey: .linkedId)
         self.linkedType = try container.decodeIfPresent(String.self, forKey: .linkedType)

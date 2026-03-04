@@ -16,7 +16,7 @@ public extension SwikiV1IgnoresClient {
     /// Create an ignore
     ///
     /// - Note: Requires ``ignores`` oauth scope
-    @available(*, deprecated)
+    @available(*, deprecated, message: "API DEPREACATED")
     @discardableResult
     func create(userId: String) async throws -> SwikiNoticeResponse {
         try await transport.request(
@@ -33,7 +33,7 @@ public extension SwikiV1IgnoresClient {
     ///
     /// - Note: Requires ``ignores`` oauth scope
     @discardableResult
-    @available(*, deprecated)
+    @available(*, deprecated, message: "API DEPREACATED")
     func delete(userId: String) async throws -> SwikiNoticeResponse {
         try await transport
             .request(

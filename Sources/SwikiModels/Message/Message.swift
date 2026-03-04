@@ -66,7 +66,7 @@ public struct SwikiUserLinked: Decodable, Sendable {
 
 public struct SwikiMessage: Decodable, Sendable {
     public let id: String
-    public let kind: String
+    public let kind: SwikiMessageKind
     public let read: Bool
     public let body: String
     public let htmlBody: String
@@ -74,8 +74,8 @@ public struct SwikiMessage: Decodable, Sendable {
     public let linkedType: String?
     public let linked: SwikiUserLinked?
     public let createdAt: Date
-    public let from: SwikiUser
-    public let to: SwikiUser
+    public let from: SwikiUserPreview
+    public let to: SwikiUserPreview
 
     enum CodingKeys: String, CodingKey {
         case id
@@ -94,7 +94,7 @@ public struct SwikiMessage: Decodable, Sendable {
     public init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.id = try container.decodeStringOrInt(forKey: .id)
-        self.kind = try container.decode(String.self, forKey: .kind)
+        self.kind = (try? container.decode(SwikiMessageKind.self, forKey: .kind)) ?? .unknown
         self.read = try container.decode(Bool.self, forKey: .read)
         self.body = try container.decode(String.self, forKey: .body)
         self.htmlBody = try container.decode(String.self, forKey: .htmlBody)
@@ -102,8 +102,8 @@ public struct SwikiMessage: Decodable, Sendable {
         self.linkedType = try container.decodeIfPresent(String.self, forKey: .linkedType)
         self.linked = try container.decodeIfPresent(SwikiUserLinked.self, forKey: .linked)
         self.createdAt = try container.decode(Date.self, forKey: .createdAt)
-        self.from = try container.decode(SwikiUser.self, forKey: .from)
-        self.to = try container.decode(SwikiUser.self, forKey: .to)
+        self.from = try container.decode(SwikiUserPreview.self, forKey: .from)
+        self.to = try container.decode(SwikiUserPreview.self, forKey: .to)
     }
 
 }

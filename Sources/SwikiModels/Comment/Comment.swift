@@ -12,7 +12,7 @@ public struct SwikiComment: Decodable, Sendable {
     public let isOfftopic: Bool
     public let htmlBody: String
     public let canBeEdited: Bool
-    public let user: SwikiUser?
+    public let user: SwikiUserPreview?
 
     enum CodingKeys: String, CodingKey {
         case id
@@ -45,6 +45,6 @@ public struct SwikiComment: Decodable, Sendable {
         let canBeEdited = try container.decodeIfPresent(Bool.self, forKey: .canBeEdited)
         let isEditable = try container.decodeIfPresent(Bool.self, forKey: .isEditable)
         self.canBeEdited = canBeEdited ?? isEditable ?? false
-        self.user = try container.decodeIfPresent(SwikiUser.self, forKey: .user)
+        self.user = try container.decodeIfPresent(SwikiUserPreview.self, forKey: .user)
     }
 }

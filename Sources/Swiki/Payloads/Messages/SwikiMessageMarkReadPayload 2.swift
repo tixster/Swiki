@@ -1,9 +1,10 @@
-public struct SwikiMessageMarkReadPayload: Encodable, Sendable {
-    public let ids: [String]
-    public let isRead: String
+import Foundation
+import SwikiModels
 
-    public init(ids: [String], isRead: Bool) {
-        self.ids = ids
-        self.isRead = isRead ? 1.description : 0.description
+public struct SwikiMessageReadAllPayload: Encodable, Sendable {
+    public let type: SwikiMessageType
+
+    public init(type: SwikiMessageType) {
+        self.type = type
     }
 }

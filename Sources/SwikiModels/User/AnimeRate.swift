@@ -12,7 +12,7 @@ public struct SwikiAnimeRate: Decodable, Sendable {
     public let textHtml: String?
     public let createdAt: Date?
     public let updatedAt: Date?
-    public let user: SwikiUser?
+    public let user: SwikiUserPreview?
     public let anime: SwikiAnimeV1Preview?
     public let manga: SwikiMangaV1Preview?
 
@@ -46,7 +46,7 @@ public struct SwikiAnimeRate: Decodable, Sendable {
         self.textHtml = try container.decodeIfPresent(String.self, forKey: .textHtml)
         self.createdAt = try container.decodeIfPresent(Date.self, forKey: .createdAt)
         self.updatedAt = try container.decodeIfPresent(Date.self, forKey: .updatedAt)
-        self.user = try container.decodeIfPresent(SwikiUser.self, forKey: .user)
+        self.user = try container.decodeIfPresent(SwikiUserPreview.self, forKey: .user)
         self.anime = try container.decodeIfPresent(SwikiAnimeV1Preview.self, forKey: .anime)
         self.manga = try container.decodeIfPresent(SwikiMangaV1Preview.self, forKey: .manga)
     }

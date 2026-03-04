@@ -11,15 +11,33 @@ public struct SwikiV1StylesClient: SwikiResourceSubclient {
 }
 
 public extension SwikiV1StylesClient {
-    func get() async throws -> [SwikiStyle] { try await list() }
-    func get(id: String) async throws -> SwikiStyle { try await resourceClient.get(id: id) }
-    func preview<Body: Encodable>(body: Body) async throws -> SwikiStyle {
-        try await request(.post, route: "preview", body: body)
+
+    /// GET ``/api/styles/:id``
+    ///
+    /// Show a style.
+    func style(id: String) async throws -> SwikiStyle {
+        try await resourceClient.get(id: id)
     }
-    func create<Body: Encodable>(body: Body) async throws -> SwikiStyle {
-        try await resourceClient.create(body: body)
+
+    /// POST ``/api/styles/preview``
+    ///
+    /// Preview a style payload.
+    func preview(style: SwikiStylePreviewPayload) async throws -> SwikiStyle {
+        try await request(.post, route: "preview", body: SwikiStylePreviewPayloadBody(style: style))
     }
-    func update<Body: Encodable>(id: String, body: Body) async throws -> SwikiStyle {
-        try await resourceClient.update(id: id, body: body, method: .post)
+
+    /// POST ``/api/styles``
+    ///
+    /// Create a style.
+    func create(style: SwikiStyleCreatePayload) async throws -> SwikiStyle {
+        try await resourceClient.create(body: SwikiStyleCreatePayloadBody(style: style))
     }
+
+    /// PUT ``/api/styles/:id``
+    ///
+    /// Update a style.
+    func update(id: String, style: SwikiStyleUpdatePayload) async throws -> SwikiStyle {
+        try await resourceClient.update(id: id, body: SwikiStyleUpdatePayloadBody(style: style), method: .put)
+    }
+
 }

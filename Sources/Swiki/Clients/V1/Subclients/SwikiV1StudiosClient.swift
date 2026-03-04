@@ -11,5 +11,10 @@ public struct SwikiV1StudiosClient: SwikiResourceSubclient {
 }
 
 public extension SwikiV1StudiosClient {
-    func get() async throws -> [SwikiStudio] { try await list() }
+    /// GET ``/api/studios``
+    ///
+    /// List studios.
+    func list() async throws -> [SwikiStudio] {
+        try await resourceClient.list()
+    }
 }

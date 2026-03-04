@@ -11,6 +11,19 @@ public struct SwikiV1PeopleClient: SwikiResourceSubclient {
 }
 
 public extension SwikiV1PeopleClient {
-    func get(query: SwikiV1PeopleQuery) async throws -> [SwikiPerson] { try await list(query: query.asSwikiQuery) }
-    func get(id: String) async throws -> SwikiPerson { try await resourceClient.get(id: id) }
+
+    /// GET ``/api/people/:id``
+    ///
+    /// Show a person.
+    func person(id: String) async throws -> SwikiPerson {
+        try await resourceClient.get(id: id)
+    }
+
+    /// GET ``/api/people/search ``
+    ///
+    /// Search people
+    func search(query: SwikiV1PeopleQuery) async throws -> [SwikiPersonPreview] {
+        try await request(.get, route: "search", query: query.asSwikiQuery)
+    }
+
 }

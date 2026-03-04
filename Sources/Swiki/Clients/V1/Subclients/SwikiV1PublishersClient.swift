@@ -11,6 +11,12 @@ public struct SwikiV1PublishersClient: SwikiResourceSubclient {
 }
 
 public extension SwikiV1PublishersClient {
-    func get() async throws -> [SwikiPublisher] { try await list() }
-    func get(id: String) async throws -> SwikiPublisher { try await resourceClient.get(id: id) }
+
+    /// GET ``/api/publishers``
+    ///
+    /// List publishers.
+    func list() async throws -> [SwikiPublisher] {
+        try await resourceClient.list()
+    }
+
 }

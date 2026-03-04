@@ -1,8 +1,6 @@
-//
-//  File.swift
-//  Swiki
-//
-//  Created by Кирилл Тила on 04.03.2026.
-//
-
 import Foundation
+
+public enum SwikiStyleOwnerType: String, Codable, Sendable {
+    case user = "User"
+    case club = "Club"
+}

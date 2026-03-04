@@ -1,7 +1,7 @@
 import Foundation
 
 public struct SwikiDialog: Decodable, Sendable {
-    public let targetUser: SwikiUser
+    public let targetUser: SwikiUserPreview
     public let message: SwikiMessagePreview
 
     enum CodingKeys: String, CodingKey {
@@ -11,7 +11,7 @@ public struct SwikiDialog: Decodable, Sendable {
 
     public init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.targetUser = try container.decode(SwikiUser.self, forKey: .targetUser)
+        self.targetUser = try container.decode(SwikiUserPreview.self, forKey: .targetUser)
         self.message = try container.decode(SwikiMessagePreview.self, forKey: .message)
     }
 

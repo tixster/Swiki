@@ -33,4 +33,5 @@ public enum SwikiExternalLinkKind: String, Decodable, Sendable {
     case ruranobe
     case ranobelib
     case novelupdates
+    case unknown
 }

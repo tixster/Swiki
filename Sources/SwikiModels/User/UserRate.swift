@@ -2,6 +2,7 @@ import Foundation
 
 public struct SwikiUserRate: Decodable, Sendable {
     public let id: String
+    public let userId: String?
     public let episodes: Int?
     public let volumes: Int?
     public let chapters: Int?
@@ -12,7 +13,6 @@ public struct SwikiUserRate: Decodable, Sendable {
     public let textHtml: String?
     public let createdAt: Date?
     public let updatedAt: Date?
-    public let userId: String?
     public let targetId: String?
     public let targetType: SwikiUserRateTargetType?
 

@@ -5,7 +5,7 @@ public struct SwikiFriend: Decodable, Sendable {
     public let userId: String
     public let friendId: String
     public let createdAt: Date
-    public let user: SwikiUser?
+    public let user: SwikiUserPreview?
 
     enum CodingKeys: String, CodingKey {
         case id
@@ -21,6 +21,6 @@ public struct SwikiFriend: Decodable, Sendable {
         self.userId = try container.decodeStringOrInt(forKey: .userId)
         self.friendId = try container.decodeStringOrInt(forKey: .friendId)
         self.createdAt = try container.decode(Date.self, forKey: .createdAt)
-        self.user = try container.decodeIfPresent(SwikiUser.self, forKey: .user)
+        self.user = try container.decodeIfPresent(SwikiUserPreview.self, forKey: .user)
     }
 }

@@ -16,7 +16,7 @@ public extension SwikiV1MangasClient {
     /// GET ``/api/mangas``
     ///
     /// List mangas
-    func list(query: SwikiV1MangasQuery = .init()) async throws -> [SwikiMangaV1Preview] {
+    func list(query: SwikiV1MangasSearchQuery = .init()) async throws -> [SwikiMangaV1Preview] {
         try await request(.get, query: query.asSwikiQuery)
     }
 
@@ -42,11 +42,6 @@ public extension SwikiV1MangasClient {
         try await request(.get, id: id, route: "related")
     }
 
-    /// GET ``/api/mangas/:id/screenshots``
-    func screenshots(id: String) async throws -> [SwikiImage] {
-        try await request(.get, id: id, route: "screenshots")
-    }
-
     /// GET ``/api/mangas/:id/franchise``
     func franchise(id: String) async throws -> SwikiFranchise {
         try await request(.get, id: id, route: "franchise")
@@ -55,6 +50,16 @@ public extension SwikiV1MangasClient {
     /// GET ``/api/mangas/:id/external_links``
     func externalLinks(id: String) async throws -> [SwikiExternalLink] {
         try await request(.get, id: id, route: "external_links")
+    }
+
+    /// GET ``/api/animes/search``
+    @available(*, deprecated, renamed: "list(query:)", message: "Use List mangas API instead")
+    func search(_ search: String) async throws -> [SwikiAnimeV1Preview] {
+        try await request(
+            .get,
+            route: "search",
+            query: ["search": search]
+        )
     }
 
     /// GET ``/api/mangas/:id/topics``

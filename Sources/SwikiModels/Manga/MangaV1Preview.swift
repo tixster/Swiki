@@ -1,5 +1,7 @@
 import Foundation
 
+public typealias SwikiRanobeV1Preview = SwikiMangaV1Preview
+
 /// RestV1 preview model for `/api/mangas` list-like responses.
 public struct SwikiMangaV1Preview: Decodable, Sendable {
     public let id: String

@@ -14,7 +14,7 @@ public struct SwikiReview: Decodable, Sendable {
     public let isNegative: Bool
     public let createdAt: Date
     public let updatedAt: Date
-    public let user: SwikiUser?
+    public let user: SwikiUserPreview?
 
     enum CodingKeys: String, CodingKey {
         case id
@@ -48,6 +48,6 @@ public struct SwikiReview: Decodable, Sendable {
         self.isNegative = try container.decode(Bool.self, forKey: .isNegative)
         self.createdAt = try container.decode(Date.self, forKey: .createdAt)
         self.updatedAt = try container.decode(Date.self, forKey: .updatedAt)
-        self.user = try container.decodeIfPresent(SwikiUser.self, forKey: .user)
+        self.user = try container.decodeIfPresent(SwikiUserPreview.self, forKey: .user)
     }
 }
