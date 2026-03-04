@@ -10,7 +10,6 @@ public struct SwikiV1Client: Sendable {
     public let calendars: SwikiV1CalendarsClient
     public let characters: SwikiV1CharactersClient
     public let clubs: SwikiV1ClubsClient
-    public let collections: SwikiV1CollectionsClient
     public let comments: SwikiV1CommentsClient
     public let constants: SwikiV1ConstantsClient
     public let dialogs: SwikiV1DialogsClient
@@ -46,7 +45,6 @@ public struct SwikiV1Client: Sendable {
         self.calendars = SwikiV1CalendarsClient(transport: transport)
         self.characters = SwikiV1CharactersClient(transport: transport)
         self.clubs = SwikiV1ClubsClient(transport: transport)
-        self.collections = SwikiV1CollectionsClient(transport: transport)
         self.comments = SwikiV1CommentsClient(transport: transport)
         self.constants = SwikiV1ConstantsClient(transport: transport)
         self.dialogs = SwikiV1DialogsClient(transport: transport)

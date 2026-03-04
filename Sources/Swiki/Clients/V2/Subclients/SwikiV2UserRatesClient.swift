@@ -36,6 +36,6 @@ public extension SwikiV2UserRatesClient {
     }
 
     func increment(id: String) async throws -> SwikiUserRate {
-        try await request(.get, id: id, action: "increment")
+        try await request(.post, id: id, route: "increment")
     }
 }

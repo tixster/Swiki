@@ -2,20 +2,20 @@ import Foundation
 import SwikiModels
 
 public struct SwikiV1UserRatesQuery: SwikiQueryConvertible {
-    public let page: Int?
-    public let limit: Int?
-    public let userID: String?
-    public let targetID: String?
-    public let targetType: SwikiUserRateTargetType?
-    public let status: SwikiUserRateStatus?
-    public let censored: Bool?
-    public let extra: SwikiQuery
+    public var page: Int?
+    public var limit: Int?
+    public var userId: String?
+    public var targetId: String?
+    public var targetType: SwikiUserRateTargetType?
+    public var status: SwikiUserRateStatus?
+    public var censored: Bool?
+    public var extra: SwikiQuery
 
     public init(
         page: Int? = nil,
         limit: Int? = nil,
-        userID: String? = nil,
-        targetID: String? = nil,
+        userId: String? = nil,
+        targetId: String? = nil,
         targetType: SwikiUserRateTargetType? = nil,
         status: SwikiUserRateStatus? = nil,
         censored: Bool? = nil,
@@ -23,8 +23,8 @@ public struct SwikiV1UserRatesQuery: SwikiQueryConvertible {
     ) {
         self.page = page
         self.limit = limit
-        self.userID = userID
-        self.targetID = targetID
+        self.userId = userId
+        self.targetId = targetId
         self.targetType = targetType
         self.status = status
         self.censored = censored
@@ -35,8 +35,8 @@ public struct SwikiV1UserRatesQuery: SwikiQueryConvertible {
         var query: SwikiQuery = [
             "page": page.map(String.init),
             "limit": limit.map(String.init),
-            "user_id": userID,
-            "target_id": targetID,
+            "user_id": userId,
+            "target_id": targetId,
             "target_type": targetType?.rawValue,
             "status": status?.rawValue,
             "censored": censored.map(SwikiQueryEncoding.bool)

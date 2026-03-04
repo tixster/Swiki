@@ -2,7 +2,7 @@ import Foundation
 
 /// RestV1
 public struct SwikiAnimeV1: Decodable, Sendable {
-    public let id: Int
+    public let id: String
     public let name: String
     public let russian: String
     public let image: SwikiImage
@@ -34,7 +34,7 @@ public struct SwikiAnimeV1: Decodable, Sendable {
     public let ratesScoresStats: [SwikiRateScore]
     public let ratesStatusesStats: [SwikiRateStatus]
     public let updatedAt: Date
-    public let nextEpisodeAt: Int?
+    public let nextEpisodeAt: Date?
     public let fansubbers: [String]
     public let fandubbers: [String]
     public let licensors: [String]
@@ -88,7 +88,7 @@ public struct SwikiAnimeV1: Decodable, Sendable {
 
     public init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeysRest.self)
-        self.id = try container.decode(Int.self, forKey: .id)
+        self.id = try container.decodeStringOrInt(forKey: .id)
         self.name = try container.decode(String.self, forKey: .name)
         self.russian = try container.decode(String.self, forKey: .russian)
         self.image = try container.decode(SwikiImage.self, forKey: .image)
@@ -125,7 +125,13 @@ public struct SwikiAnimeV1: Decodable, Sendable {
         self.ratesScoresStats = try container.decode([SwikiRateScore].self, forKey: .ratesScoresStats)
         self.ratesStatusesStats = try container.decode([SwikiRateStatus].self, forKey: .ratesStatusesStats)
         self.updatedAt = try container.decode(Date.self, forKey: .updatedAt)
-        self.nextEpisodeAt = try container.decodeIfPresent(Int.self, forKey: .nextEpisodeAt)
+        if let rawValue = try container.decodeIfPresent(String.self, forKey: .nextEpisodeAt) {
+            self.nextEpisodeAt = Self.parseDate(rawValue)
+        } else if let timestamp = try container.decodeIfPresent(Int.self, forKey: .nextEpisodeAt) {
+            self.nextEpisodeAt = Date(timeIntervalSince1970: TimeInterval(timestamp))
+        } else {
+            self.nextEpisodeAt = nil
+        }
         self.fansubbers = try container.decode([String].self, forKey: .fansubbers)
         self.fandubbers = try container.decode([String].self, forKey: .fandubbers)
         self.licensors = try container.decode([String].self, forKey: .licensors)
@@ -133,6 +139,18 @@ public struct SwikiAnimeV1: Decodable, Sendable {
         self.studios = try container.decode([SwikiStudio].self, forKey: .studios)
         self.videos = try container.decode([SwikiVideo].self, forKey: .videos)
         self.screenshots = try container.decode([SwikiImage].self, forKey: .screenshots)
+    }
+
+    private static func parseDate(_ rawValue: String) -> Date? {
+        let fractional = ISO8601DateFormatter()
+        fractional.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        if let parsed = fractional.date(from: rawValue) {
+            return parsed
+        }
+
+        let basic = ISO8601DateFormatter()
+        basic.formatOptions = [.withInternetDateTime]
+        return basic.date(from: rawValue)
     }
 
 }

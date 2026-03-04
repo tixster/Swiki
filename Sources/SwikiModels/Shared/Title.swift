@@ -2,18 +2,16 @@ import Foundation
 
 public protocol SwikiTitle: Decodable, Sendable {
 
-    associatedtype Title: SwikiTitle
     associatedtype Kind: Decodable & Sendable
     associatedtype Status: Decodable & Sendable
 
     var id: String { get }
-    var malId: String? { get }
     var name: String { get }
     var russian: String? { get }
     var licenseNameRu: String? { get }
-    var english: String? { get }
-    var japanese: String? { get }
-    var synonims: [String] { get }
+    var english: [String]? { get }
+    var japanese: [String]? { get }
+    var synonims: [String]? { get }
     var kind: Kind { get }
     var score: Float? { get }
     var status: Status { get }
@@ -31,7 +29,6 @@ public protocol SwikiTitle: Decodable, Sendable {
     var personRoles: [SwikiPersonRole]? { get }
     var characterRoles: [SwikiCharacterRole]? { get }
     var franchise: String? { get }
-    var chronology: [Title]? { get }
     var description: String? { get }
     var descriptionHtml: String? { get }
     var descriptionSource: String? { get }

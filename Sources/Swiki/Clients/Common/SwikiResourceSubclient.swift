@@ -46,7 +46,7 @@ public struct SwikiResourceClient<Model: Decodable>: Sendable {
     public func request<Response: Decodable>(
         _ method: SwikiHTTPMethod,
         id: String? = nil,
-        action: String? = nil,
+        route: String? = nil,
         query: SwikiQuery = [:]
     ) async throws -> Response {
         try await transport.request(
@@ -54,7 +54,7 @@ public struct SwikiResourceClient<Model: Decodable>: Sendable {
             method: method,
             path: path,
             id: id,
-            action: action,
+            route: route,
             query: query
         )
     }
@@ -62,7 +62,7 @@ public struct SwikiResourceClient<Model: Decodable>: Sendable {
     public func request<Response: Decodable, Body: Encodable>(
         _ method: SwikiHTTPMethod,
         id: String? = nil,
-        action: String? = nil,
+        route: String? = nil,
         query: SwikiQuery = [:],
         body: Body
     ) async throws -> Response {
@@ -71,7 +71,7 @@ public struct SwikiResourceClient<Model: Decodable>: Sendable {
             method: method,
             path: path,
             id: id,
-            action: action,
+            route: route,
             query: query,
             body: body
         )
@@ -80,7 +80,7 @@ public struct SwikiResourceClient<Model: Decodable>: Sendable {
     public func request(
         _ method: SwikiHTTPMethod,
         id: String? = nil,
-        action: String? = nil,
+        route: String? = nil,
         query: SwikiQuery = [:]
     ) async throws {
         try await transport.request(
@@ -88,7 +88,7 @@ public struct SwikiResourceClient<Model: Decodable>: Sendable {
             method: method,
             path: path,
             id: id,
-            action: action,
+            route: route,
             query: query
         )
     }
@@ -96,7 +96,7 @@ public struct SwikiResourceClient<Model: Decodable>: Sendable {
     public func request<Body: Encodable>(
         _ method: SwikiHTTPMethod,
         id: String? = nil,
-        action: String? = nil,
+        route: String? = nil,
         query: SwikiQuery = [:],
         body: Body
     ) async throws {
@@ -105,7 +105,7 @@ public struct SwikiResourceClient<Model: Decodable>: Sendable {
             method: method,
             path: path,
             id: id,
-            action: action,
+            route: route,
             query: query,
             body: body
         )
@@ -118,7 +118,8 @@ public protocol SwikiResourceSubclient: Sendable {
     var resourceClient: SwikiResourceClient<Model> { get }
 }
 
-public extension SwikiResourceSubclient {
+extension SwikiResourceSubclient {
+    
     func list(query: SwikiQuery = [:]) async throws -> [Model] {
         try await resourceClient.list(query: query)
     }
@@ -150,39 +151,39 @@ public extension SwikiResourceSubclient {
     func request<Response: Decodable>(
         _ method: SwikiHTTPMethod,
         id: String? = nil,
-        action: String? = nil,
+        route: String? = nil,
         query: SwikiQuery = [:]
     ) async throws -> Response {
-        try await resourceClient.request(method, id: id, action: action, query: query)
+        try await resourceClient.request(method, id: id, route: route, query: query)
     }
 
     func request<Response: Decodable, Body: Encodable>(
         _ method: SwikiHTTPMethod,
         id: String? = nil,
-        action: String? = nil,
+        route: String? = nil,
         query: SwikiQuery = [:],
         body: Body
     ) async throws -> Response {
-        try await resourceClient.request(method, id: id, action: action, query: query, body: body)
+        try await resourceClient.request(method, id: id, route: route, query: query, body: body)
     }
 
     func request(
         _ method: SwikiHTTPMethod,
         id: String? = nil,
-        action: String? = nil,
+        route: String? = nil,
         query: SwikiQuery = [:]
     ) async throws {
-        try await resourceClient.request(method, id: id, action: action, query: query)
+        try await resourceClient.request(method, id: id, route: route, query: query)
     }
 
     func request<Body: Encodable>(
         _ method: SwikiHTTPMethod,
         id: String? = nil,
-        action: String? = nil,
+        route: String? = nil,
         query: SwikiQuery = [:],
         body: Body
     ) async throws {
-        try await resourceClient.request(method, id: id, action: action, query: query, body: body)
+        try await resourceClient.request(method, id: id, route: route, query: query, body: body)
     }
 
 }

@@ -1,6 +1,10 @@
 import Foundation
 import SwikiModels
 
+/// GET ``/api/dialogs``
+///
+/// - Note:
+/// Requires ``messages`` oauth scope
 public struct SwikiV1DialogsClient: SwikiResourceSubclient {
     public typealias Model = SwikiDialog
     public let resourceClient: SwikiResourceClient<SwikiDialog>
@@ -11,11 +15,32 @@ public struct SwikiV1DialogsClient: SwikiResourceSubclient {
 }
 
 public extension SwikiV1DialogsClient {
-    func get(query: SwikiQuery = [:]) async throws -> [SwikiDialog] { try await list(query: query) }
-    func messages(fromNickname: String, query: SwikiQuery = [:]) async throws -> [SwikiMessage] {
-        try await request(.get, id: fromNickname, query: query)
+
+    /// GET ``/api/dialogs``
+    ///
+    /// List dialogs
+    /// - Note:
+    /// Requires ``messages`` oauth scope
+    func list(query: SwikiQuery = [:]) async throws -> [SwikiDialog] {
+        try await request(.get, query: query)
     }
-    func delete(nickname: String) async throws {
-        try await request(.delete, id: nickname)
+
+    /// GET ``/api/dialogs/:id``
+    ///
+    /// Show a dialog
+    /// - Note:
+    /// Requires ``messages`` oauth scope
+    func messages(targetUserId: String, query: SwikiQuery = [:]) async throws -> [SwikiMessage] {
+        try await request(.get, id: targetUserId, query: query)
     }
+
+    /// DELETE ``/api/dialogs/:id``
+    ///
+    /// Destroy a dialog
+    /// - Note:
+    /// Requires ``messages`` oauth scope
+    func delete(targetUserId: String) async throws {
+        try await request(.delete, id: targetUserId)
+    }
+
 }

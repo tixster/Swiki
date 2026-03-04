@@ -34,8 +34,8 @@ struct TypedQueriesTests {
         let query = SwikiV1UserRatesQuery(
             page: 1,
             limit: 50,
-            userID: "99",
-            targetID: "123",
+            userId: "99",
+            targetId: "123",
             targetType: .anime,
             status: .watching
         )
@@ -103,7 +103,7 @@ struct TypedQueriesTests {
         let query = SwikiV2UserRatesQuery(
             page: 3,
             limit: 15,
-            userID: "77",
+            userId: "77",
             status: .completed
         )
 

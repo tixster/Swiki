@@ -42,7 +42,7 @@ public struct SwikiCharacter: Decodable, Sendable {
     public let updatedAt: Date?
     public let seyu: [SwikiSeyu]?
     public let animes: [SwikiAnimeV1Preview]?
-    public let mangas: [SwikiManga]?
+    public let mangas: [SwikiMangaV1Preview]?
 
     enum CodingKeys: String, CodingKey {
         case id
@@ -82,6 +82,6 @@ public struct SwikiCharacter: Decodable, Sendable {
         self.updatedAt = try container.decodeIfPresent(Date.self, forKey: .updatedAt)
         self.seyu = try container.decodeIfPresent([SwikiSeyu].self, forKey: .seyu)
         self.animes = try container.decodeIfPresent([SwikiAnimeV1Preview].self, forKey: .animes)
-        self.mangas = try container.decodeIfPresent([SwikiManga].self, forKey: .mangas)
+        self.mangas = try container.decodeIfPresent([SwikiMangaV1Preview].self, forKey: .mangas)
     }
 }

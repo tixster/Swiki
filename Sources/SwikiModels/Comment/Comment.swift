@@ -3,7 +3,7 @@ import Foundation
 public struct SwikiComment: Decodable, Sendable {
     public let id: String
     public let commentableId: String
-    public let commentableType: String
+    public let commentableType: SwikiCommentableType
     public let body: String
     public let userId: String
     public let createdAt: Date?
@@ -34,7 +34,7 @@ public struct SwikiComment: Decodable, Sendable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.id = try container.decodeStringOrInt(forKey: .id)
         self.commentableId = try container.decodeStringOrInt(forKey: .commentableId)
-        self.commentableType = try container.decode(String.self, forKey: .commentableType)
+        self.commentableType = try container.decode(SwikiCommentableType.self, forKey: .commentableType)
         self.body = try container.decode(String.self, forKey: .body)
         self.userId = try container.decodeStringOrInt(forKey: .userId)
         self.createdAt = try container.decodeIfPresent(Date.self, forKey: .createdAt)

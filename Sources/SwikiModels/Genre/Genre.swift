@@ -3,7 +3,7 @@ import Foundation
 public struct SwikiGenre: Decodable, Sendable {
     public let id: String
     public let name: String
-    public let russian: String
+    public let russian: String?
     public let kind: SwikiGenreKind
     public let entryType: SwikiGenreEntryType
 

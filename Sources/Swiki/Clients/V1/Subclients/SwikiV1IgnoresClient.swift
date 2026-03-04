@@ -10,11 +10,38 @@ public struct SwikiV1IgnoresClient: Sendable {
 }
 
 public extension SwikiV1IgnoresClient {
-    func create(id: String) async throws -> SwikiNoticeResponse {
-        try await transport.request(version: .v1, method: .post, path: "ignores", id: id)
+
+    /// POST /api/ignores/:id DEPRECATED
+    ///
+    /// Create an ignore
+    ///
+    /// - Note: Requires ``ignores`` oauth scope
+    @available(*, deprecated)
+    @discardableResult
+    func create(userId: String) async throws -> SwikiNoticeResponse {
+        try await transport.request(
+            version: .v1,
+            method: .post,
+            path: "ignores",
+            id: userId
+        )
     }
 
-    func delete(id: String) async throws -> SwikiNoticeResponse {
-        try await transport.request(version: .v1, method: .delete, path: "ignores", id: id)
+    /// DELET /api/ignores/:id DEPRECATED
+    ///
+    /// Destroy an ignore
+    ///
+    /// - Note: Requires ``ignores`` oauth scope
+    @discardableResult
+    @available(*, deprecated)
+    func delete(userId: String) async throws -> SwikiNoticeResponse {
+        try await transport
+            .request(
+                version: .v1,
+                method: .delete,
+                path: "ignores",
+                id: userId
+            )
     }
+
 }

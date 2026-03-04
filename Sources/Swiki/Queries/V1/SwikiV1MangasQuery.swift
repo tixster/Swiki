@@ -3,35 +3,72 @@ import SwikiModels
 
 public struct SwikiV1MangasQuery: SwikiQueryConvertible {
     public typealias Filter<Value: RawRepresentable & Sendable> = SwikiQueryFilter<Value> where Value.RawValue == String
-
-    public let page: Int?
-    public let limit: Int?
-    public let order: SwikiOrder?
-    public let type: String?
+    /// Must be a number between 1 and 100000.
+    public var page: Int?
+    /// limit: 50 maximum.
+    public var limit: Int?
+    public var order: SwikiOrder?
+    /// - Warning: API Deprecated
+    public var type: String?
     /// Supports grouped/subtraction/combined modes:
     /// - include: `manga,one_shot`
     /// - exclude: `!manga,!one_shot`
     /// - mixed: `manga,!one_shot`
-    public let kindFilters: [SwikiQueryFilter<SwikiMangaKind>]
-    public let status: SwikiMangaStatus?
-    public let season: SwikiSeason?
+    public var kindFilters: [SwikiQueryFilter<SwikiMangaKind>]
+    public var status: SwikiMangaStatus?
+    public var season: SwikiSeason?
     /// Supports grouped/subtraction/combined modes:
     /// - include: `2016,2015`
     /// - exclude: `!2016,!2015`
     /// - mixed: `2016,!summer_2016`
-    public let seasonFilters: [SwikiQueryFilter<SwikiSeason>]
-    public let score: Int?
-    public let genre: [Int]
-    public let genreV2: [Int]
-    public let franchise: [Int]
-    public let publisher: [Int]
-    public let censored: Bool?
-    public let mylist: SwikiUserRateStatus?
-    public let ids: [Int]
-    public let excludeIDs: [Int]
-    public let search: String?
-    public let extra: SwikiQuery
+    public var seasonFilters: [SwikiQueryFilter<SwikiSeason>]
+    /// Minimal manga score
+    public var score: Int?
+    /// List of genre ids separated by comma
+    public var genre: [Int]
+    /// List of genre v2 ids separated by comma
+    public var genreV2: [Int]
+    /// List of studio ids separated by comma
+    public var franchise: [Int]
+    /// List of publisher ids separated by comma
+    public var publisher: [Int]
+    /// Set to false to allow hentai, yaoi and yuri
+    public var censored: Bool?
+    /// Status of manga in current user list
+    public var mylist: SwikiUserRateStatus?
+    /// List of manga ids separated by comma
+    public var ids: [Int]
+    /// List of manga ids separated by comma
+    public var excludeIDs: [Int]
+    /// Search phrase to filter mangas by name
+    public var search: String?
+    /// extra fields
+    public var extra: SwikiQuery
 
+    /// GET /api/mangas
+    /// - Parameters:
+    ///   - page: Must be a number between 1 and 100000.
+    ///   - limit: 50 maximum.
+    ///   - order: order type
+    ///   - type: API Deprecated
+    ///   - season: Season
+    ///   - kindFilters: kindFilters
+    ///   - statusFilters: statusFilters
+    ///   - seasonFilters: seasonFilters
+    ///   - score: Minimal manga score
+    ///   - duration: duration
+    ///   - rating: rating
+    ///   - genre: List of genre ids separated by comma
+    ///   - genreV2: List of genre v2 ids separated by comma
+    ///   - studio: List of studio ids separated by comma
+    ///   - franchise: List of franchises separated by comma
+    ///   - publisher: List of publisher ids separated by comma
+    ///   - censored: Set to false to allow hentai, yaoi and yuri
+    ///   - mylist: Status of manga in current user list
+    ///   - ids: List of manga ids separated by comma
+    ///   - excludeIDs: List of manga ids separated by comma
+    ///   - search: Search phrase to filter mangas by name
+    ///   - extra: extra fields
     public init(
         page: Int? = nil,
         limit: Int? = nil,

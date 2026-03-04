@@ -75,7 +75,7 @@ final class SwikiHTTPTransport: Sendable {
         method: SwikiHTTPMethod,
         path: String,
         id: String? = nil,
-        action: String? = nil,
+        route: String? = nil,
         query: SwikiQuery = [:]
     ) async throws -> Response {
         let (data, _) = try await execute(
@@ -83,7 +83,7 @@ final class SwikiHTTPTransport: Sendable {
             method: method,
             path: path,
             id: id,
-            action: action,
+            route: route,
             query: query,
             bodyData: nil
         )
@@ -96,7 +96,7 @@ final class SwikiHTTPTransport: Sendable {
         method: SwikiHTTPMethod,
         path: String,
         id: String? = nil,
-        action: String? = nil,
+        route: String? = nil,
         query: SwikiQuery = [:],
         body: Body
     ) async throws -> Response {
@@ -106,7 +106,7 @@ final class SwikiHTTPTransport: Sendable {
             method: method,
             path: path,
             id: id,
-            action: action,
+            route: route,
             query: query,
             bodyData: bodyData
         )
@@ -119,7 +119,7 @@ final class SwikiHTTPTransport: Sendable {
         method: SwikiHTTPMethod,
         path: String,
         id: String? = nil,
-        action: String? = nil,
+        route: String? = nil,
         query: SwikiQuery = [:]
     ) async throws {
         _ = try await execute(
@@ -127,7 +127,7 @@ final class SwikiHTTPTransport: Sendable {
             method: method,
             path: path,
             id: id,
-            action: action,
+            route: route,
             query: query,
             bodyData: nil
         )
@@ -138,7 +138,7 @@ final class SwikiHTTPTransport: Sendable {
         method: SwikiHTTPMethod,
         path: String,
         id: String? = nil,
-        action: String? = nil,
+        route: String? = nil,
         query: SwikiQuery = [:],
         body: Body
     ) async throws {
@@ -148,7 +148,7 @@ final class SwikiHTTPTransport: Sendable {
             method: method,
             path: path,
             id: id,
-            action: action,
+            route: route,
             query: query,
             bodyData: bodyData
         )
@@ -191,11 +191,11 @@ final class SwikiHTTPTransport: Sendable {
         method: SwikiHTTPMethod,
         path: String,
         id: String?,
-        action: String?,
+        route: String?,
         query: SwikiQuery,
         bodyData: Data?
     ) async throws -> (Data, HTTPURLResponse) {
-        let fullPath = makePath(path: path, id: id, action: action)
+        let fullPath = makePath(path: path, id: id, route: route)
         guard let url = makeURL(version: version, path: fullPath, query: query) else {
             throw SwikiClientError.invalidURL(path: fullPath)
         }
@@ -445,13 +445,13 @@ final class SwikiHTTPTransport: Sendable {
         return try await session.data(for: request)
     }
 
-    private func makePath(path: String, id: String?, action: String?) -> String {
+    private func makePath(path: String, id: String?, route: String?) -> String {
         var components = path.split(separator: "/").map(String.init)
         if let id, !id.isEmpty {
             components.append(id)
         }
-        if let action, !action.isEmpty {
-            components.append(action)
+        if let route, !route.isEmpty {
+            components.append(route)
         }
         return components.joined(separator: "/")
     }

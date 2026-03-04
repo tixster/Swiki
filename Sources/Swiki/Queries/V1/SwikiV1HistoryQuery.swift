@@ -2,18 +2,18 @@ import Foundation
 import SwikiModels
 
 public struct SwikiV1HistoryQuery: SwikiQueryConvertible {
-    public let page: Int?
-    public let limit: Int?
-    public let targetID: String?
-    public let targetType: SwikiUserRateTargetType?
-    public let updatedAtGTE: String?
-    public let updatedAtLTE: String?
-    public let extra: SwikiQuery
+    public var page: Int?
+    public var limit: Int?
+    public var targetId: String?
+    public var targetType: SwikiUserRateTargetType?
+    public var updatedAtGTE: String?
+    public var updatedAtLTE: String?
+    public var extra: SwikiQuery
 
     public init(
         page: Int? = nil,
         limit: Int? = nil,
-        targetID: String? = nil,
+        targetId: String? = nil,
         targetType: SwikiUserRateTargetType? = nil,
         updatedAtGTE: String? = nil,
         updatedAtLTE: String? = nil,
@@ -21,7 +21,7 @@ public struct SwikiV1HistoryQuery: SwikiQueryConvertible {
     ) {
         self.page = page
         self.limit = limit
-        self.targetID = targetID
+        self.targetId = targetId
         self.targetType = targetType
         self.updatedAtGTE = updatedAtGTE
         self.updatedAtLTE = updatedAtLTE
@@ -32,7 +32,7 @@ public struct SwikiV1HistoryQuery: SwikiQueryConvertible {
         var query: SwikiQuery = [
             "page": page.map(String.init),
             "limit": limit.map(String.init),
-            "target_id": targetID,
+            "target_id": targetId,
             "target_type": targetType?.rawValue,
             "updated_at_gte": updatedAtGTE,
             "updated_at_lte": updatedAtLTE

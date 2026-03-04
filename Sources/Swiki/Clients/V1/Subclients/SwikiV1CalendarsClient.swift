@@ -1,6 +1,7 @@
 import Foundation
 import SwikiModels
 
+/// /api/calendar
 public struct SwikiV1CalendarsClient: SwikiResourceSubclient {
     public typealias Model = SwikiCalendar
     public let resourceClient: SwikiResourceClient<SwikiCalendar>
@@ -11,5 +12,12 @@ public struct SwikiV1CalendarsClient: SwikiResourceSubclient {
 }
 
 public extension SwikiV1CalendarsClient {
-    func get(query: SwikiQuery = [:]) async throws -> [SwikiCalendar] { try await list(query: query) }
+
+    /// GET ``/api/calendar``
+    ///
+    /// Show a calendar
+    func list(query: SwikiQuery = [:]) async throws -> [SwikiCalendar] {
+        try await resourceClient.list(query: query)
+    }
+
 }

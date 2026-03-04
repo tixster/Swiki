@@ -1,5 +1,7 @@
 import Foundation
 
+public typealias SwikiRanobeKind = SwikiMangaKind
+
 public enum SwikiMangaKind: String, Decodable, Sendable {
     case manga
     case manhwa

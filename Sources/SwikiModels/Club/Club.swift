@@ -1,13 +1,5 @@
 import Foundation
 
-public struct SwikiClubLogo: Decodable, Sendable {
-    public let original: URL
-    public let preview: URL
-    public let x96: URL?
-    public let x48: URL?
-    public let x73: URL?
-}
-
 public struct SwikiClub: Decodable, Sendable {
     public let id: String
     public let name: String
@@ -17,14 +9,14 @@ public struct SwikiClub: Decodable, Sendable {
     public let commentPolicy: SwikiClubCommentPolicy
     public let description: String?
     public let descriptionHtml: String?
-    public let mangas: [SwikiManga]?
-    public let characters: [SwikiCharacter]?
+    public let characters: [SwikiCharacterPreview]?
     public let threadId: String?
     public let topicId: String?
     public let userRole: SwikiClubUserRole?
     public let styleId: String?
     public let members: [SwikiUser]?
     public let animes: [SwikiAnimeV1Preview]?
+    public let mangas: [SwikiMangaV1Preview]?
     public let images: [SwikiClubImage]?
 
     enum CodingKeys: String, CodingKey {
@@ -57,8 +49,7 @@ public struct SwikiClub: Decodable, Sendable {
         self.commentPolicy = try container.decode(SwikiClubCommentPolicy.self, forKey: .commentPolicy)
         self.description = try container.decodeIfPresent(String.self, forKey: .description)
         self.descriptionHtml = try container.decodeIfPresent(String.self, forKey: .descriptionHtml)
-        self.mangas = try container.decodeIfPresent([SwikiManga].self, forKey: .mangas)
-        self.characters = try container.decodeIfPresent([SwikiCharacter].self, forKey: .characters)
+        self.characters = try container.decodeIfPresent([SwikiCharacterPreview].self, forKey: .characters)
         self.threadId = try container.decodeStringOrIntIfPresent(forKey: .threadId)
         self.topicId = try container.decodeStringOrIntIfPresent(forKey: .topicId)
         if let role = try? container.decodeIfPresent(SwikiClubUserRole.self, forKey: .userRole) {
@@ -74,6 +65,7 @@ public struct SwikiClub: Decodable, Sendable {
         self.styleId = try container.decodeStringOrIntIfPresent(forKey: .styleId)
         self.members = try container.decodeIfPresent([SwikiUser].self, forKey: .members)
         self.animes = try container.decodeIfPresent([SwikiAnimeV1Preview].self, forKey: .animes)
+        self.mangas = try container.decodeIfPresent([SwikiMangaV1Preview].self, forKey: .mangas)
         self.images = try container.decodeIfPresent([SwikiClubImage].self, forKey: .images)
     }
 }

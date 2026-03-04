@@ -7,7 +7,7 @@ public struct SwikiV1TopicsQuery: SwikiQueryConvertible {
     public typealias TopicType = SwikiTopicType
 
     public struct Page: RawRepresentable, Sendable {
-        public let rawValue: Int
+        public var rawValue: Int
 
         public init?(rawValue: Int) {
             guard (1...100_000).contains(rawValue) else {
@@ -22,7 +22,7 @@ public struct SwikiV1TopicsQuery: SwikiQueryConvertible {
     }
 
     public struct Limit: RawRepresentable, Sendable {
-        public let rawValue: Int
+        public var rawValue: Int
 
         public init?(rawValue: Int) {
             guard (1...30).contains(rawValue) else {
@@ -36,13 +36,13 @@ public struct SwikiV1TopicsQuery: SwikiQueryConvertible {
         }
     }
 
-    public let forum: Forum?
-    public let linkedID: Int?
-    public let linkedType: LinkedType?
-    public let type: TopicType?
-    public let page: Page?
-    public let limit: Limit?
-    public let extra: SwikiQuery
+    public var forum: Forum?
+    public var linkedID: Int?
+    public var linkedType: LinkedType?
+    public var type: TopicType?
+    public var page: Page?
+    public var limit: Limit?
+    public var extra: SwikiQuery
 
     public init(
         forum: Forum? = nil,

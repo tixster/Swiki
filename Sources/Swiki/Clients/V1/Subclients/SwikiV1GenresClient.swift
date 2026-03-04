@@ -1,6 +1,7 @@
 import Foundation
 import SwikiModels
 
+/// ``/api/genres``
 public struct SwikiV1GenresClient: SwikiResourceSubclient {
     public typealias Model = SwikiGenre
     public let resourceClient: SwikiResourceClient<SwikiGenre>
@@ -11,5 +12,12 @@ public struct SwikiV1GenresClient: SwikiResourceSubclient {
 }
 
 public extension SwikiV1GenresClient {
-    func get() async throws -> [SwikiGenre] { try await list() }
+
+    /// GET ``/api/genres``
+    ///
+    /// List genres
+    func list() async throws -> [SwikiGenre] {
+        try await resourceClient.list()
+    }
+
 }

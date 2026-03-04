@@ -11,6 +11,7 @@ public struct SwikiVideo: Decodable, Sendable {
     public let playerUrl: URL
     public let name: String?
     public let kind: SwikiVideoKind
+    /// - warning: может иметь значение только через API V1
     public let hosting: SwikiVideoHosting?
 
     enum CodingKeysRest: String, CodingKey {

@@ -1,6 +1,7 @@
 import Foundation
 import SwikiModels
 
+/// ``/api/achievements``
 public struct SwikiV1AchievementsClient: SwikiResourceSubclient {
     public typealias Model = Achievement
     public let resourceClient: SwikiResourceClient<Achievement>
@@ -11,5 +12,12 @@ public struct SwikiV1AchievementsClient: SwikiResourceSubclient {
 }
 
 public extension SwikiV1AchievementsClient {
-    func get(query: SwikiV1AchievementsQuery) async throws -> [Achievement] { try await list(query: query.asSwikiQuery) }
+
+    /// GET ``/api/achievements``
+    ///
+    /// List user achievements
+    func list(query: SwikiV1AchievementsQuery) async throws -> [Achievement] {
+        try await list(query: query.asSwikiQuery)
+    }
+
 }

@@ -18,6 +18,11 @@ public enum SwikiClubImageUploadPolicy: String, Codable, Sendable {
     case admins
 }
 
+public enum SwikiClubTopicPolicy: String, Codable, Sendable {
+    case members
+    case admins
+}
+
 public enum SwikiClubUserRole: String, Codable, Sendable {
     case member
     case admin

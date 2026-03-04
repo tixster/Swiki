@@ -12,6 +12,6 @@ public struct SwikiV1StatsClient: SwikiResourceSubclient {
 
 public extension SwikiV1StatsClient {
     func activeUsers() async throws -> [Int] {
-        try await request(.get, action: "active_users")
+        try await request(.get, route: "active_users")
     }
 }

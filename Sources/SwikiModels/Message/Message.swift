@@ -70,15 +70,12 @@ public struct SwikiMessage: Decodable, Sendable {
     public let read: Bool
     public let body: String
     public let htmlBody: String
-    public let fromId: String?
-    public let toId: String?
     public let linkedId: String?
     public let linkedType: String?
     public let linked: SwikiUserLinked?
     public let createdAt: Date
-    public let updatedAt: Date?
-    public let from: SwikiUser?
-    public let to: SwikiUser?
+    public let from: SwikiUser
+    public let to: SwikiUser
 
     enum CodingKeys: String, CodingKey {
         case id
@@ -86,14 +83,10 @@ public struct SwikiMessage: Decodable, Sendable {
         case read
         case body
         case htmlBody = "html_body"
-        case fromId = "from_id"
-        case toId = "to_id"
         case linkedId = "linked_id"
         case linkedType = "linked_type"
         case linked
-        case isRead = "is_read"
         case createdAt = "created_at"
-        case updatedAt = "updated_at"
         case from
         case to
     }
@@ -102,19 +95,15 @@ public struct SwikiMessage: Decodable, Sendable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.id = try container.decodeStringOrInt(forKey: .id)
         self.kind = try container.decode(String.self, forKey: .kind)
-        let read = try container.decodeIfPresent(Bool.self, forKey: .read)
-        let legacyRead = try container.decodeIfPresent(Bool.self, forKey: .isRead)
-        self.read = read ?? legacyRead ?? false
+        self.read = try container.decode(Bool.self, forKey: .read)
         self.body = try container.decode(String.self, forKey: .body)
         self.htmlBody = try container.decode(String.self, forKey: .htmlBody)
-        self.fromId = try container.decodeStringOrIntIfPresent(forKey: .fromId)
-        self.toId = try container.decodeStringOrIntIfPresent(forKey: .toId)
         self.linkedId = try container.decodeStringOrIntIfPresent(forKey: .linkedId)
         self.linkedType = try container.decodeIfPresent(String.self, forKey: .linkedType)
         self.linked = try container.decodeIfPresent(SwikiUserLinked.self, forKey: .linked)
         self.createdAt = try container.decode(Date.self, forKey: .createdAt)
-        self.updatedAt = try container.decodeIfPresent(Date.self, forKey: .updatedAt)
-        self.from = try container.decodeIfPresent(SwikiUser.self, forKey: .from)
-        self.to = try container.decodeIfPresent(SwikiUser.self, forKey: .to)
+        self.from = try container.decode(SwikiUser.self, forKey: .from)
+        self.to = try container.decode(SwikiUser.self, forKey: .to)
     }
+
 }

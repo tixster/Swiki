@@ -1,15 +1,20 @@
 import Foundation
 
 public struct SwikiV1AchievementsQuery: SwikiQueryConvertible {
-    public let userID: Int
-    public let extra: SwikiQuery
+    /// Must be a number.
+    public var userId: String
+    public var extra: SwikiQuery
 
-    public init(userID: Int, extra: SwikiQuery = [:]) {
-        self.userID = userID
+    /// GET /api/achievements
+    /// - Parameters:
+    ///   - userId: Must be a number.
+    public init(userId: String, extra: SwikiQuery = [:]) {
+        self.userId = userId
         self.extra = extra
     }
 
     public var asSwikiQuery: SwikiQuery {
-        SwikiQueryEncoding.merge(["user_id": String(userID)], with: extra)
+        SwikiQueryEncoding.merge(["user_id": userId], with: extra)
     }
+
 }

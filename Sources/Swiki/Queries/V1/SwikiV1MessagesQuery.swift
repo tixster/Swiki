@@ -1,12 +1,12 @@
 import Foundation
 
 public struct SwikiV1MessagesQuery: SwikiQueryConvertible {
-    public let type: String?
-    public let ids: [String]
-    public let isRead: Bool?
-    public let page: Int?
-    public let limit: Int?
-    public let extra: SwikiQuery
+    public var type: String?
+    public var ids: [String]
+    public var isRead: Bool?
+    public var page: Int?
+    public var limit: Int?
+    public var extra: SwikiQuery
 
     public init(
         type: String? = nil,

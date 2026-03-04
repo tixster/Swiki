@@ -7,9 +7,9 @@ public struct SwikiV1PeopleQuery: SwikiQueryConvertible {
         case producer
     }
 
-    public let search: String?
-    public let kind: Kind?
-    public let extra: SwikiQuery
+    public var search: String?
+    public var kind: Kind?
+    public var extra: SwikiQuery
 
     public init(search: String? = nil, kind: Kind? = nil, extra: SwikiQuery = [:]) {
         self.search = search

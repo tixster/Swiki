@@ -2,13 +2,12 @@ import Foundation
 
 public struct SwikiManga: SwikiTitle {
     public let id: String
-    public let malId: String?
     public let name: String
     public let russian: String?
     public let licenseNameRu: String?
-    public let english: String?
-    public let japanese: String?
-    public let synonims: [String]
+    public let english: [String]?
+    public let japanese: [String]?
+    public let synonims: [String]?
     public let kind: SwikiMangaKind
     public let score: Float?
     public let chapters: Int
@@ -28,7 +27,6 @@ public struct SwikiManga: SwikiTitle {
     public let personRoles: [SwikiPersonRole]?
     public let characterRoles: [SwikiCharacterRole]?
     public let franchise: String?
-    public let chronology: [SwikiManga]?
     public let description: String?
     public let descriptionHtml: String?
     public let descriptionSource: String?

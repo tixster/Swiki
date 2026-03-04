@@ -14,25 +14,25 @@ public extension SwikiV1MessagesClient {
     func get(query: SwikiV1MessagesQuery = .init()) async throws -> [SwikiMessage] { try await list(query: query.asSwikiQuery) }
     func get(id: String) async throws -> SwikiMessage { try await resourceClient.get(id: id) }
     func markRead(id: String, query: SwikiV1MessagesQuery = .init()) async throws {
-        try await request(.post, id: id, action: "mark_read", query: query.asSwikiQuery)
+        try await request(.post, id: id, route: "mark_read", query: query.asSwikiQuery)
     }
     func markRead<Body: Encodable>(query: SwikiV1MessagesQuery = .init(), body: Body) async throws {
-        try await request(.post, action: "mark_read", query: query.asSwikiQuery, body: body)
+        try await request(.post, route: "mark_read", query: query.asSwikiQuery, body: body)
     }
     func markReadAll(query: SwikiV1MessagesQuery = .init()) async throws {
-        try await request(.post, action: "mark_read_all", query: query.asSwikiQuery)
+        try await request(.post, route: "mark_read_all", query: query.asSwikiQuery)
     }
     func readAll(query: SwikiV1MessagesQuery = .init()) async throws {
-        try await request(.post, action: "read_all", query: query.asSwikiQuery)
+        try await request(.post, route: "read_all", query: query.asSwikiQuery)
     }
     func readAll<Body: Encodable>(query: SwikiV1MessagesQuery = .init(), body: Body) async throws {
-        try await request(.post, action: "read_all", query: query.asSwikiQuery, body: body)
+        try await request(.post, route: "read_all", query: query.asSwikiQuery, body: body)
     }
     func deleteAll(query: SwikiV1MessagesQuery = .init()) async throws {
-        try await request(.delete, action: "delete_all", query: query.asSwikiQuery)
+        try await request(.delete, route: "delete_all", query: query.asSwikiQuery)
     }
     func deleteAll<Body: Encodable>(query: SwikiV1MessagesQuery = .init(), body: Body) async throws {
-        try await request(.delete, action: "delete_all", query: query.asSwikiQuery, body: body)
+        try await request(.delete, route: "delete_all", query: query.asSwikiQuery, body: body)
     }
     func create<Body: Encodable>(body: Body, query: SwikiV1MessagesQuery = .init()) async throws -> SwikiMessage {
         try await resourceClient.create(body: body, query: query.asSwikiQuery)

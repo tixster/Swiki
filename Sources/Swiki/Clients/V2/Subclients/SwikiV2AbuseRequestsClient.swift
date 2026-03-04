@@ -35,7 +35,7 @@ public extension SwikiV2AbuseRequestsClient {
             version: .v2,
             method: .post,
             path: "abuse_requests",
-            action: "offtopic",
+            route: "offtopic",
             body: OfftopicPayload(commentId: commentId)
         )
     }
@@ -48,7 +48,7 @@ public extension SwikiV2AbuseRequestsClient {
             version: .v2,
             method: .post,
             path: "abuse_requests",
-            action: "convert_review",
+            route: "convert_review",
             body: ActionPayload(commentId: commentId, topicId: topicId, reason: nil)
         )
     }
@@ -69,7 +69,7 @@ public extension SwikiV2AbuseRequestsClient {
             version: .v2,
             method: .post,
             path: "abuse_requests",
-            action: "abuse",
+            route: "abuse",
             body: ActionPayload(commentId: commentId, topicId: topicId, reason: reason)
         )
     }
@@ -83,7 +83,7 @@ public extension SwikiV2AbuseRequestsClient {
             version: .v2,
             method: .post,
             path: "abuse_requests",
-            action: "spoiler",
+            route: "spoiler",
             body: ActionPayload(commentId: commentId, topicId: topicId, reason: reason)
         )
     }

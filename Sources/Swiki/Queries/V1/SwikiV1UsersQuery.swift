@@ -1,10 +1,10 @@
 import Foundation
 
 public struct SwikiV1UsersQuery: SwikiQueryConvertible {
-    public let page: Int?
-    public let limit: Int?
-    public let search: String?
-    public let extra: SwikiQuery
+    public var page: Int?
+    public var limit: Int?
+    public var search: String?
+    public var extra: SwikiQuery
 
     public init(page: Int? = nil, limit: Int? = nil, search: String? = nil, extra: SwikiQuery = [:]) {
         self.page = page

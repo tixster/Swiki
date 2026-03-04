@@ -1,16 +1,17 @@
 import Foundation
+import SwikiModels
 
 public struct SwikiV1CommentsQuery: SwikiQueryConvertible {
-    public let commentableID: Int?
-    public let commentableType: String?
-    public let desc: Bool?
-    public let page: Int?
-    public let limit: Int?
-    public let extra: SwikiQuery
+    public var commentableID: Int?
+    public var commentableType: SwikiCommentableType?
+    public var desc: Bool?
+    public var page: Int?
+    public var limit: Int?
+    public var extra: SwikiQuery
 
     public init(
         commentableID: Int? = nil,
-        commentableType: String? = nil,
+        commentableType: SwikiCommentableType? = nil,
         desc: Bool? = nil,
         page: Int? = nil,
         limit: Int? = nil,
@@ -27,7 +28,7 @@ public struct SwikiV1CommentsQuery: SwikiQueryConvertible {
     public var asSwikiQuery: SwikiQuery {
         var query: SwikiQuery = [
             "commentable_id": commentableID.map(String.init),
-            "commentable_type": commentableType,
+            "commentable_type": commentableType?.rawValue,
             "desc": desc.map { $0 ? "1" : "0" },
             "page": page.map(String.init),
             "limit": limit.map(String.init)

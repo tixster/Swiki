@@ -1,6 +1,7 @@
 import Foundation
 import SwikiModels
 
+/// ``/api/forums``
 public struct SwikiV1ForumsClient: SwikiResourceSubclient {
     public typealias Model = SwikiForum
     public let resourceClient: SwikiResourceClient<SwikiForum>
@@ -11,5 +12,12 @@ public struct SwikiV1ForumsClient: SwikiResourceSubclient {
 }
 
 public extension SwikiV1ForumsClient {
-    func get() async throws -> [SwikiForum] { try await list() }
+
+    /// GET ``/api/forums``
+    ///
+    /// List of forums
+    func list() async throws -> [SwikiForum] {
+        try await resourceClient.list()
+    }
+
 }

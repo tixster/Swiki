@@ -2,27 +2,27 @@ import Foundation
 import SwikiModels
 
 public struct SwikiV2UserRatesQuery: SwikiQueryConvertible {
-    public let page: Int?
-    public let limit: Int?
-    public let userID: String?
-    public let targetID: String?
-    public let targetType: SwikiUserRateTargetType?
-    public let status: SwikiUserRateStatus?
-    public let extra: SwikiQuery
+    public var page: Int?
+    public var limit: Int?
+    public var userId: String?
+    public var targetId: String?
+    public var targetType: SwikiUserRateTargetType?
+    public var status: SwikiUserRateStatus?
+    public var extra: SwikiQuery
 
     public init(
         page: Int? = nil,
         limit: Int? = nil,
-        userID: String? = nil,
-        targetID: String? = nil,
+        userId: String? = nil,
+        targetId: String? = nil,
         targetType: SwikiUserRateTargetType? = nil,
         status: SwikiUserRateStatus? = nil,
         extra: SwikiQuery = [:]
     ) {
         self.page = page
         self.limit = limit
-        self.userID = userID
-        self.targetID = targetID
+        self.userId = userId
+        self.targetId = targetId
         self.targetType = targetType
         self.status = status
         self.extra = extra
@@ -32,8 +32,8 @@ public struct SwikiV2UserRatesQuery: SwikiQueryConvertible {
         var query: SwikiQuery = [
             "page": page.map(String.init),
             "limit": limit.map(String.init),
-            "user_id": userID,
-            "target_id": targetID,
+            "user_id": userId,
+            "target_id": targetId,
             "target_type": targetType?.rawValue,
             "status": status?.rawValue
         ]

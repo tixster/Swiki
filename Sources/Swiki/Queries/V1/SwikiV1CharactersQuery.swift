@@ -1,10 +1,13 @@
 import Foundation
 
 public struct SwikiV1CharactersQuery: SwikiQueryConvertible {
-    public let search: String?
-    public let extra: SwikiQuery
+    public var search: String?
+    public var extra: SwikiQuery
 
-    public init(search: String? = nil, extra: SwikiQuery = [:]) {
+    public init(
+        search: String? = nil,
+        extra: SwikiQuery = [:]
+    ) {
         self.search = search
         self.extra = extra
     }

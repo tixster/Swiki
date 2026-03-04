@@ -212,7 +212,7 @@ let rates = try await swiki.v2.userRates.get(
     query: SwikiV2UserRatesQuery(
         page: 1,
         limit: 20,
-        userID: "123",
+        userId: "123",
         targetType: .anime,
         status: .watching
     )
@@ -231,7 +231,7 @@ let rates = try await swiki.v2.userRates.get(
 let user = try await swiki.v1.users.get(id: "1")
 let whoami = try await swiki.v1.whoami.get()
 
-// v1 animes custom action
+// v1 animes custom route
 let roles = try await swiki.v1.animes.roles(id: "1")
 
 // v2 user rates

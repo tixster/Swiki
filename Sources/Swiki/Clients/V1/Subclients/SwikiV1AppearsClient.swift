@@ -1,6 +1,7 @@
 import Foundation
 import SwikiModels
 
+/// ``/api/appears``
 public struct SwikiV1AppearsClient: Sendable {
     private let transport: SwikiHTTPTransport
 
@@ -10,15 +11,24 @@ public struct SwikiV1AppearsClient: Sendable {
 }
 
 public extension SwikiV1AppearsClient {
-    func create(ids: [String], query: SwikiQuery = [:]) async throws {
-        var merged = query
-        if !ids.isEmpty {
-            merged["ids"] = ids.joined(separator: ",")
+
+    /// POST ``/api/appears``
+    /// 
+    /// Mark comments or topics as read
+    /// - Parameters:
+    ///   - ids: Comment & Topic ids
+    ///   - query: query
+    func markAsRead(ids: [String], query: SwikiQuery = [:]) async throws {
+        struct Ids: Encodable {
+            let ids: [String]
         }
-        try await transport.request(version: .v1, method: .post, path: "appears", query: merged)
+        try await transport.request(
+            version: .v1,
+            method: .post,
+            path: "appears",
+            query: query,
+            body: Ids(ids: ids)
+        )
     }
 
-    func markRead(ids: [String], query: SwikiQuery = [:]) async throws {
-        try await create(ids: ids, query: query)
-    }
 }

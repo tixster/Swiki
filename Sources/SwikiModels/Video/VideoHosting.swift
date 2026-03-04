@@ -6,6 +6,7 @@ public enum SwikiVideoHosting: String, Decodable, Sendable {
     case coub
     case rutube
     case vimeo
+    case youtube
     case sibnet
     case yandex
     case streamable

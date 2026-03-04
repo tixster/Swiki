@@ -1,44 +1,8 @@
 import Foundation
 import SwikiModels
 
+/// ``/api/favorites``
 public struct SwikiV1FavoritesClient: Sendable {
-    public enum LinkedType: Sendable {
-        public enum PersonKind: String, Sendable, CaseIterable {
-            case common
-            case seyu
-            case mangaka
-            case producer
-            case person
-        }
-        case anime
-        case manga
-        case ranobe
-        case person(kind: PersonKind)
-        case character
-        fileprivate var rawValue: String {
-            switch self {
-            case .anime:
-                return "Anime"
-            case .manga:
-                return "Manga"
-            case .ranobe:
-                return "Ranobe"
-            case .person:
-                return "Person"
-            case .character:
-                return "Character"
-            }
-        }
-
-        fileprivate var kindRawValue: String? {
-            switch self {
-            case let .person(kind):
-                return kind.rawValue
-            default:
-                return nil
-            }
-        }
-    }
 
     private let transport: SwikiHTTPTransport
 
@@ -48,11 +12,16 @@ public struct SwikiV1FavoritesClient: Sendable {
 }
 
 public extension SwikiV1FavoritesClient {
+
+    /// POST ``/api/favorites/:linked_type/:linked_id(/:kind)``
+    ///
+    /// Create a favorite
+    @discardableResult
     func create(
-        linkedType: LinkedType,
+        linkedType: SwikiFavoritesLinkedTypeCreate,
         linkedId: String
     ) async throws -> SwikiNoticeResponse {
-        let action = [linkedId, linkedType.kindRawValue].compactMap { value in
+        let route = [linkedId, linkedType.kindRawValue].compactMap { value in
             guard let value, !value.isEmpty else { return nil }
             return value
         }.joined(separator: "/")
@@ -61,12 +30,16 @@ public extension SwikiV1FavoritesClient {
             method: .post,
             path: "favorites",
             id: linkedType.rawValue,
-            action: action
+            route: route
         )
     }
 
+    /// DELETE ``/api/favorites/:linked_type/:linked_id``
+    ///
+    /// Destroy a favorite
+    @discardableResult
     func delete(
-        linkedType: LinkedType,
+        linkedType: SwikiFavoriteLinkedType,
         linkedId: String
     ) async throws -> SwikiNoticeResponse {
         try await transport.request(
@@ -74,22 +47,24 @@ public extension SwikiV1FavoritesClient {
             method: .delete,
             path: "favorites",
             id: linkedType.rawValue,
-            action: linkedId
+            route: linkedId
         )
     }
 
-    func reorder(id: String, query: SwikiQuery = [:]) async throws {
-        try await transport.request(version: .v1, method: .post, path: "favorites", id: id, action: "reorder", query: query)
-    }
-
-    func reorder<Body: Encodable>(id: String, body: Body) async throws {
-        try await transport.request(
+    /// POST ``/api/favorites/:id/reorder``
+    ///
+    /// Assign a new position to a favorite
+    func reorder(id: String, newIndex: Int?) async throws {
+        struct Payload: Encodable {
+            let new_index: String?
+        }
+        return try await transport.request(
             version: .v1,
             method: .post,
             path: "favorites",
             id: id,
-            action: "reorder",
-            body: body
+            route: "reorder",
+            body: Payload(new_index: newIndex?.description)
         )
     }
 }
