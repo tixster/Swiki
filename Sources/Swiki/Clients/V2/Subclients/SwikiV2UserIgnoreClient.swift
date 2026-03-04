@@ -1,26 +1,35 @@
 import Foundation
 import SwikiModels
 
-public struct SwikiV2UserIgnoreClient: Sendable {
-    private let transport: SwikiHTTPTransport
+public struct SwikiV2UserIgnoreClient: SwikiResourceSubclient {
+    public typealias Model = SwikiUserIgnore
+    public let resourceClient: SwikiResourceClient<Model>
 
     init(transport: SwikiHTTPTransport) {
-        self.transport = transport
+        self.resourceClient = SwikiResourceClient<Model>(transport: transport, version: .v2, path: "users")
     }
+
 }
 
 public extension SwikiV2UserIgnoreClient {
     /// POST ``/api/v2/users/:user_id/ignore``
     ///
     /// Ignore a user.
-    func create(userId: String) async throws -> SwikiUserIgnore {
-        try await transport.request(version: .v2, method: .post, path: "users", id: userId, route: "ignore")
+    ///
+    /// - Note: Requires `ignores` oauth scope
+    @discardableResult
+    func ignore(userId: String) async throws -> SwikiUserIgnore {
+        try await request(.post, id: userId, route: "ignore")
     }
 
     /// DELETE ``/api/v2/users/:user_id/ignore``
     ///
-    /// Remove user ignore.
-    func delete(userId: String) async throws -> SwikiUserIgnore {
-        try await transport.request(version: .v2, method: .delete, path: "users", id: userId, route: "ignore")
+    /// Unignore a user
+    ///
+    /// - Note: Requires `ignores` oauth scope
+    @discardableResult
+    func unignore(userId: String) async throws -> SwikiUserIgnore {
+        try await request(.delete, id: userId, route: "ignore")
     }
+
 }

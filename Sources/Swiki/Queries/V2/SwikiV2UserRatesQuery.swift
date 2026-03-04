@@ -2,7 +2,11 @@ import Foundation
 import SwikiModels
 
 public struct SwikiV2UserRatesQuery: SwikiQueryConvertible {
+    /// Must be a number between 1 and 100000.
+    /// - Note: This field is ignored when user_id is set
     public var page: Int?
+    /// 1000 maximum.
+    /// - Note: This field is ignored when user_id is set
     public var limit: Int?
     public var userId: String?
     public var targetId: String?

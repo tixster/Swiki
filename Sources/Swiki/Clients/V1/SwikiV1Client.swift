@@ -31,10 +31,8 @@ public struct SwikiV1Client: Sendable {
     public let topics: SwikiV1TopicsClient
     public let userImages: SwikiV1UserImagesClient
     public let userRates: SwikiV1UserRatesClient
-    public let userRatesLogs: SwikiV1UserRatesLogsClient
     public let users: SwikiV1UsersClient
     public let videos: SwikiV1VideosClient
-    public let whoami: SwikiV1WhoamiClient
 
     init(transport: SwikiHTTPTransport) {
         self.transport = transport
@@ -66,9 +64,7 @@ public struct SwikiV1Client: Sendable {
         self.topics = SwikiV1TopicsClient(transport: transport)
         self.userImages = SwikiV1UserImagesClient(transport: transport)
         self.userRates = SwikiV1UserRatesClient(transport: transport)
-        self.userRatesLogs = SwikiV1UserRatesLogsClient(transport: transport)
         self.users = SwikiV1UsersClient(transport: transport)
         self.videos = SwikiV1VideosClient(transport: transport)
-        self.whoami = SwikiV1WhoamiClient(transport: transport)
     }
 }

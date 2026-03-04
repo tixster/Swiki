@@ -74,8 +74,8 @@ let config = SwikiConfiguration(
 
 let swiki = Swiki(configuration: config)
 
-let users = try await swiki.v1.users.get(
-    query: SwikiV1UsersQuery(
+let users = try await swiki.v1.users.list(
+    query: SwikiV1UsersSearchQuery(
         search: "kirito",
         limit: 5
     )
@@ -194,11 +194,11 @@ Most subclients expose:
 
 ### Typed Queries (v1/v2)
 For endpoints that accept query parameters, `v1/v2` clients use concrete typed query models from `Sources/Swiki/Queries`:
-- typed query models (`SwikiV1AnimesQuery`, `SwikiV1UsersQuery`, `SwikiV1UserRatesQuery`, `SwikiV1TopicsQuery`, `SwikiV1CommentsQuery`, `SwikiV2UserRatesQuery`, etc.).
+- typed query models (`SwikiV1AnimesQuery`, `SwikiV1UsersSearchQuery`, `SwikiV1UsersRatesQuery`, `SwikiV1TopicsQuery`, `SwikiV1CommentsQuery`, `SwikiV2UserRatesQuery`, etc.).
 - `SwikiQuery` is still used only for endpoints with free-form query payloads.
 
 ```swift
-let animes = try await swiki.v1.animes.get(
+let animes = try await swiki.v1.animes.list(
     query: SwikiV1AnimesQuery(
         page: 1,
         limit: 5,
@@ -208,7 +208,7 @@ let animes = try await swiki.v1.animes.get(
     )
 )
 
-let rates = try await swiki.v2.userRates.get(
+let rates = try await swiki.v2.userRates.list(
     query: SwikiV2UserRatesQuery(
         page: 1,
         limit: 20,
@@ -220,7 +220,7 @@ let rates = try await swiki.v2.userRates.get(
 ```
 
 ### V1 resources
-`achievements`, `animes`, `appears`, `bans`, `calendars`, `characters`, `clubs`, `collections`, `comments`, `constants`, `dialogs`, `favorites`, `forums`, `friends`, `genres`, `ignores`, `mangas`, `messages`, `people`, `publishers`, `ranobe`, `reviews`, `stats`, `studios`, `styles`, `topicIgnores`, `topics`, `userImages`, `userRates`, `userRatesLogs`, `users`, `videos`, `whoami`.
+`achievements`, `animes`, `appears`, `bans`, `calendars`, `characters`, `clubs`, `comments`, `constants`, `dialogs`, `favorites`, `forums`, `friends`, `genres`, `ignores`, `mangas`, `messages`, `people`, `publishers`, `ranobe`, `reviews`, `stats`, `studios`, `styles`, `topicIgnores`, `topics`, `userImages`, `userRates`, `users`, `videos`.
 
 ### V2 resources
 `abuseRequests`, `episodeNotifications`, `topicIgnore`, `userIgnore`, `userRates`.
@@ -228,8 +228,8 @@ let rates = try await swiki.v2.userRates.get(
 ### REST examples
 ```swift
 // v1 users
-let user = try await swiki.v1.users.get(id: "1")
-let whoami = try await swiki.v1.whoami.get()
+let user = try await swiki.v1.users.user(id: "1")
+let whoami = try await swiki.v1.users.whoami()
 
 // v1 animes custom route
 let roles = try await swiki.v1.animes.roles(id: "1")

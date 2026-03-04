@@ -86,7 +86,7 @@ final class ExampleAppViewModel: ObservableObject {
         }
 
         await perform("Loading whoami") {
-            let me = try await swiki.v1.whoami.get()
+            let me = try await swiki.v1.users.whoami()
             whoamiName = me.nickname
             appendLog("Loaded whoami: \(me.nickname)")
         }
@@ -103,7 +103,7 @@ final class ExampleAppViewModel: ObservableObject {
                 limit: animeLimit,
                 search: animeSearch
             )
-            let items = try await swiki.v1.animes.get(query: query)
+            let items = try await swiki.v1.animes.list(query: query)
             animeNames = items.map(\.name)
             appendLog("Loaded \(items.count) anime items")
         }

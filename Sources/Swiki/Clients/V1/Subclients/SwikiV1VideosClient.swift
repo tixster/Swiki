@@ -25,6 +25,8 @@ public extension SwikiV1VideosClient {
     /// POST ``/api/animes/:anime_id/videos``
     ///
     /// Create a video for an anime.
+    ///
+    /// - Note: Requires `content` oauth scope
     func create(
         animeId: String,
         video: SwikiVideosCreatePayload
@@ -39,8 +41,10 @@ public extension SwikiV1VideosClient {
     /// DELETE ``/api/animes/:anime_id/videos/:video_id``
     ///
     /// Delete a video from an anime.
+    ///
+    /// - Note: Requires `content` oauth scope
     func delete(animeId: String, videoId: String) async throws {
         try await request(.delete, id: animeId, route: "videos/\(videoId)")
     }
-    
+
 }

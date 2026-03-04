@@ -1,14 +1,7 @@
 import Foundation
 import SwikiModels
 
-public struct SwikiV2AbuseRequestsClient: Sendable {
-    private struct OfftopicPayload: Encodable {
-        let commentId: String
-
-        enum CodingKeys: String, CodingKey {
-            case commentId = "comment_id"
-        }
-    }
+public struct SwikiV2AbuseRequestsClient: SwikiResourceSubclient {
 
     private struct ActionPayload: Encodable {
         let commentId: String?
@@ -22,84 +15,49 @@ public struct SwikiV2AbuseRequestsClient: Sendable {
         }
     }
 
-    private let transport: SwikiHTTPTransport
+    public typealias Model = SwikiAbuseOfftopicResponse
+    public let resourceClient: SwikiResourceClient<Model>
 
     init(transport: SwikiHTTPTransport) {
-        self.transport = transport
+        self.resourceClient = SwikiResourceClient<Model>(transport: transport, version: .v2, path: "abuse_requests")
     }
+
 }
 
 public extension SwikiV2AbuseRequestsClient {
+
     /// POST ``/api/v2/abuse_requests/offtopic``
     ///
-    /// Mark a comment as offtopic.
-    func offtopic(commentId: String) async throws -> SwikiAbuseOfftopicResponse {
-        try await transport.request(
-            version: .v2,
-            method: .post,
-            path: "abuse_requests",
-            route: "offtopic",
-            body: OfftopicPayload(commentId: commentId)
-        )
+    /// Mark a comment as offtopic. Request will be sent to moderators.
+    func offtopic(comment: SwikiAbuseRequestOfftopicPayload) async throws -> SwikiAbuseOfftopicResponse {
+        try await request(.post, route: "offtopic", body: comment)
     }
 
-    /// POST ``/api/v2/abuse_requests/convert_review``
+    /// POST ``/api/v2/abuse_requests/review``
     ///
-    /// Convert comment/topic to review.
-    func convertReview(
-        commentId: String? = nil,
-        topicId: String? = nil
-    ) async throws {
-        try await transport.request(
-            version: .v2,
-            method: .post,
-            path: "abuse_requests",
-            route: "convert_review",
-            body: ActionPayload(commentId: commentId, topicId: topicId, reason: nil)
-        )
-    }
-
-    /// POST ``/api/v2/abuse_requests/convert_review``
-    ///
-    /// Alias for ``convertReview(commentId:topicId:)``.
+    /// Convert comment to review. Request will be sent to moderators.
     func review(
-        commentId: String? = nil,
-        topicId: String? = nil
+        comment: SwikiAbuseRequestReviewPayload
     ) async throws {
-        try await convertReview(commentId: commentId, topicId: topicId)
+        try await request(.post, route: "review", body: comment)
     }
 
     /// POST ``/api/v2/abuse_requests/abuse``
     ///
-    /// Create abuse request.
+    /// Create abuse about violation of site rules. Request will be sent to moderators.
     func abuse(
-        commentId: String? = nil,
-        topicId: String? = nil,
-        reason: String? = nil
+        payload: SwikiAbuseRequestAbusePayload
     ) async throws {
-        try await transport.request(
-            version: .v2,
-            method: .post,
-            path: "abuse_requests",
-            route: "abuse",
-            body: ActionPayload(commentId: commentId, topicId: topicId, reason: reason)
-        )
+        try await request(.post, route: "abuse", body: payload)
     }
 
     /// POST ``/api/v2/abuse_requests/spoiler``
     ///
-    /// Create spoiler request.
+    ///  Create abuse about spoiler in content. Request will be sent to moderators.
     func spoiler(
-        commentId: String? = nil,
-        topicId: String? = nil,
-        reason: String? = nil
+        payload: SwikiAbuseRequestSpoilerPayload
     ) async throws {
-        try await transport.request(
-            version: .v2,
-            method: .post,
-            path: "abuse_requests",
-            route: "spoiler",
-            body: ActionPayload(commentId: commentId, topicId: topicId, reason: reason)
-        )
+        try await request(.post, route: "spoiler", body: payload)
     }
+    
 }

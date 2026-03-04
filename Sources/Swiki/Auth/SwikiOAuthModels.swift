@@ -74,6 +74,7 @@ public extension SwikiOAuthScope {
     static let userRates: SwikiOAuthScope = "user_rates"
     static let comments: SwikiOAuthScope = "comments"
     static let topics: SwikiOAuthScope = "topics"
+    static let ignores: SwikiOAuthScope = "ignores"
     static let clubs: SwikiOAuthScope = "clubs"
     static let friends: SwikiOAuthScope = "friends"
     static let messages: SwikiOAuthScope = "messages"

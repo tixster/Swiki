@@ -92,6 +92,8 @@ public extension SwikiV1UsersClient {
     /// GET ``/api/users/:id/messages``
     ///
     /// List user messages.
+    ///
+    /// - Note: Requires `messages` oauth scope
     func messages(id: String, query: SwikiV1UserMessagesQuery = .init()) async throws -> [SwikiMessage] {
         try await request(.get, id: id, route: "messages", query: query.asSwikiQuery)
     }
@@ -99,6 +101,8 @@ public extension SwikiV1UsersClient {
     /// GET ``/api/users/:id/unread_messages``
     ///
     /// Show current user's unread messages counts
+    ///
+    /// - Note: Requires `messages` oauth scope
     func unreadMessages(id: String) async throws -> SwikiUnreadMessagesInformation {
         try await request(.get, id: id, route: "unread_messages")
     }
