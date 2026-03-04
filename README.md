@@ -74,10 +74,12 @@ let config = SwikiConfiguration(
 
 let swiki = Swiki(configuration: config)
 
-let users = try await swiki.v1.users.list(query: [
-    "search": "kirito",
-    "limit": "5"
-])
+let users = try await swiki.v1.users.get(
+    query: SwikiV1UsersQuery(
+        search: "kirito",
+        limit: 5
+    )
+)
 ```
 
 ## Configuration
@@ -180,18 +182,20 @@ swiki.v2.<resource>
 ```
 
 ### Basic subclient methods
-Most subclients support:
-- `list(query:)`
-- `get(id:query:)`
-- `create(body:query:)`
-- `update(id:body:query:method:)`
-- `delete(id:query:)`
-- `request(...)` for arbitrary methods/actions
+Most subclients expose:
+- `list(query:)` for collection endpoints with filters/pagination.
+- `get(id:)`
+- `create(body:)`
+- `update(id:body:method:)`
+- `delete(id:)`
+- resource-specific methods (for example `roles(id:)`, `whoami()`, `increment(id:)`).
+- `query` parameters are available only on endpoints where Shikimori API supports them.
+- `request(...)` for arbitrary methods/actions.
 
 ### Typed Queries (v1/v2)
-All `query` parameters in `v1/v2` subclients accept `SwikiQueryConvertible`:
-- plain dictionary `SwikiQuery`,
+For endpoints that accept query parameters, `v1/v2` clients use concrete typed query models from `Sources/Swiki/Queries`:
 - typed query models (`SwikiV1AnimesQuery`, `SwikiV1UsersQuery`, `SwikiV1UserRatesQuery`, `SwikiV1TopicsQuery`, `SwikiV1CommentsQuery`, `SwikiV2UserRatesQuery`, etc.).
+- `SwikiQuery` is still used only for endpoints with free-form query payloads.
 
 ```swift
 let animes = try await swiki.v1.animes.get(

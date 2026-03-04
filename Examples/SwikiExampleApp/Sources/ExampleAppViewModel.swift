@@ -116,7 +116,9 @@ final class ExampleAppViewModel: ObservableObject {
         }
 
         await perform("Running GraphQL DefaultUserRatesOperation") {
-            let operation = SwikiGraphQLOperations.DefaultAnimesOperation(variables: SwikiGraphQLOperations.DefaultAnimesOperation.Variables(search: "bakemonogatari"))
+            let operation = SwikiGraphQLOperations.DefaultAnimesOperation(
+                variables: SwikiGraphQLOperations.DefaultAnimesOperation.Variables(search: "bakemonogatari")
+            )
             let data = try await swiki.graphQL.execute(operation: operation)
             graphQLAnimesIDs = data.animes.map(\.id)
             appendLog("GraphQL loaded \(data.animes.count) user rates")

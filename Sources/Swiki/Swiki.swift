@@ -3,7 +3,7 @@ import Foundation
 import FoundationNetworking
 #endif
 
-public enum SwikiConfig {
+public enum SwikiConstant {
     public static let baseDomen: URL = URL(string: "https://shikimori.io")!
 }
 

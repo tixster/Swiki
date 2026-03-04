@@ -22,12 +22,12 @@ public struct SwikiConfiguration: Sendable {
         accessToken: String? = nil,
         oauthCredentials: SwikiOAuthCredentials? = nil,
         oauthTokenStore: (any SwikiOAuthTokenStore)? = nil,
-        oauthBaseURL: URL = SwikiConfig.baseDomen,
-        graphQLURL: URL = SwikiConfig.baseDomen.appendingPathComponent("api").appendingPathComponent("graphql"),
+        oauthBaseURL: URL = SwikiConstant.baseDomen,
+        graphQLURL: URL = SwikiConstant.baseDomen.appendingPathComponent("api").appendingPathComponent("graphql"),
         userAgent: String,
         apiLogger: Logger? = nil,
         isRpsRpmRestrictionsEnabled: Bool = true,
-        baseURL: URL = SwikiConfig.baseDomen.appendingPathComponent("api"),
+        baseURL: URL = SwikiConstant.baseDomen.appendingPathComponent("api"),
         additionalHeaders: [String: String] = [:]
     ) {
         self.clientId = clientId

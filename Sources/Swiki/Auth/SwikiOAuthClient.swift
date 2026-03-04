@@ -14,7 +14,7 @@ public actor SwikiOAuthClient {
 
     init(
         credentials: SwikiOAuthCredentials,
-        baseURL: URL = SwikiConfig.baseDomen,
+        baseURL: URL = SwikiConstant.baseDomen,
         tokenStore: (any SwikiOAuthTokenStore)? = nil,
         session: URLSession = .shared
     ) {

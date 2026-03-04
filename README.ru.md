@@ -74,10 +74,12 @@ let config = SwikiConfiguration(
 
 let swiki = Swiki(configuration: config)
 
-let users = try await swiki.v1.users.list(query: [
-    "search": "kirito",
-    "limit": "5"
-])
+let users = try await swiki.v1.users.get(
+    query: SwikiV1UsersQuery(
+        search: "kirito",
+        limit: 5
+    )
+)
 ```
 
 ## Конфигурация
@@ -180,18 +182,20 @@ swiki.v2.<resource>
 ```
 
 ### Базовые методы саб-клиента
-Большинство саб-клиентов поддерживает:
-- `list(query:)`
-- `get(id:query:)`
-- `create(body:query:)`
-- `update(id:body:query:method:)`
-- `delete(id:query:)`
-- `request(...)` для произвольного метода/экшена
+Большинство саб-клиентов предоставляет:
+- `list(query:)` для коллекций с фильтрацией/пагинацией.
+- `get(id:)`
+- `create(body:)`
+- `update(id:body:method:)`
+- `delete(id:)`
+- ресурсные методы (например `roles(id:)`, `whoami()`, `increment(id:)`).
+- `query` доступен только там, где это поддерживает Shikimori API.
+- `request(...)` для произвольного метода/экшена.
 
 ### Типизированные Query (v1/v2)
-Все `query`-параметры в `v1/v2` саб-клиентах принимают `SwikiQueryConvertible`:
-- обычный словарь `SwikiQuery`,
+Для эндпоинтов с query-параметрами `v1/v2` клиенты используют конкретные типизированные модели из `Sources/Swiki/Queries`:
 - типизированные query-модели (`SwikiV1AnimesQuery`, `SwikiV1UsersQuery`, `SwikiV1UserRatesQuery`, `SwikiV1TopicsQuery`, `SwikiV1CommentsQuery`, `SwikiV2UserRatesQuery` и др.).
+- `SwikiQuery` остаётся только для эндпоинтов со свободной query-структурой.
 
 ```swift
 let animes = try await swiki.v1.animes.get(
