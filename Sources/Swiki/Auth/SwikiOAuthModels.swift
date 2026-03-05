@@ -71,13 +71,21 @@ public struct SwikiOAuthScope: RawRepresentable, Hashable, Sendable, Expressible
 }
 
 public extension SwikiOAuthScope {
+    /// Modify your list of anime and manga.
     static let userRates: SwikiOAuthScope = "user_rates"
+    /// Comment on behalf of you.
     static let comments: SwikiOAuthScope = "comments"
+    /// Create topics and reviews on your behalf.
     static let topics: SwikiOAuthScope = "topics"
+    /// Add and remove people to ignore.
     static let ignores: SwikiOAuthScope = "ignores"
+    /// Join and leave clubs.
     static let clubs: SwikiOAuthScope = "clubs"
+    /// Add and remove people as friends.
     static let friends: SwikiOAuthScope = "friends"
+    /// Read your personal messages, send personal messages on your behalf.
     static let messages: SwikiOAuthScope = "messages"
-    static let styles: SwikiOAuthScope = "styles"
+    /// Modify the website's database.
+    static let content: SwikiOAuthScope = "content"
 }
 
