@@ -4,10 +4,10 @@ import SwikiModels
 public struct SwikiV2UserRatesQuery: SwikiQueryConvertible {
     /// Must be a number between 1 and 100000.
     /// - Note: This field is ignored when user_id is set
-    public var page: Int?
+    public var page: Limit_100_000?
     /// 1000 maximum.
     /// - Note: This field is ignored when user_id is set
-    public var limit: Int?
+    public var limit: Limit_100?
     public var userId: String?
     public var targetId: String?
     public var targetType: SwikiUserRateTargetType?
@@ -15,8 +15,8 @@ public struct SwikiV2UserRatesQuery: SwikiQueryConvertible {
     public var extra: SwikiQuery
 
     public init(
-        page: Int? = nil,
-        limit: Int? = nil,
+        page: Limit_100_000? = nil,
+        limit: Limit_100? = nil,
         userId: String? = nil,
         targetId: String? = nil,
         targetType: SwikiUserRateTargetType? = nil,
@@ -34,8 +34,8 @@ public struct SwikiV2UserRatesQuery: SwikiQueryConvertible {
 
     public var asSwikiQuery: SwikiQuery {
         var query: SwikiQuery = [
-            "page": page.map(String.init),
-            "limit": limit.map(String.init),
+            "page": page?.rawValue.description,
+            "limit": limit?.rawValue.description,
             "user_id": userId,
             "target_id": targetId,
             "target_type": targetType?.rawValue,

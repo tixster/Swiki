@@ -6,9 +6,9 @@ public struct SwikiV1AnimesQuery: SwikiQueryConvertible {
     public typealias Filter<Value: RawRepresentable & Sendable> = SwikiQueryFilter<Value> where Value.RawValue == String
 
     /// Must be a number between 1 and 100000.
-    public var page: Int?
+    public var page: Limit_100_000?
     /// 50 maximum.
-    public var limit: Int?
+    public var limit: Limit_50?
     public var order: SwikiOrder?
     /// - warning: API DEPRECATED
     public var type: String?
@@ -42,9 +42,9 @@ public struct SwikiV1AnimesQuery: SwikiQueryConvertible {
     /// Status of anime in current user list
     public var mylist: SwikiUserRateStatus?
     /// List of anime ids separated by comma
-    public var ids: [Int]
+    public var ids: [String]
     /// List of anime ids separated by comma
-    public var excludeIDs: [Int]
+    public var excludeIDs: [String]
     /// Search phrase to filter animes by name
     public var search: String?
     public var extra: SwikiQuery
@@ -73,8 +73,8 @@ public struct SwikiV1AnimesQuery: SwikiQueryConvertible {
     ///   - search: Search phrase to filter animes by name
     ///   - extra: extra fields
     public init(
-        page: Int? = nil,
-        limit: Int? = nil,
+        page: Limit_100_000? = nil,
+        limit: Limit_50? = nil,
         order: SwikiOrder? = nil,
         type: String? = nil,
         season: SwikiSeason? = nil,
@@ -90,8 +90,8 @@ public struct SwikiV1AnimesQuery: SwikiQueryConvertible {
         franchise: [Int] = [],
         censored: Bool? = nil,
         mylist: SwikiUserRateStatus? = nil,
-        ids: [Int] = [],
-        excludeIDs: [Int] = [],
+        ids: [String] = [],
+        excludeIDs: [String] = [],
         search: String? = nil,
         extra: SwikiQuery = [:]
     ) {
@@ -120,8 +120,8 @@ public struct SwikiV1AnimesQuery: SwikiQueryConvertible {
 
     public var asSwikiQuery: SwikiQuery {
         var query: SwikiQuery = [
-            "page": page.map(String.init),
-            "limit": limit.map(String.init),
+            "page": page?.rawValue.description,
+            "limit": limit?.rawValue.description,
             "order": order?.rawValue,
             "type": type,
             "kind": SwikiQueryEncoding.csv(filters: kindFilters),
@@ -153,8 +153,8 @@ public struct SwikiV1AnimesTopicsQuery: SwikiQueryConvertible {
         case released
         case episode
     }
-    public var page: Int?
-    public var limit: Int?
+    public var page: Limit_100_000?
+    public var limit: Limit_30?
     public var kind: Kind?
     public var episode: Int?
     public var extra: SwikiQuery
@@ -166,8 +166,8 @@ public struct SwikiV1AnimesTopicsQuery: SwikiQueryConvertible {
     ///   - kind: kind
     ///   - episode: episode
     public init(
-        page: Int? = nil,
-        limit: Int? = nil,
+        page: Limit_100_000? = nil,
+        limit: Limit_30? = nil,
         kind: Kind? = nil,
         episode: Int? = nil,
         extra: SwikiQuery = [:]
@@ -181,8 +181,8 @@ public struct SwikiV1AnimesTopicsQuery: SwikiQueryConvertible {
 
     public var asSwikiQuery: SwikiQuery {
         var query: SwikiQuery = [
-            "page": page?.description,
-            "limit": limit?.description,
+            "page": page?.rawValue.description,
+            "limit": limit?.rawValue.description,
             "kind": kind?.rawValue,
             "episode": episode?.description,
         ]

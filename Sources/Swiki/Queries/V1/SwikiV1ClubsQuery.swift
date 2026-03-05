@@ -2,9 +2,9 @@ import Foundation
 
 public struct SwikiV1ClubsSearchQuery: SwikiQueryConvertible {
     /// Must be a number between 1 and 100000.
-    public var page: Int?
+    public var page: Limit_100_000?
     /// 30 maximum
-    public var limit: Int?
+    public var limit: Limit_30?
     public var search: String?
     public var extra: SwikiQuery
     
@@ -15,8 +15,8 @@ public struct SwikiV1ClubsSearchQuery: SwikiQueryConvertible {
     ///   - search: search
     ///   - extra: extra
     public init(
-        page: Int? = nil,
-        limit: Int? = nil,
+        page: Limit_100_000? = nil,
+        limit: Limit_30? = nil,
         search: String? = nil,
         extra: SwikiQuery = [:]
     ) {
@@ -28,8 +28,8 @@ public struct SwikiV1ClubsSearchQuery: SwikiQueryConvertible {
 
     public var asSwikiQuery: SwikiQuery {
         var query: SwikiQuery = [
-            "page": page?.description,
-            "limit": limit?.description,
+            "page": page?.rawValue.description,
+            "limit": limit?.rawValue.description,
             "search": search
         ]
         query = query.filter { $0.value != nil }
@@ -39,9 +39,9 @@ public struct SwikiV1ClubsSearchQuery: SwikiQueryConvertible {
 
 public struct SwikiV1ClubsQuery: SwikiQueryConvertible {
     /// Must be a number between 1 and 100000.
-    public var page: Int?
+    public var page: Limit_100_000?
     /// 30 maximum
-    public var limit: Int?
+    public var limit: Limit_30?
     public var extra: SwikiQuery
 
     /// GET /api/clubs
@@ -51,8 +51,8 @@ public struct SwikiV1ClubsQuery: SwikiQueryConvertible {
     ///   - search: search
     ///   - extra: extra
     public init(
-        page: Int? = nil,
-        limit: Int? = nil,
+        page: Limit_100_000? = nil,
+        limit: Limit_30? = nil,
         extra: SwikiQuery = [:]
     ) {
         self.page = page
@@ -62,8 +62,8 @@ public struct SwikiV1ClubsQuery: SwikiQueryConvertible {
 
     public var asSwikiQuery: SwikiQuery {
         var query: SwikiQuery = [
-            "page": page?.description,
-            "limit": limit?.description,
+            "page": page?.rawValue.description,
+            "limit": limit?.rawValue.description,
         ]
         query = query.filter { $0.value != nil }
         return SwikiQueryEncoding.merge(query, with: extra)

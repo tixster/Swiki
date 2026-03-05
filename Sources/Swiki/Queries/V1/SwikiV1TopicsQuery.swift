@@ -15,55 +15,11 @@ public struct SwikiV1TopicsSearchQuery: SwikiQueryConvertible {
         }
     }
 
-    public struct Page: Limitable {
-        public var rawValue: Int
-
-        public init?(rawValue: Int) {
-            let max = 100_000
-            if (1...max).contains(rawValue) {
-                self.rawValue = rawValue
-            } else {
-                self.rawValue = max
-            }
-        }
-
-        public init(integerLiteral value: IntegerLiteralType) {
-            let max = 100_000
-            if (1...max).contains(value) {
-                self.rawValue = value
-            } else {
-                self.rawValue = max
-            }
-        }
-
-    }
-
-    public struct Limit: Limitable {
-        public var rawValue: Int
-
-        public init?(rawValue: Int) {
-            guard (1...30).contains(rawValue) else {
-                return nil
-            }
-            self.rawValue = rawValue
-        }
-
-        public init(integerLiteral value: IntegerLiteralType) {
-            let max = 30
-            if (1...max).contains(value) {
-                self.rawValue = value
-            } else {
-                self.rawValue = max
-            }
-        }
-
-    }
-
     public var forum: Forum?
     public var linked: Linked?
     public var type: TopicType?
-    public var page: Page?
-    public var limit: Limit?
+    public var page: Limit_100_000?
+    public var limit: Limit_30?
     public var extra: SwikiQuery
 
     /// - Parameters:
@@ -77,8 +33,8 @@ public struct SwikiV1TopicsSearchQuery: SwikiQueryConvertible {
         forum: Forum? = nil,
         linked: Linked? = nil,
         type: TopicType? = nil,
-        page: Page? = nil,
-        limit: Limit? = nil,
+        page: Limit_100_000? = nil,
+        limit: Limit_30? = nil,
         extra: SwikiQuery = [:]
     ) {
         self.forum = forum
@@ -105,59 +61,13 @@ public struct SwikiV1TopicsSearchQuery: SwikiQueryConvertible {
 
 public struct SwikiV1TopicsQuery: SwikiQueryConvertible {
 
-    public struct Page: Limitable {
-        public var rawValue: Int
-
-        public init?(rawValue: Int) {
-            let max = 100_000
-            if (1...max).contains(rawValue) {
-                self.rawValue = rawValue
-            } else {
-                self.rawValue = max
-            }
-        }
-
-        public init(integerLiteral value: IntegerLiteralType) {
-            let max = 100_000
-            if (1...max).contains(value) {
-                self.rawValue = value
-            } else {
-                self.rawValue = max
-            }
-        }
-
-    }
-
-    public struct Limit: Limitable {
-        public var rawValue: Int
-
-        public init?(rawValue: Int) {
-            let max = 30
-            if (1...max).contains(rawValue) {
-                self.rawValue = rawValue
-            } else {
-                self.rawValue = max
-            }
-        }
-
-        public init(integerLiteral value: IntegerLiteralType) {
-            let max = 30
-            if (1...max).contains(value) {
-                self.rawValue = value
-            } else {
-                self.rawValue = max
-            }
-        }
-
-    }
-
-    public var page: Page?
-    public var limit: Limit?
+    public var page: Limit_100_000?
+    public var limit: Limit_30?
     public var extra: SwikiQuery
 
     public init(
-        page: Page? = nil,
-        limit: Limit? = nil,
+        page: Limit_100_000? = nil,
+        limit: Limit_30? = nil,
         extra: SwikiQuery = [:]
     ) {
         self.page = page
@@ -178,34 +88,11 @@ public struct SwikiV1TopicsQuery: SwikiQueryConvertible {
 
 public struct SwikiV1TopicsHotQuery: SwikiQueryConvertible {
 
-    public struct Limit: Limitable {
-        public var rawValue: Int
-
-        public init?(rawValue: Int) {
-            let max = 10
-            if (1...max).contains(rawValue) {
-                self.rawValue = rawValue
-            } else {
-                self.rawValue = max
-            }
-        }
-
-        public init(integerLiteral value: IntegerLiteralType) {
-            let max = 10
-            if (1...max).contains(value) {
-                self.rawValue = value
-            } else {
-                self.rawValue = max
-            }
-        }
-
-    }
-
-    public var limit: Limit?
+    public var limit: Limit_10?
     public var extra: SwikiQuery
 
     public init(
-        limit: Limit? = nil,
+        limit: Limit_10? = nil,
         extra: SwikiQuery = [:]
     ) {
         self.limit = limit

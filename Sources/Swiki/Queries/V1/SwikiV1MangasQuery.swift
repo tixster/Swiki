@@ -6,9 +6,9 @@ public typealias SwikiV1RanobeSearchQuery = SwikiV1MangasSearchQuery
 public struct SwikiV1MangasSearchQuery: SwikiQueryConvertible {
     public typealias Filter<Value: RawRepresentable & Sendable> = SwikiQueryFilter<Value> where Value.RawValue == String
     /// Must be a number between 1 and 100000.
-    public var page: Int?
+    public var page: Limit_100_000?
     /// limit: 50 maximum.
-    public var limit: Int?
+    public var limit: Limit_50?
     public var order: SwikiOrder?
     /// - Warning: API Deprecated
     public var type: String?
@@ -39,9 +39,9 @@ public struct SwikiV1MangasSearchQuery: SwikiQueryConvertible {
     /// Status of manga in current user list
     public var mylist: SwikiUserRateStatus?
     /// List of manga ids separated by comma
-    public var ids: [Int]
+    public var ids: [String]
     /// List of manga ids separated by comma
-    public var excludeIDs: [Int]
+    public var excludeIDs: [String]
     /// Search phrase to filter mangas by name
     public var search: String?
     /// extra fields
@@ -72,8 +72,8 @@ public struct SwikiV1MangasSearchQuery: SwikiQueryConvertible {
     ///   - search: Search phrase to filter mangas by name
     ///   - extra: extra fields
     public init(
-        page: Int? = nil,
-        limit: Int? = nil,
+        page: Limit_100_000? = nil,
+        limit: Limit_50? = nil,
         order: SwikiOrder? = nil,
         type: String? = nil,
         kindFilters: [SwikiQueryFilter<SwikiMangaKind>] = [],
@@ -87,8 +87,8 @@ public struct SwikiV1MangasSearchQuery: SwikiQueryConvertible {
         publisher: [Int] = [],
         censored: Bool? = nil,
         mylist: SwikiUserRateStatus? = nil,
-        ids: [Int] = [],
-        excludeIDs: [Int] = [],
+        ids: [String] = [],
+        excludeIDs: [String] = [],
         search: String? = nil,
         extra: SwikiQuery = [:]
     ) {
@@ -115,8 +115,8 @@ public struct SwikiV1MangasSearchQuery: SwikiQueryConvertible {
 
     public var asSwikiQuery: SwikiQuery {
         var query: SwikiQuery = [
-            "page": page.map(String.init),
-            "limit": limit.map(String.init),
+            "page": page?.rawValue.description,
+            "limit": limit?.rawValue.description,
             "order": order?.rawValue,
             "type": type,
             "kind": SwikiQueryEncoding.csv(filters: kindFilters),
@@ -142,15 +142,15 @@ public typealias SwikiV1RanobeQuery = SwikiV1MangasQuery
 
 public struct SwikiV1MangasQuery: SwikiQueryConvertible {
     /// Must be a number between 1 and 100000.
-    public var page: Int?
+    public var page: Limit_100_000?
     /// limit: 30 maximum.
-    public var limit: Int?
+    public var limit: Limit_30?
     /// extra fields
     public var extra: SwikiQuery
 
     public init(
-        page: Int? = nil,
-        limit: Int? = nil,
+        page: Limit_100_000? = nil,
+        limit: Limit_30? = nil,
         extra: SwikiQuery = [:]
     ) {
         self.page = page
@@ -161,8 +161,8 @@ public struct SwikiV1MangasQuery: SwikiQueryConvertible {
 
     public var asSwikiQuery: SwikiQuery {
         var query: SwikiQuery = [
-            "page": page?.description,
-            "limit": limit?.description,
+            "page": page?.rawValue.description,
+            "limit": limit?.rawValue.description,
         ]
         query = query.filter { $0.value != nil }
         return SwikiQueryEncoding.merge(query, with: extra)

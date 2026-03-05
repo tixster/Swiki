@@ -2,14 +2,14 @@ import Foundation
 import SwikiModels
 
 public struct SwikiV1UsersSearchQuery: SwikiQueryConvertible {
-    public var page: Int?
-    public var limit: Int?
+    public var page: Limit_100_000?
+    public var limit: Limit_100?
     public var search: String?
     public var extra: SwikiQuery
 
     public init(
-        page: Int? = nil,
-        limit: Int? = nil,
+        page: Limit_100_000? = nil,
+        limit: Limit_100? = nil,
         search: String? = nil,
         extra: SwikiQuery = [:]
     ) {
@@ -21,8 +21,8 @@ public struct SwikiV1UsersSearchQuery: SwikiQueryConvertible {
 
     public var asSwikiQuery: SwikiQuery {
         var query: SwikiQuery = [
-            "page": page.map(String.init),
-            "limit": limit.map(String.init),
+            "page": page?.rawValue.description,
+            "limit": limit?.rawValue.description,
             "search": search
         ]
         query = query.filter { $0.value != nil }
@@ -32,13 +32,13 @@ public struct SwikiV1UsersSearchQuery: SwikiQueryConvertible {
 }
 
 public struct SwikiV1UsersQuery: SwikiQueryConvertible {
-    public var page: Int?
-    public var limit: Int?
+    public var page: Limit_100_000?
+    public var limit: Limit_100?
     public var extra: SwikiQuery
 
     public init(
-        page: Int? = nil,
-        limit: Int? = nil,
+        page: Limit_100_000? = nil,
+        limit: Limit_100? = nil,
         extra: SwikiQuery = [:]
     ) {
         self.page = page
@@ -48,8 +48,8 @@ public struct SwikiV1UsersQuery: SwikiQueryConvertible {
 
     public var asSwikiQuery: SwikiQuery {
         var query: SwikiQuery = [
-            "page": page.map(String.init),
-            "limit": limit.map(String.init),
+            "page": page?.rawValue.description,
+            "limit": limit?.rawValue.description,
         ]
         query = query.filter { $0.value != nil }
         return SwikiQueryEncoding.merge(query, with: extra)
@@ -59,16 +59,16 @@ public struct SwikiV1UsersQuery: SwikiQueryConvertible {
 
 public struct SwikiV1UsersRatesQuery: SwikiQueryConvertible {
     /// Must be a number between 1 and 100000.
-    public var page: Int?
+    public var page: Limit_100_000?
     /// 5000 maximum
-    public var limit: Int?
+    public var limit: Limit_5_000?
     public var status: SwikiUserRateStatus?
     public var censored: Bool?
     public var extra: SwikiQuery
 
     public init(
-        page: Int? = nil,
-        limit: Int? = nil,
+        page: Limit_100_000? = nil,
+        limit: Limit_5_000? = nil,
         status: SwikiUserRateStatus? = nil,
         censored: Bool? = nil,
         extra: SwikiQuery = [:]
@@ -82,8 +82,8 @@ public struct SwikiV1UsersRatesQuery: SwikiQueryConvertible {
 
     public var asSwikiQuery: SwikiQuery {
         var query: SwikiQuery = [
-            "page": page.map(String.init),
-            "limit": limit.map(String.init),
+            "page": page?.rawValue.description,
+            "limit": limit?.rawValue.description,
             "status": status?.rawValue,
             "censored": censored.map(SwikiQueryEncoding.bool)
         ]
@@ -95,15 +95,15 @@ public struct SwikiV1UsersRatesQuery: SwikiQueryConvertible {
 public struct SwikiV1UserMessagesQuery: SwikiQueryConvertible {
     public var type: SwikiMessageKind?
     /// Must be a number between 1 and 100000.
-    public var page: Int?
+    public var page: Limit_100_000?
     /// 100 maximum
-    public var limit: Int?
+    public var limit: Limit_100?
     public var extra: SwikiQuery
 
     public init(
         type: SwikiMessageKind? = nil,
-        page: Int? = nil,
-        limit: Int? = nil,
+        page: Limit_100_000? = nil,
+        limit: Limit_100? = nil,
         extra: SwikiQuery = [:]
     ) {
         self.type = type
@@ -115,8 +115,8 @@ public struct SwikiV1UserMessagesQuery: SwikiQueryConvertible {
     public var asSwikiQuery: SwikiQuery {
         var query: SwikiQuery = [
             "type": type?.rawValue.lowercased(),
-            "page": page.map(String.init),
-            "limit": limit.map(String.init)
+            "page": page?.rawValue.description,
+            "limit": limit?.rawValue.description
         ]
         query = query.filter { $0.value != nil }
         return SwikiQueryEncoding.merge(query, with: extra)

@@ -3,16 +3,16 @@ import SwikiModels
 
 public struct SwikiV1HistoryQuery: SwikiQueryConvertible {
     /// Must be a number between 1 and 100000.
-    public var page: Int?
+    public var page: Limit_100_000?
     /// 100 maximum
-    public var limit: Int?
+    public var limit: Limit_100?
     public var targetId: String?
     public var targetType: SwikiUserRateTargetType?
     public var extra: SwikiQuery
 
     public init(
-        page: Int? = nil,
-        limit: Int? = nil,
+        page: Limit_100_000? = nil,
+        limit: Limit_100? = nil,
         targetId: String? = nil,
         targetType: SwikiUserRateTargetType? = nil,
         extra: SwikiQuery = [:]
@@ -26,8 +26,8 @@ public struct SwikiV1HistoryQuery: SwikiQueryConvertible {
 
     public var asSwikiQuery: SwikiQuery {
         var query: SwikiQuery = [
-            "page": page.map(String.init),
-            "limit": limit.map(String.init),
+            "page": page?.rawValue.description,
+            "limit": limit?.rawValue.description,
             "target_id": targetId,
             "target_type": targetType?.rawValue
         ]
