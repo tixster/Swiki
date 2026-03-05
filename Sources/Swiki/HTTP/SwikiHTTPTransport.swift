@@ -646,7 +646,7 @@ final class SwikiHTTPTransport: Sendable {
         bodyData: Data?,
         responseData: Data?,
         startedAt: Date,
-        error: Error
+        error: any Error
     ) {
         log(
             level: .error,

@@ -87,8 +87,8 @@ public struct SwikiKeychainOAuthTokenStore: SwikiOAuthTokenStore {
 
 public enum SwikiKeychainOAuthTokenStoreError: Error, LocalizedError, Sendable {
     case keychain(OSStatus)
-    case encoding(Error)
-    case decoding(Error)
+    case encoding(any Error)
+    case decoding(any Error)
 
     public var errorDescription: String? {
         switch self {

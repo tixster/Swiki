@@ -3,6 +3,13 @@
 
 import PackageDescription
 
+let settings: [SwiftSetting] = [
+    .swiftLanguageMode(.v6),
+    .enableUpcomingFeature("NonisolatedNonsendingByDefault"),
+    .enableUpcomingFeature("InferIsolatedConformances"),
+    .enableUpcomingFeature("ExistentialAny"),
+]
+
 let package = Package(
     name: "Swiki",
     platforms: [
@@ -39,7 +46,7 @@ let package = Package(
                 "SwikiModels",
                 .product(name: "Logging", package: "swift-log")
             ],
-            swiftSettings: [.swiftLanguageMode(.v6)]
+            swiftSettings: settings
         ),
         .target(
             name: "SwikiModels",
@@ -48,7 +55,8 @@ let package = Package(
             ],
             exclude: [
                 "schema.graphql"
-            ]
+            ],
+            swiftSettings: settings
         ),
         .testTarget(
             name: "SwikiTests",
