@@ -123,7 +123,6 @@ struct SeasonsTests {
         // 1900 → это ровное десятилетие c20 + d0 + y0
         let s1900 = try #require(SwikiSeason(rawValue: "1900"))
         let year1900 = try #require(s1900.year)
-        #expect(year1900 != nil)
         #expect(year1900.full == 1900)
         #expect(year1900.century == .c20)
         #expect(year1900.decade == .d00)

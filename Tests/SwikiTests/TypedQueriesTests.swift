@@ -30,8 +30,8 @@ struct TypedQueriesTests {
     }
 
     @Test
-    func v1UserRatesQueryEncodesExpectedKeys() {
-        let query = SwikiV1UserRatesQuery(
+    func v2UserRatesQueryEncodesTargetFilters() {
+        let query = SwikiV2UserRatesQuery(
             page: 1,
             limit: 50,
             userId: "99",
@@ -116,11 +116,11 @@ struct TypedQueriesTests {
     }
 
     @Test
-    func v1MangasQueryEncodesKindAndSeasonGroupedModes() throws {
+    func v1MangasSearchQueryEncodesKindAndSeasonGroupedModes() throws {
         let season2016 = try #require(SwikiSeason(rawValue: "2016"))
         let summer2016 = try #require(SwikiSeason(rawValue: "summer_2016"))
 
-        let query = SwikiV1MangasQuery(
+        let query = SwikiV1MangasSearchQuery(
             kindFilters: [.include(.manga), .include(.oneShot), .exclude(.novel)],
             season: season2016,
             seasonFilters: [.exclude(summer2016)]
@@ -133,11 +133,11 @@ struct TypedQueriesTests {
     }
 
     @Test
-    func v1MangasQueryEncodesKindFiltersWithStatusAndSeasonFilters() throws {
+    func v1MangasSearchQueryEncodesKindFiltersWithStatusAndSeasonFilters() throws {
         let y2016 = try #require(SwikiSeason(rawValue: "2016"))
         let y2015 = try #require(SwikiSeason(rawValue: "2015"))
 
-        let query = SwikiV1MangasQuery(
+        let query = SwikiV1MangasSearchQuery(
             kindFilters: [.include(.manga), .exclude(.oneShot), .include(.manhwa)],
             status: .released,
             season: y2016,
@@ -152,17 +152,13 @@ struct TypedQueriesTests {
     }
 
     @Test
-    func v1TopicsQueryEncodesTypedValues() throws {
-        let page = try #require(SwikiV1TopicsQuery.Page(1))
-        let limit = try #require(SwikiV1TopicsQuery.Limit(30))
-
-        let query = SwikiV1TopicsQuery(
+    func v1TopicsSearchQueryEncodesTypedValues() {
+        let query = SwikiV1TopicsSearchQuery(
             forum: .myClubs,
-            linkedID: 42,
-            linkedType: .anime,
+            linked: .init(linkedId: 42, linkedType: .anime),
             type: .entryAnimeTopic,
-            page: page,
-            limit: limit
+            page: 1,
+            limit: 30
         )
 
         let encoded = query.asSwikiQuery

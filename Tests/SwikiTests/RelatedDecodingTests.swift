@@ -8,7 +8,7 @@ struct RelatedDecodingTests {
     func decodesRelatedWithMangaPreview() throws {
         let json = """
         {
-          "relation": "Adaptation",
+          "relation": "adaptation",
           "relation_russian": "Адаптация",
           "anime": null,
           "manga": {
@@ -41,14 +41,14 @@ struct RelatedDecodingTests {
         #expect(related.manga?.id == "16")
         #expect(related.manga?.kind == .manga)
         #expect(related.manga?.status == .released)
-        #expect(related.url == nil)
+        #expect(related.manga?.url.relativeString == "/mangas/16-manga-5")
     }
 
     @Test
     func decodesRelatedWithAnimePreview() throws {
         let json = """
         {
-          "relation": "Adaptation",
+          "relation": "adaptation",
           "relation_russian": "Адаптация",
           "anime": {
             "id": 53,
@@ -81,6 +81,6 @@ struct RelatedDecodingTests {
         #expect(related.anime?.id == "53")
         #expect(related.anime?.kind == .tv)
         #expect(related.anime?.status == .released)
-        #expect(related.url == nil)
+        #expect(related.anime?.url.relativeString == "/animes/53-anime-53")
     }
 }

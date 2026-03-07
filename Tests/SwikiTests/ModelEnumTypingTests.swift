@@ -51,7 +51,7 @@ struct ModelEnumTypingTests {
     }
 
     @Test
-    func decodesRelatedRelationAsEnumWithFallback() throws {
+    func decodesRelatedRelationAsEnumAndRejectsUnknownValues() throws {
         let knownJson = """
         {
           "id": 1,
@@ -68,9 +68,10 @@ struct ModelEnumTypingTests {
         """
 
         let known = try JSONDecoder().decode(SwikiRelated.self, from: Data(knownJson.utf8))
-        let unknown = try JSONDecoder().decode(SwikiRelated.self, from: Data(unknownJson.utf8))
 
         #expect(known.relation == .adaptation)
-        #expect(unknown.relation == .other)
+        #expect(throws: DecodingError.self, performing: {
+            try JSONDecoder().decode(SwikiRelated.self, from: Data(unknownJson.utf8))
+        })
     }
 }
