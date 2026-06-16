@@ -33,7 +33,7 @@ Typed Swift client for the Shikimori API (`v1`, `v2`, `GraphQL`) with OAuth2 sup
   - generate operations from `.graphql` files (one `.swift` file per operation).
 
 ## Requirements
-- Swift `6.2+`
+- Swift `6.3+`
 - Platforms:
   - iOS 16+
   - macOS 13+
