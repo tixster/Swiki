@@ -562,23 +562,16 @@ final class SwikiHTTPTransport: Sendable {
     }
 
     private static func parseDate(_ rawValue: String) -> Date? {
-        let fractional = ISO8601DateFormatter()
-        fractional.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
-        if let parsed = fractional.date(from: rawValue) {
+
+        if let parsed = ISO8601DateFormatter.fractional.date(from: rawValue) {
             return parsed
         }
 
-        let basic = ISO8601DateFormatter()
-        basic.formatOptions = [.withInternetDateTime]
-        if let parsed = basic.date(from: rawValue) {
+        if let parsed = ISO8601DateFormatter.basic.date(from: rawValue) {
             return parsed
         }
 
-        let yyyyMMdd = DateFormatter()
-        yyyyMMdd.dateFormat = "yyyy-MM-dd"
-        yyyyMMdd.locale = Locale(identifier: "en_US_POSIX")
-        yyyyMMdd.timeZone = TimeZone(secondsFromGMT: 0)
-        return yyyyMMdd.date(from: rawValue)
+        return DateFormatter.yyyyMMdd.date(from: rawValue)
     }
 
     private func logRequestStart(
