@@ -10,7 +10,7 @@ Typed Swift client for the Shikimori API (`v1`, `v2`, `GraphQL`) with OAuth2 sup
   </a>
 </p>
 
-![Swift](https://img.shields.io/badge/Swift-6.2-orange?logo=swift)
+![Swift](https://img.shields.io/badge/Swift-6.3-orange?logo=swift)
 [![SPDX](https://img.shields.io/badge/SPDX-MIT-blue.svg)](https://spdx.org/licenses/MIT.html)
 ![Platforms](https://img.shields.io/badge/platforms-iOS%2016%20%7C%20macOS%2013%20%7C%20tvOS%2016%20%7C%20watchOS%209%20%7C%20Linux-orange)
 ![API](https://img.shields.io/badge/API-V1%20%7C%20V2%20%7C%20GraphQL-orange?logo=shikimori)
