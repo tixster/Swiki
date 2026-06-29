@@ -27,7 +27,7 @@ struct SwikiOAuthClientTests {
         let baseURL = uniqueBaseURL()
         let host = try #require(baseURL.host())
         let returnedToken = makeToken(accessToken: "exchanged-access", refreshToken: "exchanged-refresh")
-        try await MockOAuthURLProtocol.registry.register(
+        try MockOAuthURLProtocol.registry.register(
             host: host,
             stubs: [.json(returnedToken)]
         )
@@ -39,7 +39,7 @@ struct SwikiOAuthClientTests {
         #expect(token.accessToken == "exchanged-access")
         #expect(await tokenStore.currentToken()?.accessToken == "exchanged-access")
 
-        let requests = await MockOAuthURLProtocol.registry.requests(for: host)
+        let requests = MockOAuthURLProtocol.registry.requests(for: host)
         let request = try #require(requests.first)
         let form = formValues(from: request.body)
 
@@ -67,7 +67,7 @@ struct SwikiOAuthClientTests {
         #expect(firstAccessToken == "stored-access")
         #expect(secondAccessToken == "stored-access")
         #expect(await tokenStore.loadCount == 1)
-        #expect(await MockOAuthURLProtocol.registry.requests(for: host).isEmpty)
+        #expect(MockOAuthURLProtocol.registry.requests(for: host).isEmpty)
     }
 
     @Test
@@ -95,7 +95,7 @@ struct SwikiOAuthClientTests {
             expiresIn: 10
         )
         let refreshedToken = makeToken(accessToken: "refreshed-access", refreshToken: "next-refresh")
-        try await MockOAuthURLProtocol.registry.register(
+        try MockOAuthURLProtocol.registry.register(
             host: host,
             stubs: [.json(refreshedToken, delay: .milliseconds(100))]
         )
@@ -111,7 +111,7 @@ struct SwikiOAuthClientTests {
         #expect(await tokenStore.loadCount == 1)
         #expect(await tokenStore.saveCount == 1)
 
-        let requests = await MockOAuthURLProtocol.registry.requests(for: host)
+        let requests = MockOAuthURLProtocol.registry.requests(for: host)
         let request = try #require(requests.first)
         let form = formValues(from: request.body)
 
@@ -260,29 +260,44 @@ private struct RecordedOAuthRequest: Sendable {
     var body: Data?
 }
 
-private actor MockOAuthURLProtocolRegistry {
+private final class MockOAuthURLProtocolRegistry: @unchecked Sendable {
     private var stubsByHost: [String: [MockOAuthStub]] = [:]
     private var requestsByHost: [String: [RecordedOAuthRequest]] = [:]
+    private let lock = NSLock()
 
     func register(host: String, stubs: [MockOAuthStub]) {
-        stubsByHost[host] = stubs
-        requestsByHost[host] = []
+        lock.withLock {
+            stubsByHost[host] = stubs
+            requestsByHost[host] = []
+        }
     }
 
     func nextStub(host: String, request: RecordedOAuthRequest) throws -> MockOAuthStub {
-        requestsByHost[host, default: []].append(request)
+        try lock.withLock {
+            requestsByHost[host, default: []].append(request)
 
-        guard var stubs = stubsByHost[host], !stubs.isEmpty else {
-            throw MockOAuthURLProtocolError.missingStub(host: host)
+            guard var stubs = stubsByHost[host], !stubs.isEmpty else {
+                throw MockOAuthURLProtocolError.missingStub(host: host)
+            }
+
+            let stub = stubs.removeFirst()
+            stubsByHost[host] = stubs
+            return stub
         }
-
-        let stub = stubs.removeFirst()
-        stubsByHost[host] = stubs
-        return stub
     }
 
     func requests(for host: String) -> [RecordedOAuthRequest] {
-        requestsByHost[host, default: []]
+        lock.withLock {
+            requestsByHost[host, default: []]
+        }
+    }
+}
+
+private extension NSLock {
+    func withLock<Value>(_ operation: () throws -> Value) rethrows -> Value {
+        lock()
+        defer { unlock() }
+        return try operation()
     }
 }
 
@@ -292,7 +307,7 @@ private enum MockOAuthURLProtocolError: Error {
     case invalidResponse
 }
 
-private final class MockOAuthURLProtocol: URLProtocol, @unchecked Sendable {
+private final class MockOAuthURLProtocol: URLProtocol {
     static let registry = MockOAuthURLProtocolRegistry()
 
     override class func canInit(with request: URLRequest) -> Bool {
@@ -315,32 +330,38 @@ private final class MockOAuthURLProtocol: URLProtocol, @unchecked Sendable {
             body: Self.bodyData(from: request)
         )
 
-        Task {
-            do {
-                let stub = try await Self.registry.nextStub(host: host, request: recordedRequest)
-                if stub.delay > .zero {
-                    try await Task.sleep(for: stub.delay)
-                }
-
-                guard let response = HTTPURLResponse(
-                    url: url,
-                    statusCode: stub.statusCode,
-                    httpVersion: nil,
-                    headerFields: stub.headers
-                ) else {
-                    throw MockOAuthURLProtocolError.invalidResponse
-                }
-
-                client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
-                client?.urlProtocol(self, didLoad: stub.data)
-                client?.urlProtocolDidFinishLoading(self)
-            } catch {
-                client?.urlProtocol(self, didFailWithError: error)
+        do {
+            let stub = try Self.registry.nextStub(host: host, request: recordedRequest)
+            if stub.delay > .zero {
+                Self.sleep(for: stub.delay)
             }
+
+            guard let response = HTTPURLResponse(
+                url: url,
+                statusCode: stub.statusCode,
+                httpVersion: nil,
+                headerFields: stub.headers
+            ) else {
+                throw MockOAuthURLProtocolError.invalidResponse
+            }
+
+            client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
+            client?.urlProtocol(self, didLoad: stub.data)
+            client?.urlProtocolDidFinishLoading(self)
+        } catch {
+            client?.urlProtocol(self, didFailWithError: error)
         }
     }
 
     override func stopLoading() {}
+
+    private static func sleep(for duration: Duration) {
+        let components = duration.components
+        let seconds = TimeInterval(components.seconds)
+            + TimeInterval(components.attoseconds) / 1_000_000_000_000_000_000
+
+        Thread.sleep(forTimeInterval: seconds)
+    }
 
     private static func bodyData(from request: URLRequest) -> Data? {
         if let httpBody = request.httpBody {
