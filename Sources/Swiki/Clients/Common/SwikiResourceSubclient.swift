@@ -1,6 +1,6 @@
 import Foundation
 
-public struct SwikiResourceClient<Model: Decodable>: Sendable {
+public struct SwikiResourceClient<Model: Decodable & Sendable>: Sendable {
     private let transport: SwikiHTTPTransport
     private let version: SwikiAPIVersion
     private let path: String
@@ -15,22 +15,26 @@ public struct SwikiResourceClient<Model: Decodable>: Sendable {
         self.path = path
     }
 
+    @concurrent
     public func list(query: SwikiQuery = [:]) async throws -> [Model] {
         try await transport.request(version: version, method: .get, path: path, query: query)
     }
 
+    @concurrent
     public func get(id: String, query: SwikiQuery = [:]) async throws -> Model {
         try await transport.request(version: version, method: .get, path: path, id: id, query: query)
     }
 
-    public func create<Body: Encodable>(
+    @concurrent
+    public func create<Body: Encodable & Sendable>(
         body: Body,
         query: SwikiQuery = [:]
     ) async throws -> Model {
         try await transport.request(version: version, method: .post, path: path, query: query, body: body)
     }
 
-    public func update<Body: Encodable>(
+    @concurrent
+    public func update<Body: Encodable & Sendable>(
         id: String,
         body: Body,
         query: SwikiQuery = [:],
@@ -39,11 +43,13 @@ public struct SwikiResourceClient<Model: Decodable>: Sendable {
         try await transport.request(version: version, method: method, path: path, id: id, query: query, body: body)
     }
 
+    @concurrent
     public func delete(id: String, query: SwikiQuery = [:]) async throws {
         try await transport.request(version: version, method: .delete, path: path, id: id, query: query)
     }
 
-    public func request<Response: Decodable>(
+    @concurrent
+    public func request<Response: Decodable & Sendable>(
         _ method: SwikiHTTPMethod,
         id: String? = nil,
         route: String? = nil,
@@ -59,7 +65,8 @@ public struct SwikiResourceClient<Model: Decodable>: Sendable {
         )
     }
 
-    public func request<Response: Decodable, Body: Encodable>(
+    @concurrent
+    public func request<Response: Decodable & Sendable, Body: Encodable & Sendable>(
         _ method: SwikiHTTPMethod,
         id: String? = nil,
         route: String? = nil,
@@ -77,6 +84,7 @@ public struct SwikiResourceClient<Model: Decodable>: Sendable {
         )
     }
 
+    @concurrent
     public func request(
         _ method: SwikiHTTPMethod,
         id: String? = nil,
@@ -93,7 +101,8 @@ public struct SwikiResourceClient<Model: Decodable>: Sendable {
         )
     }
 
-    public func request<Body: Encodable>(
+    @concurrent
+    public func request<Body: Encodable & Sendable>(
         _ method: SwikiHTTPMethod,
         id: String? = nil,
         route: String? = nil,
@@ -113,29 +122,33 @@ public struct SwikiResourceClient<Model: Decodable>: Sendable {
 
 }
 
-public protocol SwikiResourceSubclient: Sendable {
-    associatedtype Model: Decodable
+protocol SwikiResourceSubclient: Sendable {
+    associatedtype Model: Decodable & Sendable
     var resourceClient: SwikiResourceClient<Model> { get }
 }
 
 extension SwikiResourceSubclient {
-    
+
+    @concurrent
     func list(query: SwikiQuery = [:]) async throws -> [Model] {
         try await resourceClient.list(query: query)
     }
 
+    @concurrent
     func get(id: String, query: SwikiQuery = [:]) async throws -> Model {
         try await resourceClient.get(id: id, query: query)
     }
 
-    func create<Body: Encodable>(
+    @concurrent
+    func create<Body: Encodable & Sendable>(
         body: Body,
         query: SwikiQuery = [:]
     ) async throws -> Model {
         try await resourceClient.create(body: body, query: query)
     }
 
-    func update<Body: Encodable>(
+    @concurrent
+    func update<Body: Encodable & Sendable>(
         id: String,
         body: Body,
         query: SwikiQuery = [:],
@@ -144,11 +157,13 @@ extension SwikiResourceSubclient {
         try await resourceClient.update(id: id, body: body, query: query, method: method)
     }
 
+    @concurrent
     func delete(id: String, query: SwikiQuery = [:]) async throws {
         try await resourceClient.delete(id: id, query: query)
     }
 
-    func request<Response: Decodable>(
+    @concurrent
+    func request<Response: Decodable & Sendable>(
         _ method: SwikiHTTPMethod,
         id: String? = nil,
         route: String? = nil,
@@ -157,7 +172,8 @@ extension SwikiResourceSubclient {
         try await resourceClient.request(method, id: id, route: route, query: query)
     }
 
-    func request<Response: Decodable, Body: Encodable>(
+    @concurrent
+    func request<Response: Decodable & Sendable, Body: Encodable & Sendable>(
         _ method: SwikiHTTPMethod,
         id: String? = nil,
         route: String? = nil,
@@ -167,6 +183,7 @@ extension SwikiResourceSubclient {
         try await resourceClient.request(method, id: id, route: route, query: query, body: body)
     }
 
+    @concurrent
     func request(
         _ method: SwikiHTTPMethod,
         id: String? = nil,
@@ -176,7 +193,8 @@ extension SwikiResourceSubclient {
         try await resourceClient.request(method, id: id, route: route, query: query)
     }
 
-    func request<Body: Encodable>(
+    @concurrent
+    func request<Body: Encodable & Sendable>(
         _ method: SwikiHTTPMethod,
         id: String? = nil,
         route: String? = nil,

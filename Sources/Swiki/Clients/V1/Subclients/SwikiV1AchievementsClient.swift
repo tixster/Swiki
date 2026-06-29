@@ -16,6 +16,7 @@ public extension SwikiV1AchievementsClient {
     /// GET ``/api/achievements``
     ///
     /// List user achievements
+    @concurrent
     func list(query: SwikiV1AchievementsQuery) async throws -> [Achievement] {
         try await list(query: query.asSwikiQuery)
     }

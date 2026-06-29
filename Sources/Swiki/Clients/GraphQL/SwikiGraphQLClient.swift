@@ -19,11 +19,13 @@ public struct SwikiGraphQLClient: Sendable {
         self.transport = transport
     }
 
+    @concurrent
     public func execute(request: GraphQLRequest) async throws -> GraphQLResult {
         try await transport.graphQL(request: request)
     }
 
-    public func execute<Variables: Encodable>(
+    @concurrent
+    public func execute<Variables: Encodable & Sendable>(
         query: String,
         operationName: String? = nil,
         variables: Variables
@@ -36,6 +38,7 @@ public struct SwikiGraphQLClient: Sendable {
         return try await execute(request: request)
     }
 
+    @concurrent
     public func execute(
         query: String,
         operationName: String? = nil,
@@ -45,7 +48,8 @@ public struct SwikiGraphQLClient: Sendable {
         return try await execute(request: request)
     }
 
-    public func execute<Response: Decodable>(
+    @concurrent
+    public func execute<Response: Decodable & Sendable>(
         request: GraphQLRequest,
         responseType: Response.Type = Response.self,
         requireNoErrors: Bool = true
@@ -57,7 +61,8 @@ public struct SwikiGraphQLClient: Sendable {
         )
     }
 
-    public func execute<Response: Decodable>(
+    @concurrent
+    public func execute<Response: Decodable & Sendable>(
         query: String,
         operationName: String? = nil,
         variables: [String: Map] = [:],
@@ -72,7 +77,8 @@ public struct SwikiGraphQLClient: Sendable {
         )
     }
 
-    public func execute<Response: Decodable, Variables: Encodable>(
+    @concurrent
+    public func execute<Response: Decodable & Sendable, Variables: Encodable & Sendable>(
         query: String,
         operationName: String? = nil,
         variables: Variables,
@@ -91,6 +97,7 @@ public struct SwikiGraphQLClient: Sendable {
         )
     }
 
+    @concurrent
     public func execute<Operation: SwikiGraphQLOperation>(
         operation: Operation,
         requireNoErrors: Bool = true
@@ -104,6 +111,7 @@ public struct SwikiGraphQLClient: Sendable {
         )
     }
 
+    @concurrent
     public func query(
         _ query: String,
         operationName: String? = nil,
@@ -115,7 +123,8 @@ public struct SwikiGraphQLClient: Sendable {
         return result
     }
 
-    public func query<Variables: Encodable>(
+    @concurrent
+    public func query<Variables: Encodable & Sendable>(
         _ query: String,
         operationName: String? = nil,
         variables: Variables,
@@ -126,6 +135,7 @@ public struct SwikiGraphQLClient: Sendable {
         return result
     }
 
+    @concurrent
     public func mutation(
         _ query: String,
         operationName: String? = nil,
@@ -137,7 +147,8 @@ public struct SwikiGraphQLClient: Sendable {
         return result
     }
 
-    public func mutation<Variables: Encodable>(
+    @concurrent
+    public func mutation<Variables: Encodable & Sendable>(
         _ query: String,
         operationName: String? = nil,
         variables: Variables,
@@ -148,7 +159,7 @@ public struct SwikiGraphQLClient: Sendable {
         return result
     }
 
-    private func makeRequest<Variables: Encodable>(
+    private func makeRequest<Variables: Encodable & Sendable>(
         query: String,
         operationName: String?,
         variables: Variables

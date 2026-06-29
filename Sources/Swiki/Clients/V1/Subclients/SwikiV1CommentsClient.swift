@@ -16,6 +16,7 @@ public extension SwikiV1CommentsClient {
     /// GET /api/comments
     ///
     /// List comments
+    @concurrent
     func list(query: SwikiV1CommentsQuery = .init()) async throws -> [SwikiComment] {
         try await request(.get, query: query.asSwikiQuery)
     }
@@ -23,6 +24,7 @@ public extension SwikiV1CommentsClient {
     /// GET /api/comments/:id
     ///
     /// Show a comment
+    @concurrent
     func comment(id: String) async throws -> SwikiComment {
         try await resourceClient.get(id: id)
     }
@@ -35,6 +37,7 @@ public extension SwikiV1CommentsClient {
     ///   - comment: comment model
     ///   - broadcast: Used to broadcast comment in club’s topic. Only club admins can broadcast.
     ///  - Note: Requires ``comments`` oauth scope
+    @concurrent
     @discardableResult
     func create(
         comment: SwikiCommentCreatePayload,
@@ -50,6 +53,7 @@ public extension SwikiV1CommentsClient {
     ///
     /// - Note: Requires ``comments`` oauth scope.
     /// Use ``SwikiV2AbuseRequestsClient/offtopic(commentId:)`` to change ``is_offtopic`` field.
+    @concurrent
     @discardableResult
     func update(
         id: String,
@@ -66,6 +70,7 @@ public extension SwikiV1CommentsClient {
     /// DELETE ``/api/comments/:id``
     ///
     /// Destroy a comment
+    @concurrent
     func delete(id: String) async throws {
         try await resourceClient.delete(id: id)
     }

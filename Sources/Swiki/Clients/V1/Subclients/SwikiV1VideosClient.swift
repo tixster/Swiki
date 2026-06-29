@@ -18,6 +18,7 @@ public extension SwikiV1VideosClient {
     /// GET ``/api/animes/:anime_id/videos``
     ///
     ///      List videos
+    @concurrent
     func list(animeId: String) async throws -> [SwikiVideo] {
         try await request(.get, id: animeId, route: "videos")
     }
@@ -27,6 +28,7 @@ public extension SwikiV1VideosClient {
     /// Create a video for an anime.
     ///
     /// - Note: Requires `content` oauth scope
+    @concurrent
     func create(
         animeId: String,
         video: SwikiVideosCreatePayload
@@ -43,6 +45,7 @@ public extension SwikiV1VideosClient {
     /// Delete a video from an anime.
     ///
     /// - Note: Requires `content` oauth scope
+    @concurrent
     func delete(animeId: String, videoId: String) async throws {
         try await request(.delete, id: animeId, route: "videos/\(videoId)")
     }

@@ -16,6 +16,7 @@ public extension SwikiV1UserImagesClient {
     /// Upload a user image.
     ///
     /// - Note: Requires ``comments`` oauth scope
+    @concurrent
     func create(
         image: SwikiUserImagePayload
     ) async throws -> SwikiUserImageUploadResponse {

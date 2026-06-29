@@ -15,6 +15,7 @@ public extension SwikiV1StylesClient {
     /// GET ``/api/styles/:id``
     ///
     /// Show a style.
+    @concurrent
     func style(id: String) async throws -> SwikiStyle {
         try await resourceClient.get(id: id)
     }
@@ -22,6 +23,7 @@ public extension SwikiV1StylesClient {
     /// POST ``/api/styles/preview``
     ///
     /// Preview a style payload.
+    @concurrent
     func preview(style: SwikiStylePreviewPayload) async throws -> SwikiStyle {
         try await request(.post, route: "preview", body: SwikiStylePreviewPayloadBody(style: style))
     }
@@ -29,6 +31,7 @@ public extension SwikiV1StylesClient {
     /// POST ``/api/styles``
     ///
     /// Create a style.
+    @concurrent
     func create(style: SwikiStyleCreatePayload) async throws -> SwikiStyle {
         try await resourceClient.create(body: SwikiStyleCreatePayloadBody(style: style))
     }
@@ -36,6 +39,7 @@ public extension SwikiV1StylesClient {
     /// PUT ``/api/styles/:id``
     ///
     /// Update a style.
+    @concurrent
     func update(id: String, style: SwikiStyleUpdatePayload) async throws -> SwikiStyle {
         try await resourceClient.update(id: id, body: SwikiStyleUpdatePayloadBody(style: style), method: .put)
     }

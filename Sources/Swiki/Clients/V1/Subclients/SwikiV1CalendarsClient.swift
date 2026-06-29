@@ -16,6 +16,7 @@ public extension SwikiV1CalendarsClient {
     /// GET ``/api/calendar``
     ///
     /// Show a calendar
+    @concurrent
     func list(query: SwikiQuery = [:]) async throws -> [SwikiCalendar] {
         try await resourceClient.list(query: query)
     }

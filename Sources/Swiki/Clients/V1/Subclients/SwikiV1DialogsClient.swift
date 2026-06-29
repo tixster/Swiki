@@ -21,6 +21,7 @@ public extension SwikiV1DialogsClient {
     /// List dialogs
     /// - Note:
     /// Requires ``messages`` oauth scope
+    @concurrent
     func list(query: SwikiQuery = [:]) async throws -> [SwikiDialog] {
         try await request(.get, query: query)
     }
@@ -30,6 +31,7 @@ public extension SwikiV1DialogsClient {
     /// Show a dialog
     /// - Note:
     /// Requires ``messages`` oauth scope
+    @concurrent
     func messages(targetUserId: String, query: SwikiQuery = [:]) async throws -> [SwikiMessage] {
         try await request(.get, id: targetUserId, query: query)
     }
@@ -39,6 +41,7 @@ public extension SwikiV1DialogsClient {
     /// Destroy a dialog
     /// - Note:
     /// Requires ``messages`` oauth scope
+    @concurrent
     func delete(targetUserId: String) async throws {
         try await request(.delete, id: targetUserId)
     }

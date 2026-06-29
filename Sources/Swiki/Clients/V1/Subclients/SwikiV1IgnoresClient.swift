@@ -17,6 +17,7 @@ public extension SwikiV1IgnoresClient {
     ///
     /// - Note: Requires ``ignores`` oauth scope
     @available(*, deprecated, message: "API DEPREACATED")
+    @concurrent
     @discardableResult
     func create(userId: String) async throws -> SwikiNoticeResponse {
         try await transport.request(
@@ -34,6 +35,8 @@ public extension SwikiV1IgnoresClient {
     /// - Note: Requires ``ignores`` oauth scope
     @discardableResult
     @available(*, deprecated, message: "API DEPREACATED")
+
+    @concurrent
     func delete(userId: String) async throws -> SwikiNoticeResponse {
         try await transport
             .request(

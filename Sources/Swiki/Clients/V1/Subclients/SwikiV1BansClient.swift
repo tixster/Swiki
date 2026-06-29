@@ -12,10 +12,11 @@ public struct SwikiV1BansClient: SwikiResourceSubclient {
 }
 
 public extension SwikiV1BansClient {
-    
+
     /// GET ``/api/bans``
     ///
     /// List bans
+    @concurrent
     func list(
         query: SwikiQuery = [:]
     ) async throws -> [SwikiBan] {

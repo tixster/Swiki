@@ -12,19 +12,21 @@ public struct SwikiV1CharactersClient: SwikiResourceSubclient {
 }
 
 public extension SwikiV1CharactersClient {
-    
+
     /// GET ``/api/characters/:id``
     ///
     /// Show a character
+    @concurrent
     func character(id: String) async throws -> SwikiCharacter {
         try await resourceClient.get(id: id)
     }
-    
+
     /// GET ``/api/characters/search``
     ///
     /// Search characters
+    @concurrent
     func search(query: SwikiV1CharactersQuery) async throws -> [SwikiCharacterPreview] {
         try await request(.get, route: "search", query: query.asSwikiQuery)
     }
-    
+
 }

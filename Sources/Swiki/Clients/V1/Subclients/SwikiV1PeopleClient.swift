@@ -15,6 +15,7 @@ public extension SwikiV1PeopleClient {
     /// GET ``/api/people/:id``
     ///
     /// Show a person.
+    @concurrent
     func person(id: String) async throws -> SwikiPerson {
         try await resourceClient.get(id: id)
     }
@@ -22,6 +23,7 @@ public extension SwikiV1PeopleClient {
     /// GET ``/api/people/search ``
     ///
     /// Search people
+    @concurrent
     func search(query: SwikiV1PeopleQuery) async throws -> [SwikiPersonPreview] {
         try await request(.get, route: "search", query: query.asSwikiQuery)
     }
