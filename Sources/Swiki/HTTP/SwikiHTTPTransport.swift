@@ -190,6 +190,7 @@ final class SwikiHTTPTransport: Sendable {
         return try makeGraphQLDecoder().decode(Response.self, from: payload)
     }
 
+    @SwikiActor
     private func execute(
         version: SwikiAPIVersion,
         method: SwikiHTTPMethod,
@@ -214,6 +215,7 @@ final class SwikiHTTPTransport: Sendable {
         )
     }
 
+    @SwikiActor
     private func executeGraphQL(
         bodyData: Data?,
         operationName: String?
@@ -226,6 +228,7 @@ final class SwikiHTTPTransport: Sendable {
         )
     }
 
+    @SwikiActor
     private func executeAuthenticated(
         url: URL,
         method: SwikiHTTPMethod,
@@ -420,6 +423,7 @@ final class SwikiHTTPTransport: Sendable {
         return (initialData, initialHTTPResponse)
     }
 
+    @SwikiActor
     private func buildRequest(
         url: URL,
         method: SwikiHTTPMethod,
@@ -458,12 +462,14 @@ final class SwikiHTTPTransport: Sendable {
         return request
     }
 
+    @SwikiActor
     private func perform(request: URLRequest) async throws -> (Data, URLResponse) {
         if configuration.isRpsRpmRestrictionsEnabled {
             return try await SwikiActor.shared.submit {
                 try await self.session.data(for: request)
             }
         }
+
         return try await session.data(for: request)
     }
 

@@ -46,16 +46,18 @@ actor SwikiLimiterActor {
         self.clock = clock
     }
 
-    // MARK: - Публичный метод submit<T>
+    // MARK: - Request Scheduling
 
-    /// Добавление задачи на выполнение.
     func submit<T: Sendable>(
         _ work: @Sendable @escaping () async throws -> T
     ) async throws -> T {
-        // Перед выполнением — ждём, если лимиты превышены.
+        try await waitForRequestSlot()
+        return try await work()
+    }
+
+    func waitForRequestSlot() async throws {
         try await waitIfNeeded()
         requestTimestamps.append(clock.now)
-        return try await work()
     }
 
 
