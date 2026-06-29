@@ -14,6 +14,7 @@ public extension SwikiV1StatsClient {
     /// GET ``/api/stats/active_users``
     ///
     /// Users having at least 1 completed animes and active during last month
+    @concurrent
     func activeUsers() async throws -> [Int] {
         try await request(.get, route: "active_users")
     }

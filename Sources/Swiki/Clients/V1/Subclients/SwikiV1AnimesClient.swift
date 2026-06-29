@@ -16,6 +16,7 @@ public extension SwikiV1AnimesClient {
     /// GET ``/api/animes``
     ///
     /// List animes
+    @concurrent
     func list(query: SwikiV1AnimesQuery = .init()) async throws -> [SwikiAnimeV1Preview] {
         try await request(
             .get,
@@ -26,11 +27,13 @@ public extension SwikiV1AnimesClient {
     /// GET ``/api/animes/:id``
     ///
     /// Show an anime
+    @concurrent
     func anime(id: String) async throws -> SwikiAnimeV1 {
         try await resourceClient.get(id: id)
     }
 
     /// GET ``/api/animes/:id/roles``
+    @concurrent
     func roles(id: String) async throws -> [SwikiRole] {
         try await request(
             .get,
@@ -40,6 +43,7 @@ public extension SwikiV1AnimesClient {
     }
 
     /// GET ``/api/animes/:id/similar``
+    @concurrent
     func similar(id: String) async throws -> [SwikiAnimeV1Preview] {
         try await request(
             .get,
@@ -49,6 +53,7 @@ public extension SwikiV1AnimesClient {
     }
 
     /// GET ``/api/animes/:id/related``
+    @concurrent
     func related(id: String) async throws -> [SwikiRelated] {
         try await request(
             .get,
@@ -58,6 +63,7 @@ public extension SwikiV1AnimesClient {
     }
 
     /// GET ``/api/animes/:id/screenshots``
+    @concurrent
     func screenshots(id: String) async throws -> [SwikiImage] {
         try await request(
             .get,
@@ -70,6 +76,8 @@ public extension SwikiV1AnimesClient {
     ///
     /// Use Videos API instead
     @available(*, deprecated, renamed: "SwikiV1VideosClient.get(animeId:)", message: "Use Videos API instead")
+
+    @concurrent
     func videos(id: String) async throws -> [SwikiVideo] {
         try await request(
             .get,
@@ -79,6 +87,7 @@ public extension SwikiV1AnimesClient {
     }
 
     /// GET ``/api/animes/:id/franchise``
+    @concurrent
     func franchise(id: String) async throws -> SwikiFranchise {
         try await request(
             .get,
@@ -88,6 +97,7 @@ public extension SwikiV1AnimesClient {
     }
 
     /// GET ``/api/animes/:id/external_links``
+    @concurrent
     func externalLinks(id: String) async throws -> [SwikiExternalLink] {
         try await request(
             .get,
@@ -98,6 +108,8 @@ public extension SwikiV1AnimesClient {
 
     /// GET ``/api/animes/search``
     @available(*, deprecated, renamed: "list(query:)", message: "Use List animes API instead")
+
+    @concurrent
     func search(_ search: String) async throws -> [SwikiAnimeV1Preview] {
         try await request(
             .get,
@@ -107,6 +119,7 @@ public extension SwikiV1AnimesClient {
     }
 
     /// GET ``/api/animes/:id/topics``
+    @concurrent
     func topics(id: String, query: SwikiV1AnimesTopicsQuery = .init()) async throws -> [SwikiTopic] {
         try await request(
             .get,

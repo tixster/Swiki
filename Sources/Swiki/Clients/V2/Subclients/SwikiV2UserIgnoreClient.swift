@@ -17,6 +17,7 @@ public extension SwikiV2UserIgnoreClient {
     /// Ignore a user.
     ///
     /// - Note: Requires `ignores` oauth scope
+    @concurrent
     @discardableResult
     func ignore(userId: String) async throws -> SwikiUserIgnore {
         try await request(.post, id: userId, route: "ignore")
@@ -27,6 +28,7 @@ public extension SwikiV2UserIgnoreClient {
     /// Unignore a user
     ///
     /// - Note: Requires `ignores` oauth scope
+    @concurrent
     @discardableResult
     func unignore(userId: String) async throws -> SwikiUserIgnore {
         try await request(.delete, id: userId, route: "ignore")

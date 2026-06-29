@@ -16,6 +16,7 @@ public extension SwikiV1GenresClient {
     /// GET ``/api/genres``
     ///
     /// List genres
+    @concurrent
     func list() async throws -> [SwikiGenre] {
         try await resourceClient.list()
     }

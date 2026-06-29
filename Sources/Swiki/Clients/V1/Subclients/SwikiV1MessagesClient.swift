@@ -15,6 +15,7 @@ public extension SwikiV1MessagesClient {
     /// GET ``/api/messages/:id``
     ///
     /// Show a message.
+    @concurrent
     func message(id: String) async throws -> SwikiMessage {
         try await resourceClient.get(id: id)
     }
@@ -24,6 +25,7 @@ public extension SwikiV1MessagesClient {
     /// Create a message.
     ///
     /// - Note: Requires ``messages`` oauth scope
+    @concurrent
     func create(message: SwikiMessageCreatePayload) async throws -> SwikiMessage {
         try await resourceClient.create(body: SwikiMessageCreatePayloadBody(message: message))
     }
@@ -33,6 +35,7 @@ public extension SwikiV1MessagesClient {
     /// Update a message.
     ///
     /// - Note: Requires ``messages`` oauth scope
+    @concurrent
     func update(id: String, message: SwikiMessageUpdatePayload) async throws -> SwikiMessage {
         try await resourceClient.update(
             id: id,
@@ -46,6 +49,7 @@ public extension SwikiV1MessagesClient {
     /// Delete a message.
     ///
     /// - Note: Requires ``messages`` oauth scope
+    @concurrent
     func delete(id: String) async throws {
         try await resourceClient.delete(id: id)
     }
@@ -55,16 +59,17 @@ public extension SwikiV1MessagesClient {
     /// Delete all messages.
     ///
     /// - Note: Requires ``messages`` oauth scope
+    @concurrent
     func deleteAll(payload: SwikiMessageDeleteAllPayload) async throws {
         try await request(.post, route: "delete_all", body: payload)
     }
-
 
     /// POST ``/api/messages/mark_read``
     ///
     /// Mark a message as read.
     ///
     /// - Note: Requires ``messages`` oauth scope
+    @concurrent
     func markRead(payload: SwikiMessageMarkReadPayload) async throws {
         try await request(.post, route: "mark_read", body: payload)
     }
@@ -74,6 +79,7 @@ public extension SwikiV1MessagesClient {
     /// Alias endpoint to mark all messages as read.
     ///
     /// - Note: Requires ``messages`` oauth scope
+    @concurrent
     func readAll(payload: SwikiMessageReadAllPayload) async throws {
         try await request(.post, route: "read_all", body: payload)
     }

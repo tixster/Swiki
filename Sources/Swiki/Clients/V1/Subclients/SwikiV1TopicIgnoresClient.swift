@@ -34,6 +34,7 @@ public extension SwikiV1TopicIgnoresClient {
     ///
     /// - Note: Requires ``topics`` oauth scope
     @available(*, deprecated, message: "API DEPREACATED")
+    @concurrent
     @discardableResult
     func create(
         topicId: String,
@@ -54,9 +55,10 @@ public extension SwikiV1TopicIgnoresClient {
     ///
     /// - Note: Requires ``topics`` oauth scope
     @available(*, deprecated, message: "API DEPREACATED")
+    @concurrent
     @discardableResult
     func delete(id: String) async throws -> SwikiTopicIgnoreDeleteResponse {
         try await transport.request(version: .v1, method: .delete, path: "topic_ignores", id: id)
     }
-    
+
 }

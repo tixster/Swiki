@@ -11,12 +11,13 @@ public struct SwikiV2TopicIgnoreClient: SwikiResourceSubclient {
 }
 
 public extension SwikiV2TopicIgnoreClient {
-    
+
     /// POST ``/api/v2/topics/:topic_id/ignore``
     ///
     /// Ignore a topic
     ///
     /// - Note: Requires `topics` oauth scope
+    @concurrent
     @discardableResult
     func ignore(topicId: String) async throws -> SwikiTopicIgnore {
         try await request(.post, id: topicId, route: "ignore")
@@ -27,6 +28,7 @@ public extension SwikiV2TopicIgnoreClient {
     /// Unignore a topic
     ///
     /// - Note: Requires `topics` oauth scope
+    @concurrent
     @discardableResult
     func unignore(topicId: String) async throws -> SwikiTopicIgnore {
         try await request(.delete, id: topicId, route: "ignore")

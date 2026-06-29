@@ -15,6 +15,7 @@ public extension SwikiV1RanobeClient {
     /// GET ``/api/ranobe``
     ///
     /// List ranobe.
+    @concurrent
     func list(query: SwikiV1RanobeSearchQuery = .init()) async throws -> [SwikiRanobeV1Preview] {
         try await request(.get, query: query.asSwikiQuery)
     }
@@ -22,11 +23,13 @@ public extension SwikiV1RanobeClient {
     /// GET ``/api/ranobe/:id``
     ///
     /// Show ranobe details.
+    @concurrent
     func get(id: String) async throws -> SwikiRanobeV1 { try await resourceClient.get(id: id) }
 
     /// GET ``/api/ranobe/:id/roles``
     ///
     /// Get ranobe roles.
+    @concurrent
     func roles(id: String) async throws -> [SwikiRole] {
         try await request(.get, id: id, route: "roles")
     }
@@ -34,6 +37,7 @@ public extension SwikiV1RanobeClient {
     /// GET ``/api/ranobe/:id/similar``
     ///
     /// Get similar ranobe.
+    @concurrent
     func similar(id: String) async throws -> [SwikiRanobeV1Preview] {
         try await request(.get, id: id, route: "similar")
     }
@@ -41,6 +45,7 @@ public extension SwikiV1RanobeClient {
     /// GET ``/api/ranobe/:id/related``
     ///
     /// Get related titles.
+    @concurrent
     func related(id: String) async throws -> [SwikiRelated] {
         try await request(.get, id: id, route: "related")
     }
@@ -48,6 +53,7 @@ public extension SwikiV1RanobeClient {
     /// GET ``/api/ranobe/:id/franchise``
     ///
     /// Get ranobe franchise data.
+    @concurrent
     func franchise(id: String) async throws -> SwikiFranchise {
         try await request(.get, id: id, route: "franchise")
     }
@@ -55,6 +61,7 @@ public extension SwikiV1RanobeClient {
     /// GET ``/api/ranobe/:id/external_links``
     ///
     /// Get ranobe external links.
+    @concurrent
     func externalLinks(id: String) async throws -> [SwikiExternalLink] {
         try await request(.get, id: id, route: "external_links")
     }
@@ -62,6 +69,7 @@ public extension SwikiV1RanobeClient {
     /// GET ``/api/ranobe/:id/topics``
     ///
     /// Get ranobe topics.
+    @concurrent
     func topics(id: String, query: SwikiV1RanobeQuery = .init()) async throws -> [SwikiTopic] {
         try await request(.get, id: id, route: "topics", query: query.asSwikiQuery)
     }
