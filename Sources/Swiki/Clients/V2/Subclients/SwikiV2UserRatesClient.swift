@@ -16,6 +16,7 @@ public extension SwikiV2UserRatesClient {
     /// GET ``/api/v2/user_rates``
     ///
     /// List user rates.
+    @concurrent
     func list(query: SwikiV2UserRatesQuery = .init()) async throws -> [SwikiUserRate] {
         try await resourceClient.list(query: query.asSwikiQuery)
     }
@@ -23,6 +24,7 @@ public extension SwikiV2UserRatesClient {
     /// GET ``/api/v2/user_rates/:id``
     ///
     /// Show a user rate.
+    @concurrent
     func get(id: String) async throws -> SwikiUserRate {
         try await resourceClient.get(id: id)
     }
@@ -32,6 +34,7 @@ public extension SwikiV2UserRatesClient {
     /// Create a user rate.
     ///
     /// - Note: Requires `user_rates` oauth scope
+    @concurrent
     @discardableResult
     func create(userRate: SwikiUserRatesCreatePayload) async throws -> SwikiUserRate {
         try await resourceClient.create(body: SwikiUserRatesCreatePayloadBody(userRate: userRate))
@@ -42,6 +45,7 @@ public extension SwikiV2UserRatesClient {
     /// Update a user rate.
     ///
     /// - Note: Requires `user_rates` oauth scope
+    @concurrent
     @discardableResult
     func update(
         id: String,
@@ -60,6 +64,7 @@ public extension SwikiV2UserRatesClient {
     /// Increment episodes/chapters by 1
     ///
     /// - Note: Requires `user_rates` oauth scope
+    @concurrent
     @discardableResult
     func increment(id: String) async throws -> SwikiUserRate {
         try await request(.post, id: id, route: "increment")
@@ -70,6 +75,7 @@ public extension SwikiV2UserRatesClient {
     /// Delete a user rate.
     ///
     /// - Note: Requires `user_rates` oauth scope
+    @concurrent
     func delete(id: String) async throws {
         try await resourceClient.delete(id: id)
     }

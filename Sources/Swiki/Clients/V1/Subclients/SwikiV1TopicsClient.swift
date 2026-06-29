@@ -15,6 +15,7 @@ public extension SwikiV1TopicsClient {
     /// GET ``/api/topics``
     ///
     /// List topics.
+    @concurrent
     func list(query: SwikiV1TopicsSearchQuery = .init()) async throws -> [SwikiTopic] {
         try await resourceClient.list(query: query.asSwikiQuery)
     }
@@ -22,6 +23,7 @@ public extension SwikiV1TopicsClient {
     /// GET ``/api/topics/updates``
     ///
     /// NewsTopics about database updates
+    @concurrent
     func news(query: SwikiV1TopicsQuery = .init()) async throws -> [SwikiTopic] {
         try await request(.get, route: "updates", query: query.asSwikiQuery)
     }
@@ -29,6 +31,7 @@ public extension SwikiV1TopicsClient {
     // GET ``/api/topics/hot``
     ///
     /// Hot topics
+    @concurrent
     func hot(query: SwikiV1TopicsHotQuery = .init()) async throws -> [SwikiTopic] {
         try await request(.get, route: "hot", query: query.asSwikiQuery)
     }
@@ -36,6 +39,7 @@ public extension SwikiV1TopicsClient {
     /// GET ``/api/topics/:id``
     ///
     /// Show a topic.
+    @concurrent
     func topic(id: String) async throws -> SwikiTopic {
         try await resourceClient.get(id: id)
     }
@@ -45,6 +49,7 @@ public extension SwikiV1TopicsClient {
     /// Create a topic.
     ///
     /// - Note: Requires ``topics`` oauth scope
+    @concurrent
     @discardableResult
     func create(topic: SwikiTopicCreatePayload) async throws -> SwikiTopic {
         try await resourceClient.create(body: SwikiTopicCreatePayloadBody(topic: topic))
@@ -55,6 +60,7 @@ public extension SwikiV1TopicsClient {
     /// Update a topic.
     ///
     /// - Note: Requires ``topics`` oauth scope
+    @concurrent
     @discardableResult
     func update(id: String, topic: SwikiTopicUpdatePayload) async throws -> SwikiTopic {
         try await resourceClient.update(
@@ -69,7 +75,9 @@ public extension SwikiV1TopicsClient {
     /// Delete a topic.
     ///
     /// - Note: Requires ``topics`` oauth scope
+    @concurrent
     func delete(id: String) async throws {
         try await resourceClient.delete(id: id)
     }
+
 }

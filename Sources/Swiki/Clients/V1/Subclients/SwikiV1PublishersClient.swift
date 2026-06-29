@@ -15,6 +15,7 @@ public extension SwikiV1PublishersClient {
     /// GET ``/api/publishers``
     ///
     /// List publishers.
+    @concurrent
     func list() async throws -> [SwikiPublisher] {
         try await resourceClient.list()
     }

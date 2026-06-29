@@ -19,6 +19,7 @@ public extension SwikiV2EpisodeNotificationsClient {
     /// 
     /// - Parameters:
     ///    - token: Private token required to access this api
+    @concurrent
     func create(
         token: String,
         payload: SwikiEpisodeNotificationPayload,

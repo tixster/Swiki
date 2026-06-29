@@ -16,6 +16,7 @@ public extension SwikiV1FavoritesClient {
     /// POST ``/api/favorites/:linked_type/:linked_id(/:kind)``
     ///
     /// Create a favorite
+    @concurrent
     @discardableResult
     func create(
         linkedType: SwikiFavoritesLinkedTypeCreate,
@@ -37,6 +38,7 @@ public extension SwikiV1FavoritesClient {
     /// DELETE ``/api/favorites/:linked_type/:linked_id``
     ///
     /// Destroy a favorite
+    @concurrent
     @discardableResult
     func delete(
         linkedType: SwikiFavoriteLinkedType,
@@ -54,6 +56,7 @@ public extension SwikiV1FavoritesClient {
     /// POST ``/api/favorites/:id/reorder``
     ///
     /// Assign a new position to a favorite
+    @concurrent
     func reorder(id: String, newIndex: Int?) async throws {
         struct Payload: Encodable {
             let new_index: String?

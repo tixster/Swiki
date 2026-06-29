@@ -29,6 +29,7 @@ public extension SwikiV2AbuseRequestsClient {
     /// POST ``/api/v2/abuse_requests/offtopic``
     ///
     /// Mark a comment as offtopic. Request will be sent to moderators.
+    @concurrent
     func offtopic(comment: SwikiAbuseRequestOfftopicPayload) async throws -> SwikiAbuseOfftopicResponse {
         try await request(.post, route: "offtopic", body: comment)
     }
@@ -36,6 +37,7 @@ public extension SwikiV2AbuseRequestsClient {
     /// POST ``/api/v2/abuse_requests/review``
     ///
     /// Convert comment to review. Request will be sent to moderators.
+    @concurrent
     func review(
         comment: SwikiAbuseRequestReviewPayload
     ) async throws {
@@ -45,6 +47,7 @@ public extension SwikiV2AbuseRequestsClient {
     /// POST ``/api/v2/abuse_requests/abuse``
     ///
     /// Create abuse about violation of site rules. Request will be sent to moderators.
+    @concurrent
     func abuse(
         payload: SwikiAbuseRequestAbusePayload
     ) async throws {
@@ -54,10 +57,11 @@ public extension SwikiV2AbuseRequestsClient {
     /// POST ``/api/v2/abuse_requests/spoiler``
     ///
     ///  Create abuse about spoiler in content. Request will be sent to moderators.
+    @concurrent
     func spoiler(
         payload: SwikiAbuseRequestSpoilerPayload
     ) async throws {
         try await request(.post, route: "spoiler", body: payload)
     }
-    
+
 }

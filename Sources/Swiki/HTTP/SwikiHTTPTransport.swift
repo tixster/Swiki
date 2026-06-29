@@ -70,7 +70,8 @@ final class SwikiHTTPTransport: Sendable {
         self.oauthClient = oauthClient
     }
 
-    func request<Response: Decodable>(
+    @concurrent
+    func request<Response: Decodable & Sendable>(
         version: SwikiAPIVersion,
         method: SwikiHTTPMethod,
         path: String,
@@ -91,7 +92,8 @@ final class SwikiHTTPTransport: Sendable {
         return try makeDecoder().decode(Response.self, from: data)
     }
 
-    func request<Response: Decodable, Body: Encodable>(
+    @concurrent
+    func request<Response: Decodable & Sendable, Body: Encodable & Sendable>(
         version: SwikiAPIVersion,
         method: SwikiHTTPMethod,
         path: String,
@@ -116,6 +118,7 @@ final class SwikiHTTPTransport: Sendable {
         return try makeDecoder().decode(Response.self, from: data)
     }
 
+    @concurrent
     func request(
         version: SwikiAPIVersion,
         method: SwikiHTTPMethod,
@@ -135,7 +138,8 @@ final class SwikiHTTPTransport: Sendable {
         )
     }
 
-    func request<Body: Encodable>(
+    @concurrent
+    func request<Body: Encodable & Sendable>(
         version: SwikiAPIVersion,
         method: SwikiHTTPMethod,
         path: String,
@@ -158,6 +162,7 @@ final class SwikiHTTPTransport: Sendable {
         )
     }
 
+    @concurrent
     func graphQL(request: GraphQLRequest) async throws -> GraphQLResult {
         let requestBody = try GraphQLJSONEncoder().encode(request)
         let (data, _) = try await executeGraphQL(
@@ -172,7 +177,8 @@ final class SwikiHTTPTransport: Sendable {
         return try JSONDecoder().decode(GraphQLResult.self, from: data)
     }
 
-    func graphQL<Response: Decodable>(
+    @concurrent
+    func graphQL<Response: Decodable & Sendable>(
         request: GraphQLRequest,
         responseType: Response.Type = Response.self,
         requireNoErrors: Bool = true
@@ -190,6 +196,7 @@ final class SwikiHTTPTransport: Sendable {
         return try makeGraphQLDecoder().decode(Response.self, from: payload)
     }
 
+    @SwikiActor
     private func execute(
         version: SwikiAPIVersion,
         method: SwikiHTTPMethod,
@@ -214,6 +221,7 @@ final class SwikiHTTPTransport: Sendable {
         )
     }
 
+    @SwikiActor
     private func executeGraphQL(
         bodyData: Data?,
         operationName: String?
@@ -226,6 +234,7 @@ final class SwikiHTTPTransport: Sendable {
         )
     }
 
+    @SwikiActor
     private func executeAuthenticated(
         url: URL,
         method: SwikiHTTPMethod,
@@ -420,6 +429,7 @@ final class SwikiHTTPTransport: Sendable {
         return (initialData, initialHTTPResponse)
     }
 
+    @SwikiActor
     private func buildRequest(
         url: URL,
         method: SwikiHTTPMethod,
@@ -458,12 +468,14 @@ final class SwikiHTTPTransport: Sendable {
         return request
     }
 
+    @SwikiActor
     private func perform(request: URLRequest) async throws -> (Data, URLResponse) {
         if configuration.isRpsRpmRestrictionsEnabled {
             return try await SwikiActor.shared.submit {
                 try await self.session.data(for: request)
             }
         }
+
         return try await session.data(for: request)
     }
 

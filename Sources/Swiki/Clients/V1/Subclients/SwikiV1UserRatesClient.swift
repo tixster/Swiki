@@ -17,6 +17,7 @@ public extension SwikiV1UserRatesClient {
     /// Delete entire user rates and history
     ///
     /// - Note: Requires ``user_rates`` oauth scope
+    @concurrent
     func cleanup(type: SwikiUserRatesType) async throws {
         try await request(.delete, id: type.rawValue, route: "cleanup")
     }
@@ -26,6 +27,7 @@ public extension SwikiV1UserRatesClient {
     /// Reset all user scores to 0
     ///
     /// - Note: Requires ``user_rates`` oauth scope
+    @concurrent
     func reset(type: SwikiUserRatesType) async throws {
         try await request(.delete, id: type.rawValue, route: "reset")
     }

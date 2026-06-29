@@ -14,6 +14,7 @@ public extension SwikiV1StudiosClient {
     /// GET ``/api/studios``
     ///
     /// List studios.
+    @concurrent
     func list() async throws -> [SwikiStudio] {
         try await resourceClient.list()
     }

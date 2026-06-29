@@ -18,6 +18,7 @@ public extension SwikiV1AppearsClient {
     /// - Parameters:
     ///   - ids: Comment & Topic ids
     ///   - query: query
+    @concurrent
     func markAsRead(ids: [String], query: SwikiQuery = [:]) async throws {
         struct Ids: Encodable {
             let ids: [String]

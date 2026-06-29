@@ -15,6 +15,7 @@ public extension SwikiV1FriendsClient {
     ///
     /// Create a friend
     /// - Note: Requires ``friends`` oauth scope
+    @concurrent
     @discardableResult
     func create(id: String) async throws -> SwikiNoticeResponse {
         try await transport.request(version: .v1, method: .post, path: "friends", id: id)
@@ -24,6 +25,7 @@ public extension SwikiV1FriendsClient {
     ///
     /// Destroy a friend
     /// - Note: Requires ``friends`` oauth scope
+    @concurrent
     @discardableResult
     func delete(id: String) async throws -> SwikiNoticeResponse {
         try await transport.request(version: .v1, method: .delete, path: "friends", id: id)

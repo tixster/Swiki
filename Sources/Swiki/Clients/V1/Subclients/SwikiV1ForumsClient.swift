@@ -16,6 +16,7 @@ public extension SwikiV1ForumsClient {
     /// GET ``/api/forums``
     ///
     /// List of forums
+    @concurrent
     func list() async throws -> [SwikiForum] {
         try await resourceClient.list()
     }

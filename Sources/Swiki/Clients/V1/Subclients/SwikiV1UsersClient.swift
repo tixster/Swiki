@@ -11,10 +11,11 @@ public struct SwikiV1UsersClient: SwikiResourceSubclient {
 }
 
 public extension SwikiV1UsersClient {
-    
+
     /// GET ``/api/users``
     ///
     /// List users.
+    @concurrent
     func list(query: SwikiV1UsersSearchQuery = .init()) async throws -> [SwikiUserPreview] {
         try await request(.get, query: query.asSwikiQuery)
     }
@@ -22,6 +23,7 @@ public extension SwikiV1UsersClient {
     /// GET ``/api/users/:id``
     ///
     /// Show a user by id.
+    @concurrent
     func user(id: String) async throws -> SwikiUser {
         try await request(.get, id: id)
     }
@@ -29,6 +31,7 @@ public extension SwikiV1UsersClient {
     // GET ``/api/users/:id``
     ///
     /// Show a user by nickname.
+    @concurrent
     func user(nickname: String) async throws -> SwikiUser {
         try await request(.get, id: nickname, query: ["is_nickname ": "1"])
     }
@@ -36,6 +39,7 @@ public extension SwikiV1UsersClient {
     /// GET ``/api/users/:id/info``
     ///
     /// Show user's brief info
+    @concurrent
     func info(id: String) async throws -> SwikiUserInfo {
         try await request(.get, id: id, route: "info")
     }
@@ -43,6 +47,7 @@ public extension SwikiV1UsersClient {
     /// GET ``/api/users/whoami``
     ///
     /// Show current user's brief info
+    @concurrent
     func whoami() async throws -> SwikiUserInfo {
         try await request(.get, route: "whoami")
     }
@@ -50,6 +55,7 @@ public extension SwikiV1UsersClient {
     /// POST ``/api/users/sign_out``
     ///
     /// Sign out the user.
+    @concurrent
     func signOut() async throws {
         try await request(.post, route: "sign_out")
     }
@@ -57,6 +63,7 @@ public extension SwikiV1UsersClient {
     /// GET ``/api/users/:id/friends``
     ///
     /// Show user's friends
+    @concurrent
     func friends(id: String, query: SwikiV1UsersQuery = .init()) async throws -> [SwikiUserPreview] {
         try await request(.get, id: id, route: "friends", query: query.asSwikiQuery)
     }
@@ -64,6 +71,7 @@ public extension SwikiV1UsersClient {
     /// GET ``/api/users/:id/clubs``
     ///
     /// List user clubs.
+    @concurrent
     func clubs(id: String) async throws -> [SwikiClubPreview] {
         try await request(.get, id: id, route: "clubs")
     }
@@ -71,6 +79,7 @@ public extension SwikiV1UsersClient {
     /// GET ``/api/users/:id/anime_rates``
     ///
     /// Show user's anime list
+    @concurrent
     func animeRates(id: String, query: SwikiV1UsersRatesQuery = .init()) async throws -> [SwikiAnimeRate] {
         try await request(.get, id: id, route: "anime_rates", query: query.asSwikiQuery)
     }
@@ -78,6 +87,7 @@ public extension SwikiV1UsersClient {
     /// GET ``/api/users/:id/manga_rates``
     ///
     /// Show user's manga list
+    @concurrent
     func mangaRates(id: String, query: SwikiV1UsersRatesQuery = .init()) async throws -> [SwikiAnimeRate] {
         try await request(.get, id: id, route: "manga_rates", query: query.asSwikiQuery)
     }
@@ -85,6 +95,7 @@ public extension SwikiV1UsersClient {
     /// GET ``/api/users/:id/favourites``
     ///
     /// Show user's favourites
+    @concurrent
     func favorites(id: String) async throws -> SwikiUserFavorites {
         try await request(.get, id: id, route: "favourites")
     }
@@ -94,6 +105,7 @@ public extension SwikiV1UsersClient {
     /// List user messages.
     ///
     /// - Note: Requires `messages` oauth scope
+    @concurrent
     func messages(id: String, query: SwikiV1UserMessagesQuery = .init()) async throws -> [SwikiMessage] {
         try await request(.get, id: id, route: "messages", query: query.asSwikiQuery)
     }
@@ -103,6 +115,7 @@ public extension SwikiV1UsersClient {
     /// Show current user's unread messages counts
     ///
     /// - Note: Requires `messages` oauth scope
+    @concurrent
     func unreadMessages(id: String) async throws -> SwikiUnreadMessagesInformation {
         try await request(.get, id: id, route: "unread_messages")
     }
@@ -110,6 +123,7 @@ public extension SwikiV1UsersClient {
     /// GET ``/api/users/:id/history``
     ///
     /// Get user history.
+    @concurrent
     func history(id: String, query: SwikiV1HistoryQuery = .init()) async throws -> [SwikiUserHistory] {
         try await request(.get, id: id, route: "history", query: query.asSwikiQuery)
     }
@@ -117,6 +131,7 @@ public extension SwikiV1UsersClient {
     /// GET ``/api/users/:id/bans``
     ///
     /// Get user bans.
+    @concurrent
     func bans(id: String) async throws -> [SwikiBan] {
         try await request(.get, id: id, route: "bans")
     }
